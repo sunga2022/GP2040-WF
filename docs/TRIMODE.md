@@ -6,7 +6,7 @@
 |---|---|
 | 主控？ | **新唐 M487**，CON1 **8 kHz** |
 | 主板蓝牙 / 2.4G？ | **nRF52840**（电脑和手机 BLE HID；nRF24 发给接收器） |
-| 蓝牙能连 Xbox / PS / Switch？ | **nRF52840 不能。** Switch/PS 要用山弯 **BM769P** 交钥匙方案（他们的烧录 exe），不是 nRF。Xbox 仍不行。 |
+| 经典蓝牙没芯片做？ | **有。** 原版 ESP32、杰里 AC632N、山弯 BM769P 都有 EDR。**nRF52840 没有。** ESP32-S3/C3 也没有。 |
 | **2.4G 接收器？** | 便宜 USB HS MCU：**CH32V305GBU6** + 贴片 **Si24R1**。开发板：**CH32V307V-EVT** |
 | 为什么不用 nRF52820？ | 贵，而且 USB FS 只有 1 kHz。要 **4 kHz** 必须 USB High Speed |
 | 是家用 Wi‑Fi 吗？ | 不是 |
