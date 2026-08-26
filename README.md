@@ -13,7 +13,7 @@
 | 模式 | 谁干活 | 轮询 |
 |---|---|---|
 | 有线 | M487 USB High Speed | **8 kHz** |
-| 蓝牙 | nRF52840 BLE HID `GP2040-WF` | 约 133 Hz |
+| 蓝牙 | nRF52840 BLE HID `GP2040-WF`（电脑/手机，**不是** Xbox/PS/Switch） | 约 133 Hz |
 | 2.4G | nRF52840 → Si24R1 → CH32V305 **USB HS** HID | **4 kHz** |
 
 nRF52 的 USB 是 Full Speed，做不到 4 kHz，接收器不用 nRF52820。CH32V305 有官方/淘宝评估板，比 Nordic 便宜。
