@@ -1,14 +1,14 @@
 # 三模与 8 kHz
 
-芯片锁定见 [CHIP_LOCK.md](CHIP_LOCK.md)。不要家用 Wi‑Fi。
+芯片锁定见 [CHIP_LOCK.md](CHIP_LOCK.md)。
 
 | 问题 | 答案 |
 |---|---|
-| 主控是哪家？ | **新唐 Nuvoton M487**，不是树莓派，也不是沁恒。 |
-| 主板蓝牙 / 2.4G？ | **nRF52840**（Raytac MDBT50Q 一类认证模组），BLE HID 兼容手机和电脑。 |
-| **2.4G 接收器芯片？** | 小小 MCU：**nRF52820-QDAA**（5×5 mm），做成 **USB-A U 盘**。不要 SuperMini / XIAO / PA 模块。 |
-| 是家里那种 Wi‑Fi 吗？ | 不是。空中是 Nordic ESB，52840 和 52820 同家族对频。 |
-| 蓝牙能 8 kHz 吗？ | 不能。BLE 大约一百多 Hz。 |
-| 2.4G U 盘能 8 kHz 吗？ | 不能。USB Full Speed，大约 1 kHz。 |
-| 8 kHz 走哪？ | 只有 M487 **CON1 USB High Speed**。 |
-| 还用 Pico / GP2040-CE？ | 旧板可以。新板不要再画 RP2040。 |
+| 主控？ | **新唐 M487**，CON1 **8 kHz** |
+| 主板蓝牙 / 2.4G？ | **nRF52840**（兼容手机 BLE HID，并能按 nRF24 发给接收器） |
+| **2.4G 接收器？** | 便宜 USB HS MCU：**CH32V305GBU6** + 贴片 **Si24R1**。开发板：**CH32V307V-EVT** |
+| 为什么不用 nRF52820？ | 贵，而且 USB FS 只有 1 kHz。要 **4 kHz** 必须 USB High Speed |
+| 是家用 Wi‑Fi 吗？ | 不是 |
+| 蓝牙 8 kHz？ | 不能 |
+| 2.4G 几 k？ | **4 kHz**（USB HS `bInterval = 2`） |
+| Pico？ | 旧板可以，新板不要 RP2040 |

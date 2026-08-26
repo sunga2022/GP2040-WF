@@ -2,23 +2,21 @@
 
 **sunga2022** 的三模格斗板：**有线、蓝牙、2.4G U 盘接收器**。不要家用 Wi‑Fi。
 
-芯片已经锁定，细节以 [docs/CHIP_LOCK.md](docs/CHIP_LOCK.md) 为准。**先按锁定 BOM 买板，再写程序。**
+芯片锁定见 [docs/CHIP_LOCK.md](docs/CHIP_LOCK.md)。**先买板，再写程序。**
 
 | 角色 | 芯片 | 形态 |
 |---|---|---|
-| 手柄主控 | 新唐 **M487JIDAE** | NuMaker-PFM-M487，插 **CON1** |
-| 手柄无线 | Nordic **nRF52840-QIAA**（Raytac MDBT50Q，兼容性强） | 手柄内部小模组；评估可用 XIAO |
-| **2.4G 接收器** | Nordic **nRF52820-QDAA**（5×5 mm） | **USB-A U 盘**；评估用 PCA10059 |
+| 手柄主控 | 新唐 **M487JIDAE** | NuMaker-PFM-M487，**CON1** |
+| 手柄无线 | Nordic **nRF52840**（Raytac MDBT50Q） | 手柄内小模组；评估用 XIAO |
+| **2.4G 接收器** | **CH32V305GBU6** + **Si24R1** | USB-A U 盘；评估用 **CH32V307V-EVT** |
 
-| 模式 | 谁干活 | 电脑看到的轮询 |
+| 模式 | 谁干活 | 轮询 |
 |---|---|---|
 | 有线 | M487 USB High Speed | **8 kHz** |
-| 蓝牙 | 手柄 nRF52840 BLE HID，名字 `GP2040-WF` | 约 133 Hz |
-| 2.4G | 手柄 nRF52840 发私有 2.4G → **nRF52820 U 盘** USB HID | 约 1 kHz |
+| 蓝牙 | nRF52840 BLE HID `GP2040-WF` | 约 133 Hz |
+| 2.4G | nRF52840 → Si24R1 → CH32V305 **USB HS** HID | **4 kHz** |
 
-M487 没有片内射频。CON1 插上后 PA.11 拉高，蓝牙和 2.4G 都停。接收器不做大 2.4G 模块，不做 ESP32 开发板。
-
-仓库里的 ESP32-C3/S3、沁恒 CH585 是选型过程，**新板不要用。**
+nRF52 的 USB 是 Full Speed，做不到 4 kHz，接收器不用 nRF52820。CH32V305 有官方/淘宝评估板，比 Nordic 便宜。
 
 ## 授权
 
