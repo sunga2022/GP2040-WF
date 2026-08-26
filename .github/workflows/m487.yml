@@ -1,0 +1,35 @@
+name: M487
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "firmware/nuvoton_m487/**"
+      - "wireless/protocol.h"
+      - ".github/workflows/m487.yml"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "firmware/nuvoton_m487/**"
+      - "wireless/protocol.h"
+      - ".github/workflows/m487.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ARM GCC
+        run: sudo apt-get update && sudo apt-get install -y gcc-arm-none-eabi libnewlib-arm-none-eabi
+      - name: Test HID packing and 8 kHz interval
+        run: make -C firmware/nuvoton_m487 test
+      - name: Build controller
+        run: make -C firmware/nuvoton_m487
+      - name: Upload hex
+        uses: actions/upload-artifact@v4
+        with:
+          name: m487-hex
+          path: |
+            firmware/nuvoton_m487/build/controller.hex
+            firmware/nuvoton_m487/build/controller.bin
