@@ -1,18 +1,19 @@
 # 新唐 M487 + 外挂 nRF52840
 
-芯片锁定见 [docs/CHIP_LOCK.md](../../docs/CHIP_LOCK.md)。M487 只做按键和有线 **USB HS 8 kHz**。蓝牙和 2.4G 在 **nRF52840** 上，接收器也是 nRF52840。
+芯片锁定见 [docs/CHIP_LOCK.md](../../docs/CHIP_LOCK.md)。M487 只做按键和有线 **USB HS 8 kHz**。蓝牙和 2.4G 在 **nRF52840** 模组上，接收器是小小的 **nRF52820** U 盘。
 
 ```
 按键 ──► M487 ── CON1 USB HS ──► 电脑          8 kHz
             │
             └── UART1 ──► nRF52840 ── BLE ──► 手机/电脑
-                              └── ESB 2.4G ──► nRF52840 接收器 USB
+                              └── ESB 2.4G ──► nRF52820 USB-A 接收器
 ```
 
 ## 买什么
 
 1. [NuMaker-PFM-M487](https://www.nuvoton.com/board/numaker-pfm-m487/)
-2. 两块 [Seeed XIAO nRF52840](https://wiki.seeedstudio.com/XIAO_BLE/)：一块焊手柄，一块当 2.4G 接收器
+2. 手柄无线：评估用 [XIAO nRF52840](https://wiki.seeedstudio.com/XIAO_BLE/)；量产 **Raytac MDBT50Q-1MV2**
+3. 2.4G 接收器：评估用 [nRF52840 Dongle PCA10059](https://www.nordicsemi.com/Products/Development-hardware/nRF52840-Dongle)（U 盘外形）；量产 **nRF52820-QDAA** 自画 USB-A 小板
 
 ## 接线
 
