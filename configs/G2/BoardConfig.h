@@ -38,6 +38,7 @@
 #define GPIO_PIN_23 GpioAction::ASSIGNED_TO_ADDON
 #define GPIO_PIN_00 GpioAction::ASSIGNED_TO_ADDON
 #define GPIO_PIN_01 GpioAction::ASSIGNED_TO_ADDON
+#define GPIO_PIN_24 GpioAction::ASSIGNED_TO_ADDON
 #define GPIO_PIN_28 GpioAction::ASSIGNED_TO_ADDON
 
 // Keyboard Mapping Configuration
@@ -69,6 +70,11 @@
 #define BOARD_USB_ENABLED 1 
 #define USB_PERIPHERAL_PIN_DPLUS 22
 #define USB_PERIPHERAL_PIN_ORDER 0
+
+// GP2040-WF: UART1 TX on unused GP24 -> nRF52840 RX (1 Mbps, 1000 Hz frames)
+#define WIRELESS_ENABLED 1
+#define WIRELESS_UART_TX_PIN 24
+#define WIRELESS_UART_ID 1
 
 #define DEFAULT_INPUT_MODE_R1 INPUT_MODE_XBONE      // 模式1: XBox
 #define DEFAULT_INPUT_MODE_L1 INPUT_MODE_PS5        // 模式2: PS5 (USB认证)

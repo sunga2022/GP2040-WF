@@ -2,9 +2,15 @@
 
 **sunga2022** 的无线格斗板固件（Wireless Firmware）。
 
-从 [sunga2022/GP2040-CE](https://github.com/sunga2022/GP2040-CE) 分出，目标是在现有有线 GP2040 能力之上做 **蓝牙 / 2.4G / 有线三模**。当前主路径仍是 RP2040 有线 1000 Hz，和上游 GP2040-CE 一样。
+从 [sunga2022/GP2040-CE](https://github.com/sunga2022/GP2040-CE) 分出。有线仍是 GP2040 USB 1 kHz；蓝牙 / 2.4G 走外挂 nRF52840。
 
 基于 [OpenStickCommunity/GP2040-CE](https://github.com/OpenStickCommunity/GP2040-CE)（MIT）。
+
+## 结论先看
+
+- **三模：可以做，但不是改 RP2040 就能加射频。** 本仓库已接上 UART 插件 + nRF 手柄/接收器固件。
+- **8 kHz：RP2040 做不到。** USB Full Speed 最快 1000 Hz。要 8k 必须换 USB High Speed 芯片，那是另一套固件。
+- 板卡和接线见 [docs/TRIMODE.md](docs/TRIMODE.md)。
 
 ## 现在能做什么
 
@@ -12,17 +18,9 @@
 - 自定义板：G2、G4F、G5F、RUYI、doio、Pico16、hnu、d26 等
 - PS5 / Xbox USB 认证（板载 PIO-USB 从口）
 - 内置 Web 配置器
+- G2：GP24 以 1000 Hz 把按键帧发给 nRF52840（1 Mbps UART）
 
-## 还做不到的
-
-RP2040 没有射频，USB 也只有 Full Speed：
-
-- 不能靠改 `bInterval` 变成 8 kHz
-- 不能在这颗芯片里直接加蓝牙或 2.4G
-
-三模计划是 **双 MCU**：RP2040 继续跑本固件做有线和主机认证，nRF52840 负责 BLE / 2.4G。那部分还没合进主循环。
-
-## 编译
+## 编译 RP2040
 
 需要 [Pico SDK 2.1.1](https://github.com/raspberrypi/pico-sdk)、CMake、arm-none-eabi-gcc。
 
@@ -37,7 +35,7 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ```
 
-生成的 UF2 在 `build/`，文件名形如 `GP2040-WF_<version>_G2.uf2`。
+UF2 在 `build/`，文件名形如 `GP2040-WF_<version>_G2.uf2`。
 
 `GP2040_BOARDCONFIG` 可选：`14PNEW` `17P` `17PNT` `G2` `G2G` `G4F` `G5F` `QF` `QFG` `RUYI` `Pico16` `Pico16N` `Pico19` `HaM` `hnu` `d26` `doio`。
 
