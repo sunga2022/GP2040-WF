@@ -3,11 +3,11 @@
 #include "wf_pins.h"
 
 /*
- * UART1 @ 1 Mbps on Arduino D0/D1 → external BLE module.
+ * UART1 @ 1 Mbps on Arduino D0/D1 → stick-side BLE + 2.4G module.
  *
  *   M487 D1 PB.3 UART1_TXD  ->  module RX
  *   M487 D0 PB.2 UART1_RXD  <-  module TX (unused for now)
- *   M487 NU7.7 PA.11        ->  module USB_ACTIVE (high = wired USB, BLE mute)
+ *   M487 NU7.7 PA.11        ->  module USB_ACTIVE (high = wired USB, mute BLE and 2.4G)
  *   3V3 / GND
  *
  * BLE cannot do 8 kHz. This UART is paced at 1 kHz.
@@ -73,7 +73,7 @@ void BtUart_Poll(const WfPadState *state)
     frame.ly = 0x7FFFu;
     frame.rx = 0x7FFFu;
     frame.ry = 0x7FFFu;
-    frame.flags = g_hsusbd_Configured ? WF_LINK_AUTO : WF_LINK_BLE;
+    frame.flags = WF_LINK_AUTO;
     wf_frame_seal(&frame);
     uart1_write((const uint8_t *)&frame, WF_FRAME_SIZE);
 }

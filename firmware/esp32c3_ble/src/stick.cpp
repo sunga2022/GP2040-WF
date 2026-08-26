@@ -1,24 +1,22 @@
 #include <Arduino.h>
+#include <WiFi.h>
+#include <esp_now.h>
+#include <esp_wifi.h>
 #include <NimBLEDevice.h>
 #include <NimBLEHIDDevice.h>
 #include <NimBLEServer.h>
 #include "protocol.h"
 #include "uart_rx.h"
+#include "hid_pack.h"
 
 /*
- * External BLE module for GP2040-WF.
+ * Stick-side module: UART from M487 → BLE HID + ESP-NOW 2.4G.
+ * Not 802.11 home Wi-Fi. ESP-NOW is the 2.4G dongle link.
  *
- * M487 is the gamepad brain (USB HS 8 kHz on CON1). This chip only does BLE HID.
- *
- * Wiring (ESP32-C3 SuperMini / C3-12F / DevKitM-1):
- *
- *   M487 D1  PB.3 UART1_TXD  ->  GPIO4  (this RX)
- *   M487 D0  PB.2 UART1_RXD  <-  GPIO5  (this TX, optional)
- *   M487 PA.11 USB_ACTIVE    ->  GPIO2  (high = CON1 enumerated, mute BLE)
- *   3V3                      ->  3V3
- *   GND                      ->  GND
- *
- * BLE HID is ~7.5 ms (≈133 Hz). It is not 8 kHz.
+ *   M487 D1  PB.3 UART1_TXD  ->  GPIO4  RX
+ *   M487 D0  PB.2 UART1_RXD  <-  GPIO5  TX (optional)
+ *   M487 PA.11 USB_ACTIVE    ->  GPIO2  high = CON1 enumerated, mute wireless
+ *   3V3 / GND
  */
 
 #define PIN_RX          4
@@ -30,8 +28,8 @@ static WfUartRx rx;
 static NimBLEHIDDevice *hid;
 static NimBLECharacteristic *input;
 static volatile bool ble_connected;
+static const uint8_t kBroadcast[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
-/* Same 8-byte gamepad as M487, plus Report ID 1 for BLE HID. */
 static const uint8_t kReportMap[] = {
     0x05, 0x01,
     0x09, 0x05,
@@ -75,75 +73,61 @@ class HidCallbacks : public NimBLEServerCallbacks {
     void onConnect(NimBLEServer *server, ble_gap_conn_desc *desc) override
     {
         ble_connected = true;
-        /* 6 * 1.25 ms = 7.5 ms, the BLE HID floor. */
         server->updateConnParams(desc->conn_handle, 6, 6, 0, 100);
     }
 
     void onDisconnect(NimBLEServer *server) override
     {
+        (void)server;
         ble_connected = false;
         NimBLEDevice::startAdvertising();
     }
 };
 
-static uint8_t hat_from_dpad(uint8_t dpad)
+static int wireless_muted(void)
 {
-    const int u = (dpad & 0x01) != 0;
-    const int d = (dpad & 0x02) != 0;
-    const int l = (dpad & 0x04) != 0;
-    const int r = (dpad & 0x08) != 0;
-    if (u && r) {
-        return 1;
-    }
-    if (r && d) {
-        return 3;
-    }
-    if (d && l) {
-        return 5;
-    }
-    if (l && u) {
-        return 7;
-    }
-    if (u) {
-        return 0;
-    }
-    if (r) {
-        return 2;
-    }
-    if (d) {
-        return 4;
-    }
-    if (l) {
-        return 6;
-    }
-    return 8;
-}
-
-static void pack_hid(const WfFrame *frame, uint8_t report[8])
-{
-    report[0] = (uint8_t)(frame->buttons & 0xFFu);
-    report[1] = (uint8_t)((frame->buttons >> 8) & 0xFFu);
-    report[2] = hat_from_dpad(frame->dpad) & 0x0Fu;
-    report[3] = 0x80;
-    report[4] = 0x80;
-    report[5] = 0x80;
-    report[6] = 0x80;
-    report[7] = 0;
+    return digitalRead(PIN_USB_ACTIVE) == HIGH;
 }
 
 static void send_ble(const WfFrame *frame)
 {
     uint8_t report[8];
 
-    if (digitalRead(PIN_USB_ACTIVE) == HIGH) {
+    if (wireless_muted() || !ble_connected || input == nullptr) {
         return;
     }
-    if (!ble_connected || input == nullptr) {
-        return;
-    }
-    pack_hid(frame, report);
+    wf_pack_hid8(frame, report);
     input->setValue(report, sizeof(report));
     input->notify();
+}
+
+static void send_24g(const WfFrame *frame)
+{
+    WfFrame out;
+
+    if (wireless_muted()) {
+        return;
+    }
+    out = *frame;
+    out.flags = WF_LINK_24G;
+    wf_frame_seal(&out);
+    esp_now_send(kBroadcast, (uint8_t *)&out, sizeof(out));
+}
+
+static void radio_init(void)
+{
+    WiFi.mode(WIFI_STA);
+    WiFi.disconnect();
+    esp_wifi_set_ps(WIFI_PS_NONE);
+    esp_wifi_set_channel(WF_ESPNOW_CHANNEL, WIFI_SECOND_CHAN_NONE);
+    if (esp_now_init() != ESP_OK) {
+        return;
+    }
+    esp_now_peer_info_t peer = {};
+    memcpy(peer.peer_addr, kBroadcast, 6);
+    peer.channel = WF_ESPNOW_CHANNEL;
+    peer.encrypt = false;
+    esp_now_add_peer(&peer);
 }
 
 void setup()
@@ -154,6 +138,8 @@ void setup()
 
     Serial1.begin(WF_UART_BAUD, SERIAL_8N1, PIN_RX, PIN_TX);
     wf_uart_rx_reset(&rx);
+
+    radio_init();
 
     NimBLEDevice::init("GP2040-WF");
     NimBLEDevice::setPower(ESP_PWR_LVL_P9);
@@ -187,6 +173,7 @@ void loop()
             continue;
         }
         digitalWrite(PIN_LED, frame.buttons || frame.dpad);
+        send_24g(&frame);
         send_ble(&frame);
     }
 }

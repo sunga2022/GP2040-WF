@@ -13,7 +13,8 @@ extern "C" {
 #define WF_MAGIC1           0x46u /* 'F' */
 #define WF_FRAME_SIZE       20u
 #define WF_UART_BAUD        1000000u
-#define WF_RADIO_CHANNEL    80u   /* 2480 MHz, away from busy Wi-Fi */
+#define WF_RADIO_CHANNEL    80u   /* nRF proprietary: 2480 MHz */
+#define WF_ESPNOW_CHANNEL   13u   /* ESP-NOW 2.4G dongle, Wi-Fi ch 13, not AP */
 #define WF_PIPE_ADDR        { 0xE7u, 0xE7u, 0xE7u, 0xE7u, 0x57u }
 
 #define WF_LINK_AUTO        0u

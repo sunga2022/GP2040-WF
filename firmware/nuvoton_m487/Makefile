@@ -57,6 +57,8 @@ test: | $(BUILD)
 	python3 $(ROOT)/../../wireless/host_test/test_protocol.py
 	$(CC_HOST) -I$(ROOT)/../../wireless -o $(BUILD)/test_uart_rx $(ROOT)/../../wireless/host_test/test_uart_rx.c
 	$(BUILD)/test_uart_rx
+	$(CC_HOST) -I$(ROOT)/../../wireless -o $(BUILD)/test_hid_pack $(ROOT)/../../wireless/host_test/test_hid_pack.c
+	$(BUILD)/test_hid_pack
 
 $(BUILD):
 	mkdir -p $(BUILD)
