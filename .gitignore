@@ -22,3 +22,7 @@ www/src_gen/enums.ts
 /lib/NeoPico/src/generated/ws2812.pio.h
 /agent-tools
 *.tsbuildinfo
+wireless/host_test/test_uart_rx
+wireless/host_test/test_hid_pack
+wireless/host_test/test_nrf24_stub
+wireless/host_test/test_jieli

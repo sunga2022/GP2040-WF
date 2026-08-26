@@ -1,12 +1,12 @@
-# 固件目录
+# 手柄主板 + 2.4G 接收器固件
 
-**先看 [docs/CHIP_LOCK.md](../docs/CHIP_LOCK.md)。**
+手柄主板 **不要** 在这个目录里自己写游戏垫协议。主板就是仓库根目录的 **GP2040-CE**（RP2040）。
 
-| 路径 | 锁定？ |
-|---|---|
-| [nuvoton_m487](nuvoton_m487) | 是。有线 8 kHz。UART→杰里，SPI→Si24R1 |
-| [../wireless/nrf52840](../wireless/nrf52840) | **否。** 已改 AC632N |
-| 杰里 / 接收器 | 尚未建。官方 AC63 HID + CH32V305 |
-| [esp32c3_ble](esp32c3_ble) | 否 |
-| [nuvoton_m032bt](nuvoton_m032bt) | 否 |
-| [ch585](ch585) | 否 |
+这个目录只放两块 **外挂**：
+
+| 目录 | 芯片 | 干什么 |
+|------|------|--------|
+| [`jieli_ac632n/`](jieli_ac632n/) | 杰里 **AC632N** | 手柄上的蓝牙模组：UART 收 `WfFrame`，转 BLE / EDR HID |
+| [`receiver_pico/`](receiver_pico/) | **RP2040 Pico** + Si24R1 | **2.4G 接收器**：空中收包 → USB HID |
+
+`nuvoton_*` / `ch585` / `esp32*` / `teensy41` 是旧实验，不要当产品路径。

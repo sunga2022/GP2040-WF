@@ -18,6 +18,22 @@
 #define WIRELESS_UART_ID 1
 #endif
 
+#ifndef WIRELESS_NRF24_CE_PIN
+#define WIRELESS_NRF24_CE_PIN -1
+#endif
+#ifndef WIRELESS_NRF24_CSN_PIN
+#define WIRELESS_NRF24_CSN_PIN -1
+#endif
+#ifndef WIRELESS_NRF24_SCK_PIN
+#define WIRELESS_NRF24_SCK_PIN -1
+#endif
+#ifndef WIRELESS_NRF24_MOSI_PIN
+#define WIRELESS_NRF24_MOSI_PIN -1
+#endif
+#ifndef WIRELESS_NRF24_MISO_PIN
+#define WIRELESS_NRF24_MISO_PIN -1
+#endif
+
 #define WirelessName "WirelessLink"
 
 class WirelessAddon : public GPAddon {
@@ -31,9 +47,13 @@ public:
     virtual std::string name() { return WirelessName; }
 
 private:
+    bool uartReady() const;
+    bool nrfPinsReady() const;
+
     uart_inst_t *uart = nullptr;
     uint8_t seq = 0;
     uint64_t nextSendUs = 0;
+    bool nrf24Ready = false;
 };
 
 #endif

@@ -40,6 +40,11 @@
 #define GPIO_PIN_03 GpioAction::ASSIGNED_TO_ADDON
 #define GPIO_PIN_04 GpioAction::ASSIGNED_TO_ADDON
 #define GPIO_PIN_28 GpioAction::ASSIGNED_TO_ADDON
+#define GPIO_PIN_00 GpioAction::ASSIGNED_TO_ADDON
+#define GPIO_PIN_01 GpioAction::ASSIGNED_TO_ADDON
+#define GPIO_PIN_21 GpioAction::ASSIGNED_TO_ADDON
+#define GPIO_PIN_25 GpioAction::ASSIGNED_TO_ADDON
+#define GPIO_PIN_29 GpioAction::ASSIGNED_TO_ADDON
 
 // Keyboard Mapping Configuration
 //                                            // GP2040 | Xinput | Switch  | PS3/4/5  | Dinput | Arcade |
@@ -69,6 +74,16 @@
 #define BOARD_USB_ENABLED 1 
 #define USB_PERIPHERAL_PIN_DPLUS 4
 #define USB_PERIPHERAL_PIN_ORDER 1
+
+/* Trimode: UART0 TX -> Jerry AC632N RX. Si24R1/nRF24 TX (no MISO needed). */
+#define WIRELESS_ENABLED 1
+#define WIRELESS_UART_TX_PIN 0
+#define WIRELESS_UART_ID 0
+#define WIRELESS_NRF24_CE_PIN 1
+#define WIRELESS_NRF24_CSN_PIN 21
+#define WIRELESS_NRF24_SCK_PIN 25
+#define WIRELESS_NRF24_MOSI_PIN 29
+#define WIRELESS_NRF24_MISO_PIN -1
 
 #define DEFAULT_INPUT_MODE_R1 INPUT_MODE_XBONE      // 模式1: XBox
 #define DEFAULT_INPUT_MODE_L1 INPUT_MODE_PS5        // 模式2: PS5 (USB认证)
@@ -114,9 +129,7 @@
 #define BUTTON_LAYOUT BUTTON_LAYOUT_STICKLESS        // 左边4个按钮
 #define BUTTON_LAYOUT_RIGHT BUTTON_LAYOUT_STICKLESSB // 右边8个按钮
 
-// Additional Button Support
-#define GPIO_PIN_29 GpioAction::BUTTON_PRESS_UP
-#define GPIO_PIN_21 GpioAction::BUTTON_PRESS_L3
+// GP21 / GP29 were extra UP/L3 copies; they are now Si24R1 MOSI/CSN.
 
 
  #define BOARD_LED_ENABLED 1
