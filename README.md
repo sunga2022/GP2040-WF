@@ -4,44 +4,31 @@ GP2040-CE **原样**跑在 RP2040 上：按键、SOCD、热键、网页配置、
 
 | 模式 | 谁干活 |
 |------|--------|
-| **有线** | 手柄 USB。就是原来的 GP2040-CE |
-| **蓝牙** | UART 把按键帧送给杰里 **AC632N**（BLE + 经典 EDR HID） |
-| **2.4G** | 同一帧用 Si24R1 / nRF24 发出去；**另一块 Pico** 当接收器，插电脑 USB |
+| **有线 Xbox / PS** | 手柄 USB。认证走 GP2040-CE 原来的 **USB 引导认证**（PS4/PS5/Xbox 插官方/兼容 dongle） |
+| **有线 Switch** | 手柄 USB。CE 的 Switch / Switch Pro 描述符 |
+| **蓝牙 Switch** | UART → 杰里 **AC632N**，按 CE 的 Switch Pro 协议走 **经典蓝牙 HID**（无加密芯片） |
+| **2.4G Switch** | Si24R1 → 第二块 Pico 接收器，USB 枚举成 **Switch Pro**（VID `057E` PID `2009`） |
 
-插着手柄 USB 时无线静音，避免和有线抢同一台电脑。
+插着手柄 USB 时无线静音。Xbox / PS **不要**走蓝牙或 2.4G，插手柄 USB。
 
 ```
-按键 ──► RP2040 GP2040-CE ── USB ──► 电脑 / 主机
-                 ├── UART 1 Mbps ──► AC632N ── BLE / EDR ──► 手机 / 电脑
-                 └── Si24R1/nRF24 ──► 空中 ──► Pico 接收器 USB ──► 电脑
+按键 ──► RP2040 GP2040-CE ── USB ──► 电脑 / 主机（含 Xbox/PS 引导认证）
+                 ├── UART ──► AC632N ── Switch Pro EDR ──► Switch
+                 └── Si24R1 ──► Pico 接收器 USB Switch Pro ──► Switch / Steam
 ```
 
-Xbox / PS / Switch **主机蓝牙伪装不在范围内**。主机有线模式仍走 GP2040-CE USB。
-
-## 买什么、接哪根线
-
-完整脚位见 [`docs/CHIP_LOCK.md`](docs/CHIP_LOCK.md)。
-
-- 手柄主板：现有 GP2040 板。**Pico16** 开了 UART + 2.4G；**G2** 只开了 UART（蓝牙 + 有线）
-- 蓝牙模组：杰里 **AC632N**
-- 2.4G：两颗 Si24R1 或 nRF24L01+；接收器再一块 **树莓派 Pico**
+开机按键选模式跟 CE 一样：L2 = Switch Pro 时，无线帧带 `WF_MODE_SWITCH`，杰里才发 0x30 报告。
 
 ## 编译
 
 ```bash
-# 手柄（Pico16 = 完整三模）
 export PICO_SDK_PATH=/path/to/pico-sdk
 GP2040_BOARDCONFIG=Pico16 cmake -B build && cmake --build build
-
-# 2.4G 接收器
-cmake -S firmware/receiver_pico -B firmware/receiver_pico/build
-cmake --build firmware/receiver_pico/build
-
-# 协议 / 胶水（不需要 Pico SDK）
+cmake -S firmware/receiver_pico -B firmware/receiver_pico/build && cmake --build firmware/receiver_pico/build
 make -C wireless/host_test
 ```
 
-杰里侧：官方 HID 工程 + [`firmware/jieli_ac632n/`](firmware/jieli_ac632n/)。
+脚位见 [`docs/CHIP_LOCK.md`](docs/CHIP_LOCK.md)。
 
 ## 授权
 

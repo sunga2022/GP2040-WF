@@ -10,6 +10,7 @@ add_executable(gp2040wf_receiver
   main.c
   usb_descriptors.c
   ${CMAKE_CURRENT_LIST_DIR}/../../wireless/nrf24.c
+  ${CMAKE_CURRENT_LIST_DIR}/../../wireless/switch_pro.c
 )
 
 target_include_directories(gp2040wf_receiver PRIVATE

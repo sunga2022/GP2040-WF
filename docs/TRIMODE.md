@@ -1,7 +1,6 @@
 # 三模
 
-GP2040-CE 在 RP2040 上原样运行。蓝牙用杰里 AC632N，2.4G 用第二块 Pico 做接收器。
+- **Switch**：无加密。蓝牙（杰里）和 2.4G 接收器都走 GP2040-CE 的 Switch Pro 协议。
+- **Xbox / PS**：只走手柄 USB，认证仍是 CE 的 USB 引导认证。
 
-有线 = 手柄 USB。插着 USB 时不发无线。
-
-脚位、频道、编译命令见 [CHIP_LOCK.md](CHIP_LOCK.md)。
+脚位见 [CHIP_LOCK.md](CHIP_LOCK.md)。

@@ -1,8 +1,8 @@
-# 2.4G 接收器（第二块 Pico）
+# 2.4G 接收器（Switch Pro USB）
 
-主板 GP2040-CE 用 Si24R1 / nRF24 发 20 字节 `WfFrame`。这块板只收射频、枚举成 USB 手柄（VID `1d50` PID `57f6`）。
+主板发 `WfFrame`。这块 Pico 收射频，USB 枚举成和 GP2040-CE 一样的 **Switch Pro**（VID `057E` PID `2009`），处理 USB 0x80 握手和 0x01 子命令。无加密。
 
-接线（和 Pico16 主板发射脚对齐，接收器多一根 MISO）：
+插 Switch 底座或 PC（Steam）。Xbox / PS 请插手柄 USB，不要插这块板。
 
 | nRF24 / Si24R1 | Pico |
 |----------------|------|
@@ -17,7 +17,4 @@
 export PICO_SDK_PATH=/path/to/pico-sdk
 cmake -S firmware/receiver_pico -B firmware/receiver_pico/build
 cmake --build firmware/receiver_pico/build
-# 刷 gp2040wf_receiver.uf2
 ```
-
-插电脑 USB。主板拔掉 USB 后才发 2.4G（插着有线时无线静音）。空中 50 ms 没包就松开按键。

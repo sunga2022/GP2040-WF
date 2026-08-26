@@ -20,6 +20,29 @@ extern "C" {
 #define WF_LINK_AUTO        0u
 #define WF_LINK_24G         1u
 #define WF_LINK_BLE         2u
+#define WF_LINK_MASK        0x0Fu
+
+#define WF_MODE_SHIFT       4u
+#define WF_MODE_MASK        0xF0u
+#define WF_MODE_PC          0u /* generic HID, PC Bluetooth */
+#define WF_MODE_SWITCH      1u /* Switch Pro, no crypto */
+#define WF_MODE_PS          2u /* wired USB auth only */
+#define WF_MODE_XBOX        3u /* wired USB auth only */
+
+static inline uint8_t wf_flags_pack(uint8_t link, uint8_t mode)
+{
+    return (uint8_t)((link & WF_LINK_MASK) | ((mode << WF_MODE_SHIFT) & WF_MODE_MASK));
+}
+
+static inline uint8_t wf_flags_link(uint8_t flags)
+{
+    return (uint8_t)(flags & WF_LINK_MASK);
+}
+
+static inline uint8_t wf_flags_mode(uint8_t flags)
+{
+    return (uint8_t)((flags & WF_MODE_MASK) >> WF_MODE_SHIFT);
+}
 
 typedef struct __attribute__((packed)) {
     uint8_t  magic0;

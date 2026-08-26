@@ -4,7 +4,29 @@
 #include "helper.h"
 #include "hardware/gpio.h"
 #include "tusb.h"
+#include "enums.pb.h"
 #include <string.h>
+
+static uint8_t wf_mode_from_ce(InputMode mode)
+{
+    switch (mode) {
+        case INPUT_MODE_SWITCH:
+        case INPUT_MODE_SWITCH_PRO:
+            return WF_MODE_SWITCH;
+        case INPUT_MODE_PS3:
+        case INPUT_MODE_PS4:
+        case INPUT_MODE_PS5:
+        case INPUT_MODE_PSCLASSIC:
+        case INPUT_MODE_P5GENERAL:
+            return WF_MODE_PS;
+        case INPUT_MODE_XINPUT:
+        case INPUT_MODE_XBONE:
+        case INPUT_MODE_XBOXORIGINAL:
+            return WF_MODE_XBOX;
+        default:
+            return WF_MODE_PC;
+    }
+}
 
 bool WirelessAddon::available() {
     if (!WIRELESS_ENABLED) {
@@ -79,7 +101,7 @@ void WirelessAddon::process() {
     frame.ry = gamepad->state.ry;
     frame.lt = gamepad->state.lt;
     frame.rt = gamepad->state.rt;
-    frame.flags = WF_LINK_AUTO;
+    frame.flags = wf_flags_pack(WF_LINK_AUTO, wf_mode_from_ce(gamepad->getOptions().inputMode));
     wf_frame_seal(&frame);
 
     if (uart != nullptr) {
