@@ -1,6 +1,6 @@
 # 已废弃：ESP32-C3 / S3
 
-**不要用这套做新板。** 锁定方案是 M487 + 两颗 nRF52840，见 [docs/CHIP_LOCK.md](../../docs/CHIP_LOCK.md)。
+**不要用这套做新板。** 锁定方案是 M487 + 手柄 nRF52840 + **nRF52820 U 盘接收器**，见 [docs/CHIP_LOCK.md](../../docs/CHIP_LOCK.md)。
 
 下面只是选型过程留下的 ESP-NOW 路径（Wi‑Fi PHY），和「只要 2.4G 接收器、不要家用 Wi‑Fi」不一致。
 
