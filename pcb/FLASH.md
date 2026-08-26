@@ -37,7 +37,10 @@ Xbox / PS 把官方或兼容认证狗插在板上 **USB-C AUTH** 口。
 
 **要装固件。** UF2 烧不进去。模块出厂程序不会冒充 Switch Pro，也听不懂 GP0 上的 UART。
 
-在 Windows 用官方 `fw-AC63_BT_SDK` 编 HID 工程，再用杰理下载器（`isd_download`）烧 `.bin`。贴源码和勾选项见 [`firmware/jieli_ac632n/README.md`](../firmware/jieli_ac632n/README.md)。
+现成文件：`firmware-bin/GP2040-WF_AC632N.ufw`（杰理烧录助手）和 `GP2040-WF_AC632N_app.bin`。  
+GitHub Actions 工作流 `Jieli AC632N HID` 用官方 Linux 工具链 + `make ac632n_hid` 编出来。
+
+Pico **GP0** → 杰里 UART RX（默认芯片脚 PA5），1 Mbps。
 
 只用有线或 2.4G 接收器时，可以不焊、不烧 AC632N。
 

@@ -29,7 +29,7 @@ GP2040-CE **原样**跑在 RP2040 上：按键、SOCD、热键、网页配置、
 
 详细步骤、开机组合键见 [`firmware-bin/README.md`](firmware-bin/README.md) 和 [`pcb/FLASH.md`](pcb/FLASH.md)。
 
-**杰里 AC632N 必须另烧固件**（UF2 进不去那颗芯片）。Windows 上用官方 SDK 编，步骤见 [`firmware/jieli_ac632n/README.md`](firmware/jieli_ac632n/README.md)。只用有线 / 2.4G 可以不焊它。
+**杰里 AC632N 必须另烧固件**（UF2 进不去那颗芯片）。现成 `firmware-bin/GP2040-WF_AC632N.ufw`，GitHub Actions 工作流 `Jieli AC632N HID` 也会编。步骤见 [`firmware/jieli_ac632n/README.md`](firmware/jieli_ac632n/README.md)。只用有线 / 2.4G 可以不焊它。
 
 开机：**R1 Xbox · L1 PS5 · B4 PS4 · L2 Switch Pro**。Xbox/PS 走手柄 USB + 认证口；无线只在 Switch Pro 模式发。
 

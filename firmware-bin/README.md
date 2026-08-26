@@ -37,16 +37,24 @@ Xbox / PS 把官方或兼容认证狗插在板上 **USB-C AUTH** 口。
 
 不要把接收器插 Xbox / PS 主机。
 
-## 杰里 AC632N（Switch 蓝牙）——必须另烧，UF2 进不去
+## 杰里 AC632N（Switch 蓝牙）——必须另烧
 
 AC632N 是独立蓝牙 MCU。**不烧它，Switch 蓝牙不能用。**  
-`GP2040-WF_Pico16.uf2` 只进 RP2040。杰里要用官方 SDK 在 Windows 上编出 `.bin`，再用杰理下载器烧。
+`GP2040-WF_Pico16.uf2` 只进 RP2040。
 
-步骤见仓库 [`firmware/jieli_ac632n/README.md`](../firmware/jieli_ac632n/README.md)。
+现成烧录文件（GitHub Actions / 本地用官方 Linux 工具链编出来的）：
 
-- 蓝牙名 `Pro Controller`，VID `057E` PID `2009`
-- Pico **GP0** → 杰里 UART RX，1 Mbps 8N1
-- 只用有线 / 2.4G 可以不焊这颗芯片
+| 文件 | 给谁用 |
+|------|--------|
+| `GP2040-WF_AC632N.ufw` | 杰理烧录助手 / 强制升级 |
+| `GP2040-WF_AC632N_app.bin` | 下载器里选 APP |
+| `GP2040-WF_AC632N_jl_isd.bin` | 整片镜像（offset 0） |
+
+模块 UART **RX** 接 Pico **GP0**（1 Mbps）。杰里这边默认 RX = **PA5**（`sdk_glue.c` 里 `WF_JL_UART_RX_PIN`）。蓝牙名 `Pro Controller`。
+
+自己编：`.github/workflows/jieli-ac632n.yml`，或 `firmware/jieli_ac632n/patch_sdk.sh` + `make ac632n_hid`。
+
+只用有线 / 2.4G 可以不焊这颗芯片。
 
 ## 手柄 Si24R1 脚位（Pico16）
 

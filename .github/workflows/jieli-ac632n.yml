@@ -1,0 +1,62 @@
+name: Jieli AC632N HID
+
+on:
+  push:
+    paths:
+      - "firmware/jieli_ac632n/**"
+      - "wireless/**"
+      - ".github/workflows/jieli-ac632n.yml"
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install host packages
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq xvfb libegl1 libgles2 libgl1
+
+      - name: Install Jieli Linux toolchain
+        run: |
+          curl -L --retry 3 -o /tmp/jl-tc.tar.xz https://pkgman.jieliapp.com/s/linux-toolchain
+          curl -L --retry 3 -o /tmp/jl-pb.tar.xz https://pkgman.jieliapp.com/s/linux-postbuild
+          sudo mkdir -p /opt/jieli /opt/jieli/postbuild /tmp/jl-tc /tmp/jl-pb
+          sudo tar -xJf /tmp/jl-tc.tar.xz -C /tmp/jl-tc
+          sudo tar -xJf /tmp/jl-pb.tar.xz -C /tmp/jl-pb
+          sudo cp -a /tmp/jl-tc/jieli-linux-toolchains-*/. /opt/jieli/
+          sudo cp -a /tmp/jl-pb/jieli-linux-post-build-tools-*/. /opt/jieli/postbuild/
+          test -x /opt/jieli/common/bin/clang
+          test -x /opt/jieli/q32s/bin/clang
+
+      - name: Clone fw-AC63_BT_SDK
+        run: git clone --depth 1 https://github.com/Jieli-Tech/fw-AC63_BT_SDK.git "$HOME/fw-AC63_BT_SDK"
+
+      - name: Patch HID project
+        run: |
+          chmod +x firmware/jieli_ac632n/patch_sdk.sh firmware/jieli_ac632n/pack_bin.sh
+          firmware/jieli_ac632n/patch_sdk.sh "$HOME/fw-AC63_BT_SDK"
+
+      - name: Build ac632n_hid
+        run: |
+          ulimit -n 8192
+          export PATH="/opt/jieli/q32s/bin:/opt/jieli/common/bin:/opt/jieli/postbuild:$PATH"
+          make -C "$HOME/fw-AC63_BT_SDK" ac632n_hid -j"$(nproc)" || true
+          test -f "$HOME/fw-AC63_BT_SDK/cpu/bd19/tools/sdk.elf"
+
+      - name: Pack app.bin and ufw
+        run: firmware/jieli_ac632n/pack_bin.sh "$HOME/fw-AC63_BT_SDK/cpu/bd19/tools"
+
+      - name: Collect artifacts
+        run: |
+          mkdir -p dist
+          cp -f "$HOME/fw-AC63_BT_SDK/cpu/bd19/tools/app.bin" dist/GP2040-WF_AC632N_app.bin
+          cp -f "$HOME/fw-AC63_BT_SDK/cpu/bd19/tools/jl_isd.bin" dist/GP2040-WF_AC632N_jl_isd.bin
+          cp -f "$HOME/fw-AC63_BT_SDK/cpu/bd19/tools/jl_isd.ufw" dist/GP2040-WF_AC632N.ufw
+          ls -lh dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: GP2040-WF-AC632N
+          path: dist/
