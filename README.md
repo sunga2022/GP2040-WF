@@ -1,29 +1,46 @@
-# GP2040-CE 三模 / 8k 可行性评估
+# GP2040-WF
 
-对着 [sunga2022/GP2040-CE](https://github.com/sunga2022/GP2040-CE) 源码做的技术结论页，回答三件事：
+**sunga2022** 的无线格斗板固件（Wireless Firmware）。
 
-1. **现有固件能不能改成蓝牙 + 2.4G + 有线三模？** 不能在 RP2040 上直接加。仓库没有射频栈，芯片也没有射频。务实做法是外挂 nRF52840，有线继续跑 GP2040-CE。
-2. **1 kHz 能不能改成 8 kHz？** 不能。USB 描述符里 `bInterval` 已经是 1；RP2040 只有 USB Full Speed，1 ms 一帧就是 1000 Hz 上限。8 kHz 需要 USB High Speed MCU，并重写 USB 栈。
-3. **该买哪些开发板？** 按目标选：继续有线用现有 RP2040 板；三模 1k 用 XIAO nRF52840；有线 8k 用 Teensy 4.1 / STM32H743 / CH32V307。
+从 [sunga2022/GP2040-CE](https://github.com/sunga2022/GP2040-CE) 分出，目标是在现有有线 GP2040 能力之上做 **蓝牙 / 2.4G / 有线三模**。当前主路径仍是 RP2040 有线 1000 Hz，和上游 GP2040-CE 一样。
 
-这不是 GP2040-CE 固件本身，也不会去改你那个仓库。
+基于 [OpenStickCommunity/GP2040-CE](https://github.com/OpenStickCommunity/GP2040-CE)（MIT）。
 
-## 本地运行
+## 现在能做什么
 
-需要 Node.js 18+。
+- PC / PS3 / PS4 / PS5 / Switch / Xbox One 等有线模式
+- 自定义板：G2、G4F、G5F、RUYI、doio、Pico16、hnu、d26 等
+- PS5 / Xbox USB 认证（板载 PIO-USB 从口）
+- 内置 Web 配置器
+
+## 还做不到的
+
+RP2040 没有射频，USB 也只有 Full Speed：
+
+- 不能靠改 `bInterval` 变成 8 kHz
+- 不能在这颗芯片里直接加蓝牙或 2.4G
+
+三模计划是 **双 MCU**：RP2040 继续跑本固件做有线和主机认证，nRF52840 负责 BLE / 2.4G。那部分还没合进主循环。
+
+## 编译
+
+需要 [Pico SDK 2.1.1](https://github.com/raspberrypi/pico-sdk)、CMake、arm-none-eabi-gcc。
 
 ```bash
-npm install
-npm run dev
+git clone --recurse-submodules https://github.com/sunga2022/GP2040-WF.git
+cd GP2040-WF
+git submodule update --init --recursive
+
+export PICO_SDK_PATH=/path/to/pico-sdk
+export GP2040_BOARDCONFIG=G2
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build
 ```
 
-浏览器打开 [http://127.0.0.1:43211](http://127.0.0.1:43211)。
+生成的 UF2 在 `build/`，文件名形如 `GP2040-WF_<version>_G2.uf2`。
 
-```bash
-npm run build
-npm start
-```
+`GP2040_BOARDCONFIG` 可选：`14PNEW` `17P` `17PNT` `G2` `G2G` `G4F` `G5F` `QF` `QFG` `RUYI` `Pico16` `Pico16N` `Pico19` `HaM` `hnu` `d26` `doio`。
 
-## 和固件仓库的关系
+## 授权
 
-固件仍在 `https://github.com/sunga2022/GP2040-CE`。本仓库只放评估页，方便对照 USB 物理限制、架构方案和开发板。
+MIT。版权归 OpenStickCommunity、Jason Skuby 与 sunga2022。

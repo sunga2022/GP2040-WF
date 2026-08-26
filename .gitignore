@@ -1,45 +1,24 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
+.pio
+.vscode/
+.cache/
+node_modules/
+configs/MyBoard
 .DS_Store
-*.pem
+build/
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
+.*.sw*
+compile_commands.json
+lib/httpd/fsdata.c
+modules/Custom.cmake
+.idea
+cmake-*
+env.ini
 
-# env files (can opt-in for committing if needed)
-.env*
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-# local agent scratch
+# Container
+.devcontainer
+*Dockerfile
+*docker-compose.yml
+www/src_gen/enums.ts
+/lib/NeoPico/src/generated/ws2812.pio.h
 /agent-tools
-/tmp-scaffold
+*.tsbuildinfo
