@@ -33,14 +33,13 @@ Xbox / PS 把官方或兼容认证狗插在板上 **USB-C AUTH** 口。
 3. 插 Switch 底座或 PC（Steam 认 Pro Controller）
 4. 手柄拔掉 USB 后才发 2.4G
 
-## 杰里 AC632N（Switch 蓝牙）
+## 杰里 AC632N（Switch 蓝牙）——必须另烧
 
-没有现成 UF2，用官方 `fw-AC63_BT_SDK` HID 工程：
+**要装固件。** UF2 烧不进去。模块出厂程序不会冒充 Switch Pro，也听不懂 GP0 上的 UART。
 
-- 加入 `firmware/jieli_ac632n/` 和 `wireless/switch_pro.c`
-- 蓝牙名 `Pro Controller`，VID `057E` PID `2009`
-- HID 描述符用 `wireless/switch_pro_desc.h`
-- Pico GP0 → 杰里 UART RX，1 Mbps
+在 Windows 用官方 `fw-AC63_BT_SDK` 编 HID 工程，再用杰理下载器（`isd_download`）烧 `.bin`。贴源码和勾选项见 [`firmware/jieli_ac632n/README.md`](../firmware/jieli_ac632n/README.md)。
+
+只用有线或 2.4G 接收器时，可以不焊、不烧 AC632N。
 
 ## 接线速查
 
