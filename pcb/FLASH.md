@@ -1,0 +1,49 @@
+# 烧录
+
+两块 RP2040 都是 **按住 BOOT，插 USB，拖 UF2**。
+
+## 手柄主板（Pico16 三模）
+
+文件：`firmware-bin/GP2040-WF_Pico16.uf2`
+
+1. 按住板上 BOOT
+2. 插 USB-C 设备口到电脑
+3. 出现 `RPI-RP2` 磁盘
+4. 把 `GP2040-WF_Pico16.uf2` 拖进去，绿灯闪完即可
+
+开机按键（按住再插 USB / 上电）：
+
+| 按键 | 模式 |
+|------|------|
+| R1 | Xbox（有线，USB 引导认证） |
+| L1 | PS5（有线，USB 引导认证） |
+| B4 | PS4（有线，USB 引导认证） |
+| L2 | Switch Pro（有线 USB + 蓝牙 + 2.4G） |
+
+Xbox / PS 把官方或兼容认证狗插在板上 **USB-C AUTH** 口。
+
+网页配置：https://192.168.7.1 （手柄插电脑时）
+
+## 2.4G 接收器
+
+文件：`firmware-bin/GP2040-WF_receiver.uf2`
+
+1. 按住 BOOT，插接收器 USB-C
+2. 拖入 UF2
+3. 插 Switch 底座或 PC（Steam 认 Pro Controller）
+4. 手柄拔掉 USB 后才发 2.4G
+
+## 杰里 AC632N（Switch 蓝牙）
+
+没有现成 UF2，用官方 `fw-AC63_BT_SDK` HID 工程：
+
+- 加入 `firmware/jieli_ac632n/` 和 `wireless/switch_pro.c`
+- 蓝牙名 `Pro Controller`，VID `057E` PID `2009`
+- HID 描述符用 `wireless/switch_pro_desc.h`
+- Pico GP0 → 杰里 UART RX，1 Mbps
+
+## 接线速查
+
+手柄 Si24R1：CE GP1，CSN GP21，SCK GP25，MOSI GP29  
+接收器多 MISO GP16  
+杰里：GP0 TX

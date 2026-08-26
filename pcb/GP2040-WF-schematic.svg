@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 780" width="1100" height="780">
+<rect width="1100" height="780" fill="#f7f4ea"/>
+<text x="32" y="40" font-size="22" font-family="DejaVu Sans" font-weight="700">GP2040-WF 原理图 · 三模手柄 + 2.4G 接收器</text>
+<text x="32" y="64" font-size="13" font-family="DejaVu Sans">RP2040 QFN-56 pin 号来自 Raspberry Pi 数据手册表 615–621。固件脚位 = configs/Pico16/BoardConfig.h</text>
+<rect x="30" y="90" width="280" height="200" rx="8" fill="#fff" stroke="#333"/>
+<text x="46" y="118" font-size="16" font-weight="700">U1 RP2040</text>
+<text x="46" y="142" font-size="12">USB_DP 47 · USB_DM 46 · 27Ω</text>
+<text x="46" y="160" font-size="12">XIN 20 / XOUT 21 · 12MHz</text>
+<text x="46" y="178" font-size="12">QSPI 51–56 · W25Q16</text>
+<text x="46" y="196" font-size="12">VREG_VIN 44 ← 3V3</text>
+<text x="46" y="214" font-size="12">VREG_VOUT 45 → DVDD 23/50</text>
+<text x="46" y="232" font-size="12">IOVDD 1/10/22/33/42/49 = 3V3</text>
+<text x="46" y="250" font-size="12">TESTEN 19 = GND · RUN 26</text>
+<text x="46" y="272" font-size="12">BOOT: QSPI_CSn 经 1k 拉到 BOOT 键</text>
+<rect x="340" y="90" width="240" height="200" rx="8" fill="#fff" stroke="#333"/>
+<text x="356" y="118" font-size="16" font-weight="700">按键 (对 GND)</text>
+<text x="356" y="142" font-size="12">GP20 UP  GP22 DOWN</text>
+<text x="356" y="160" font-size="12">GP23 LEFT  GP16 RIGHT</text>
+<text x="356" y="178" font-size="12">GP18 B1  GP13 B2  GP12 B3  GP9 B4</text>
+<text x="356" y="196" font-size="12">GP10 R1  GP11 L1  GP14 R2  GP15 L2</text>
+<text x="356" y="214" font-size="12">GP8 S1  GP17 S2  GP2 L3  GP19 R3</text>
+<text x="356" y="232" font-size="12">GP7 A1  GP6 A2  GP5 FN  GP24 TURBO</text>
+<text x="356" y="258" font-size="12">GP26/27 OLED  GP28 WS2812</text>
+<rect x="610" y="90" width="220" height="200" rx="8" fill="#fff" stroke="#333"/>
+<text x="626" y="118" font-size="16" font-weight="700">2.4G Si24R1</text>
+<text x="626" y="142" font-size="12">CE  GP1</text>
+<text x="626" y="160" font-size="12">CSN GP21</text>
+<text x="626" y="178" font-size="12">SCK GP25</text>
+<text x="626" y="196" font-size="12">MOSI GP29</text>
+<text x="626" y="214" font-size="12">MISO 手柄可不接</text>
+<text x="626" y="232" font-size="12">接收器 MISO = GP16</text>
+<text x="626" y="258" font-size="12">VCC 3V3  频道 80  2Mbps</text>
+<rect x="850" y="90" width="220" height="200" rx="8" fill="#fff" stroke="#333"/>
+<text x="866" y="118" font-size="16" font-weight="700">杰里 AC632N</text>
+<text x="866" y="142" font-size="12">GP0 UART0 TX 1Mbps</text>
+<text x="866" y="160" font-size="12">→ AC632N UART RX</text>
+<text x="866" y="178" font-size="12">共地 3.3V</text>
+<text x="866" y="196" font-size="12">BT 名 Pro Controller</text>
+<text x="866" y="214" font-size="12">VID 057E PID 2009</text>
+<text x="866" y="232" font-size="12">Switch Pro 无加密</text>
+<text x="866" y="258" font-size="12">Xbox/PS 走手柄 USB 认证</text>
+<rect x="30" y="320" width="500" height="200" rx="8" fill="#fff" stroke="#333"/>
+<text x="46" y="348" font-size="16" font-weight="700">USB</text>
+<text x="46" y="376" font-size="13">JUSB1 设备口：USB_DP/DM + 27Ω → 电脑 / 主机。Xbox/PS 引导认证走这口 + JUSB2 上的官方/兼容 dongle。</text>
+<text x="46" y="404" font-size="13">JUSB2 主机口：GP4 D+、GP3 D-（PIO USB）。插 PS5 / Xbox 认证狗。</text>
+<text x="46" y="432" font-size="13">手柄 USB 一旦枚举，固件 tud_mounted() 静音无线，避免双设备。</text>
+<text x="46" y="460" font-size="13">开机：R1 Xbox · L1 PS5 · B4 PS4 · L2 Switch Pro（无线只在 Switch 模式发 Pro 报告）。</text>
+<rect x="560" y="320" width="510" height="200" rx="8" fill="#fff" stroke="#333"/>
+<text x="576" y="348" font-size="16" font-weight="700">接收器（第二块板）</text>
+<text x="576" y="376" font-size="13">同样 RP2040 + W25Q16 + 12MHz + USB-C + Si24R1（多一根 MISO GP16）。</text>
+<text x="576" y="404" font-size="13">USB 枚举 Switch Pro 057E:2009，处理 0x80 握手和 0x01 子命令。</text>
+<text x="576" y="432" font-size="13">空中 20 字节 WfFrame，管道 E7 E7 E7 E7 57，2480MHz。</text>
+<text x="576" y="460" font-size="13">插 Switch 底座或 PC/Steam。不要插 Xbox/PS 主机。</text>
+<rect x="30" y="546" width="1040" height="200" rx="8" fill="#1a1a1a"/>
+<text x="46" y="578" fill="#f4f0e0" font-size="16" font-weight="700">电源</text>
+<text x="46" y="606" fill="#ddd" font-size="13">VBUS 5V → AMS1117-3.3 → 3V3。每个 IOVDD 100nF，VREG_VIN 1uF+100nF，VREG_VOUT 1uF 到 DVDD。</text>
+<text x="46" y="630" fill="#ddd" font-size="13">ADC_AVDD 经 47Ω + 100nF 到 3V3。USB_VDD 接 3V3。热焊盘 GND 过孔阵列。</text>
+<text x="46" y="654" fill="#ddd" font-size="13">投板：嘉立创 2 层，最小线宽 0.12mm（QFN 扇出 0.2mm pad / 0.12mm 线），过孔 0.3/0.15 或 0.4/0.2。</text>
+<text x="46" y="686" fill="#f4c542" font-size="13">QFN-56 必须按数据手册焊盘图。先在 KiCad 打开 .kicad_pcb 填铜、DRC，再下 Gerber。</text>
+<text x="46" y="718" fill="#aaa" font-size="12">GP2040-WF · sunga2022 · 2026-08-26 · 与仓库 configs/Pico16 和 firmware/receiver_pico 一致</text>
+</svg>
