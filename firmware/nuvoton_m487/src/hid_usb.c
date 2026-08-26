@@ -9,7 +9,6 @@
 #include "NuMicro.h"
 #include "hid_usb.h"
 #include "hid_gamepad.h"
-#include "wf_pins.h"
 
 uint8_t volatile g_u8EPAReady = 0;
 
@@ -441,19 +440,16 @@ void HID_ClassRequest(void)
 }
 
 
-void HID_UpdateGamepadData(void)
+void HID_SendIfReady(const WfPadState *state)
 {
     uint8_t buf[HID_REPORT_SIZE];
-    WfPadState state;
     uint32_t i;
 
     if (!g_u8EPAReady) {
         return;
     }
 
-    Gamepad_Read(&state);
-    Gamepad_PackHid(&state, buf);
-    PIN_LED = (state.buttons || state.dpad) ? 0 : 1;
+    Gamepad_PackHid(state, buf);
 
     for (i = 0; i < HID_REPORT_SIZE; i++) {
         HSUSBD->EP[EPA].EPDAT_BYTE = buf[i];
@@ -465,6 +461,8 @@ void HID_UpdateGamepadData(void)
 
 void HID_Process(void)
 {
-    HID_UpdateGamepadData();
+    WfPadState state;
+    Gamepad_Read(&state);
+    HID_SendIfReady(&state);
 }
 

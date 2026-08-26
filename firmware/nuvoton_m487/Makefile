@@ -11,6 +11,7 @@ PREFIX   ?= arm-none-eabi-
 CC       := $(PREFIX)gcc
 OBJCOPY  := $(PREFIX)objcopy
 SIZE     := $(PREFIX)size
+CC_HOST  ?= gcc
 
 CPU      := -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard
 CFLAGS   := $(CPU) -std=gnu11 -Os -ffunction-sections -fdata-sections
@@ -38,7 +39,8 @@ APP_SRC  := \
 	$(ROOT)/src/hid_gamepad.c \
 	$(ROOT)/src/hid_usb.c \
 	$(ROOT)/src/descriptors.c \
-	$(ROOT)/src/hardfault.c
+	$(ROOT)/src/hardfault.c \
+	$(ROOT)/src/bt_uart.c
 
 STARTUP  := $(BSP)/Device/Source/GCC/startup_M480.S
 SRCS     := $(STARTUP) $(BSP_SRC) $(APP_SRC)
@@ -49,10 +51,12 @@ all: controller
 
 controller: $(BUILD)/controller.hex
 
-test:
+test: | $(BUILD)
 	python3 $(ROOT)/host_test/test_hid_pack.py
 	python3 $(ROOT)/host_test/test_interval.py
 	python3 $(ROOT)/../../wireless/host_test/test_protocol.py
+	$(CC_HOST) -I$(ROOT)/../../wireless -o $(BUILD)/test_uart_rx $(ROOT)/../../wireless/host_test/test_uart_rx.c
+	$(BUILD)/test_uart_rx
 
 $(BUILD):
 	mkdir -p $(BUILD)

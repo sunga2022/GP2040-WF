@@ -2,12 +2,14 @@
  * GP2040-WF controller coprocessor
  * Board: Seeed XIAO nRF52840 (or nRF52840 DK)
  *
- * UART from RP2040 (1 Mbps) -> 2.4 GHz proprietary radio + BLE HID.
+ * UART from M487 (1 Mbps) -> BLE HID (+ optional 2.4 GHz radio).
  * User button toggles BLE advertising.
  *
  * Wiring (XIAO nRF52840):
- *   RP2040 GP24 (UART1 TX) -> XIAO D7 / RX
- *   GND                    -> GND
+ *   M487 D1 PB.3 (UART1 TX) -> XIAO D7 / RX
+ *   M487 PA.11 USB_ACTIVE   -> XIAO D2  (optional; high = wired USB)
+ *   GND                     -> GND
+ *   3V3                     -> 3V3
  *
  * Arduino: board "Seeed nRF52 Boards" / Adafruit nRF52, USB stack TinyUSB.
  */

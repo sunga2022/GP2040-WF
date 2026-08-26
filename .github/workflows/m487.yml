@@ -6,12 +6,16 @@ on:
     paths:
       - "firmware/nuvoton_m487/**"
       - "wireless/protocol.h"
+      - "wireless/uart_rx.h"
+      - "wireless/host_test/**"
       - ".github/workflows/m487.yml"
   pull_request:
     branches: ["main"]
     paths:
       - "firmware/nuvoton_m487/**"
       - "wireless/protocol.h"
+      - "wireless/uart_rx.h"
+      - "wireless/host_test/**"
       - ".github/workflows/m487.yml"
   workflow_dispatch:
 
@@ -22,7 +26,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install ARM GCC
         run: sudo apt-get update && sudo apt-get install -y gcc-arm-none-eabi libnewlib-arm-none-eabi
-      - name: Test HID packing and 8 kHz interval
+      - name: Test HID packing, 8 kHz interval, UART frames
         run: make -C firmware/nuvoton_m487 test
       - name: Build controller
         run: make -C firmware/nuvoton_m487

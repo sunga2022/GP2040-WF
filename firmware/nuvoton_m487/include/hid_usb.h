@@ -2,6 +2,7 @@
 #define HID_USB_H
 
 #include <stdint.h>
+#include "hid_gamepad.h"
 
 /* Nuvoton VID. PID is unique to this gamepad firmware (mouse sample is 0x8249). */
 #define USBD_VID                0x0416
@@ -51,5 +52,6 @@ void HID_Init(void);
 void HID_ClassRequest(void);
 void EPA_Handler(void);
 void HID_Process(void);
+void HID_SendIfReady(const WfPadState *state);
 
 #endif

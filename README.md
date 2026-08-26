@@ -1,32 +1,27 @@
 # GP2040-WF
 
-**sunga2022** 的格斗板固件。主控是 **新唐（Nuvoton）M487**，不是树莓派 RP2040，也不是南京沁恒（WCH）。
+**sunga2022** 的格斗板。主控是 **新唐 M487**，蓝牙用外挂模块，不是树莓派，也不是沁恒。
 
-「新塘」是 **新唐** 的笔误。沁恒 CH585 那套还留在 `firmware/ch585` 里，新板不要画。
+## 怎么打
 
-## 现在能打的
-
-| 模式 | 芯片 | 说明 |
+| 模式 | 谁干活 | 轮询 |
 |---|---|---|
-| **有线 8 kHz** | **M487** USB 2.0 High Speed | 主固件，`firmware/nuvoton_m487` |
-| 蓝牙 / 2.4G | M032BT | 片内 BLE + 私有 2.4G；USB 只有 FS，**不是 8 kHz** |
-| 家用 Wi-Fi | 不是片内 | NuMaker-IoT-M487 上的模组，不能当 8 kHz HID |
+| **有线** | M487 USB 2.0 High Speed（CON1） | **8 kHz** |
+| **蓝牙** | 外挂 ESP32-C3（或 nRF52840） | 约 133 Hz（BLE 最快约 7.5 ms） |
 
-新唐没有「USB HS 8k + 蓝牙 + 802.11」的单芯片。8 kHz 只存在于 M487/M484 的 USB HS。手柄圈说的 wifi/2.4G 走 M032BT 的 2.4G 接收器。
+M487 没有片内蓝牙。UART1（Arduino D0/D1，1 Mbps）把按键帧送给模块。CON1 插上时 PA.11 拉高，模块不发 BLE，避免一台电脑两只手柄。
 
 ## 买什么
 
-一块 [NuMaker-PFM-M487](https://www.nuvoton.com/board/numaker-pfm-m487/)。
+1. [NuMaker-PFM-M487](https://www.nuvoton.com/board/numaker-pfm-m487/)
+2. [ESP32-C3 SuperMini](https://www.espressif.com/en/products/socs/esp32-c3) 当蓝牙模组
 
 ```bash
-cd firmware/nuvoton_m487
-make test
-make
+cd firmware/nuvoton_m487 && make test && make
+cd firmware/esp32c3_ble && pio run
 ```
 
-Nu-Link ICE 口烧 `build/controller.hex`。打游戏插板上的 **CON1（USB HS）**。设备名 `GP2040-WF`。
-
-按键脚：`firmware/nuvoton_m487/include/wf_pins.h`。
+有线：ICE 口烧录，**CON1** 打游戏。蓝牙：接线见 `firmware/nuvoton_m487/include/wf_pins.h` 和 `firmware/esp32c3_ble/README.md`，电脑搜 `GP2040-WF`。
 
 ## 授权
 

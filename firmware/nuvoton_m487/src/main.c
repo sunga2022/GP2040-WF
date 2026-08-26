@@ -1,6 +1,8 @@
 #include "NuMicro.h"
 #include "hid_usb.h"
 #include "hid_gamepad.h"
+#include "bt_uart.h"
+#include "wf_pins.h"
 
 static void SYS_Init(void)
 {
@@ -31,6 +33,7 @@ int main(void)
 {
     SYS_Init();
     Gamepad_GpioInit();
+    BtUart_Init();
     HID_DescriptorsInit();
 
     HSUSBD_Open(&gsHSInfo, HID_ClassRequest, NULL);
@@ -39,6 +42,10 @@ int main(void)
     HSUSBD_Start();
 
     while (1) {
-        HID_Process();
+        WfPadState state;
+        Gamepad_Read(&state);
+        PIN_LED = (state.buttons || state.dpad) ? 0 : 1;
+        HID_SendIfReady(&state);
+        BtUart_Poll(&state);
     }
 }

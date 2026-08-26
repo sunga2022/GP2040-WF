@@ -55,6 +55,8 @@
 #define PIN_USER_PORT   PF
 #define PIN_USER_BIT    BIT11   /* SW2 */
 
+#define PIN_USB_ACTIVE  PA11    /* NU7.7 SS → BLE module: high = wired USB */
+
 #define BTN_B1   (1u << 0)
 #define BTN_B2   (1u << 1)
 #define BTN_B3   (1u << 2)
