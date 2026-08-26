@@ -1,0 +1,35 @@
+name: CH585
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "firmware/ch585/**"
+      - "wireless/protocol.h"
+      - ".github/workflows/ch585.yml"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "firmware/ch585/**"
+      - "wireless/protocol.h"
+      - ".github/workflows/ch585.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install RISC-V GCC
+        run: sudo apt-get update && sudo apt-get install -y gcc-riscv64-unknown-elf
+      - name: Test protocol and HID packing
+        run: make -C firmware/ch585 test
+      - name: Build controller and dongle
+        run: make -C firmware/ch585
+      - name: Upload hex
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch585-hex
+          path: |
+            firmware/ch585/build/controller.hex
+            firmware/ch585/build/dongle.hex

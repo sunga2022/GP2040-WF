@@ -1,0 +1,10 @@
+WCH CH585 EVT subset, copied from https://github.com/openwch/ch585
+
+Used only to target WCH CH585/CH584 microcontrollers, as required by the
+original headers. See LICENSE in this directory.
+
+Files:
+- Ld/Link.ld
+- Startup/startup_CH585.S
+- RVMSIS/core_riscv.h
+- StdPeriphDriver (gpio/clk/sys + headers)
