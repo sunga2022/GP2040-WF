@@ -1,11 +1,14 @@
 # 三模与 8 kHz
 
-主控是 **一颗新塘 CH585**，不用树莓派 MCU。细节见 [firmware/README.md](../firmware/README.md)。
+芯片锁定见 [CHIP_LOCK.md](CHIP_LOCK.md)。不要家用 Wi‑Fi。
 
 | 问题 | 答案 |
 |---|---|
-| 不要 RP2040，换新塘？ | 对。用 **CH585**。 |
-| 8k + 蓝牙 + 无线一颗料？ | CH585：USB HS 8k、BLE 5.4、私有 2.4G 8k。 |
-| 是家里那种 Wi-Fi 吗？ | 不是。沁恒没有 802.11 Wi-Fi + USB HS 的芯片。无线是 2.4G 接收器。 |
-| 蓝牙能 8k 吗？ | 不能。BLE 连接间隔大概一百多 Hz。8k 走有线和 2.4G。 |
+| 主控是哪家？ | **新唐 Nuvoton M487**，不是树莓派，也不是沁恒。 |
+| 蓝牙和 2.4G 用哪颗？ | 手柄上一颗 **nRF52840**。 |
+| **2.4G 接收器芯片？** | 再一颗 **nRF52840-QIAA**（USB HID + 私有 2.4G 接收）。 |
+| 是家里那种 Wi‑Fi 吗？ | 不是。空中是 Nordic ESB，不连路由器。 |
+| 蓝牙能 8 kHz 吗？ | 不能。BLE 大约一百多 Hz。 |
+| 2.4G 接收器能 8 kHz 吗？ | 不能。nRF52840 USB 是 Full Speed，大约 1 kHz。 |
+| 8 kHz 走哪？ | 只有 M487 **CON1 USB High Speed**。 |
 | 还用 Pico / GP2040-CE？ | 旧板可以。新板不要再画 RP2040。 |

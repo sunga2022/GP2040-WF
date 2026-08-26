@@ -1,26 +1,26 @@
-# 新唐 M487 + 外挂三模无线
+# 新唐 M487 + 外挂 nRF52840
 
-M487 负责按键和有线 **USB HS 8 kHz**。蓝牙和 2.4G 在外挂 ESP32-C3 上，见 [../esp32c3_ble](../esp32c3_ble)。
+芯片锁定见 [docs/CHIP_LOCK.md](../../docs/CHIP_LOCK.md)。M487 只做按键和有线 **USB HS 8 kHz**。蓝牙和 2.4G 在 **nRF52840** 上，接收器也是 nRF52840。
 
 ```
 按键 ──► M487 ── CON1 USB HS ──► 电脑          8 kHz
             │
-            └── UART1 ──► C3 stick ── BLE ──► 手机/电脑
-                              └── ESP-NOW ──► C3 dongle USB
+            └── UART1 ──► nRF52840 ── BLE ──► 手机/电脑
+                              └── ESB 2.4G ──► nRF52840 接收器 USB
 ```
 
 ## 买什么
 
 1. [NuMaker-PFM-M487](https://www.nuvoton.com/board/numaker-pfm-m487/)
-2. 一块 ESP32-C3 SuperMini（手柄）+ 一块 ESP32-S3（2.4G 接收器）
+2. 两块 [Seeed XIAO nRF52840](https://wiki.seeedstudio.com/XIAO_BLE/)：一块焊手柄，一块当 2.4G 接收器
 
 ## 接线
 
-| M487 | C3 stick |
+| M487 | XIAO nRF52840（手柄） |
 |---|---|
-| D1 PB.3 TX | GPIO4 RX |
-| D0 PB.2 RX | GPIO5 TX（可空） |
-| NU7.7 PA.11 | GPIO2：CON1 枚举后无线停 |
+| D1 PB.3 TX | D7 RX |
+| D0 PB.2 RX | TX（可空） |
+| NU7.7 PA.11 | D2：CON1 枚举后无线停 |
 | 3V3 / GND | 3V3 / GND |
 
 按键接 Arduino D2–D13、A0–A5，见 `include/wf_pins.h`。

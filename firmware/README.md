@@ -1,15 +1,11 @@
-# GP2040-WF：有线 + 蓝牙 + 2.4G
+# 固件目录
 
-不要家用 Wi-Fi。主控 **M487** 只打有线 8 kHz。蓝牙和 2.4G 用两颗 **ESP32-C3**，见 [esp32c3_ble](esp32c3_ble)。
+**先看 [docs/CHIP_LOCK.md](../docs/CHIP_LOCK.md)。** 芯片未按该文档落地之前，不要在本目录加新方案。
 
-| 芯片 | 干什么 |
+| 路径 | 锁定？ |
 |---|---|
-| **M487** | 读按键；CON1 有线 8 kHz；UART 发给无线模块 |
-| **C3 stick** | BLE HID + ESP-NOW 2.4G 发射 |
-| **S3 dongle** | ESP-NOW 接收，USB 手柄（C3 不能做 USB HID） |
-| 沁恒 CH585 | 认错厂商留下的，新板不要画 |
-
-```bash
-cd firmware/nuvoton_m487 && make
-cd firmware/esp32c3_ble && pio run -e stick && pio run -e dongle
-```
+| [nuvoton_m487](nuvoton_m487) | 是。手柄主控，有线 8 kHz。UART 对端改为 nRF52840，不是 ESP32。 |
+| [../wireless/nrf52840](../wireless/nrf52840) | 是。手柄 BLE+2.4G 发射，以及 **2.4G 接收器**。草稿，锁定后才继续写。 |
+| [esp32c3_ble](esp32c3_ble) | 否。ESP-NOW / Wi‑Fi PHY，已废弃。 |
+| [nuvoton_m032bt](nuvoton_m032bt) | 否。不采用。 |
+| [ch585](ch585) | 否。沁恒，认错厂商。 |
