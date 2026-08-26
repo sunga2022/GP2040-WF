@@ -2,12 +2,12 @@
 
 **状态：已锁定。先按本文买板、对原理图，再写固件。**
 
-仓库里现有的 ESP32 / CH585 / nRF52820 接收器选型是过程稿，**新板按下面这套。**
+手柄无线用 **杰里 AC632N**，不用 nRF52840。nRF 没有经典蓝牙；杰里 AC63 官方 SDK 自带 BLE + EDR HID。
 
 三模只这三件事，没有家用 Wi‑Fi：
 
 1. 有线 USB
-2. 蓝牙 HID
+2. 蓝牙（BLE + 经典蓝牙）
 3. 2.4G USB-A U 盘接收器
 
 ---
@@ -16,135 +16,79 @@
 
 | 角色 | 芯片（写进 BOM） | 形态 | 现在怎么买 | 干什么 |
 |---|---|---|---|---|
-| 手柄主控 | **新唐 M487JIDAE** | LQFP128 | [NuMaker-PFM-M487](https://www.nuvoton.com/board/numaker-pfm-m487/) | 按键；**CON1 USB HS 8 kHz**；UART 送给无线模组 |
-| 手柄无线 | **Nordic nRF52840-QIAA** | 量产 Raytac **MDBT50Q-1MV2**（10.5×15.5 mm） | 评估：[XIAO nRF52840](https://wiki.seeedstudio.com/XIAO_BLE/) | **BLE HID**（兼容性强）+ nRF24/ESB **2.4G 发射** |
-| **2.4G 接收器 MCU** | **沁恒 CH32V305GBU6** | **QFN28**，片内 **USB 2.0 High Speed PHY** | 评估：淘宝常见 **CH32V307V-EVT**（同一套 USBHS，例程最多）；也有官方 **CH32V305EVT** | USB HID **4 kHz** |
-| **2.4G 射频（接收器上）** | **Si24R1** | **QFN20 4×4 mm** 贴片，PCB 天线。不是 PA 大模块 | 评估：Si24R1 邮票孔小板焊到 EVT 的 SPI | 收手柄 nRF52840 的 ESB/nRF24 包 |
+| 手柄主控 | **新唐 M487JIDAE** | LQFP128 | [NuMaker-PFM-M487](https://www.nuvoton.com/board/numaker-pfm-m487/) | 按键；**CON1 USB HS 8 kHz**；UART 送给杰里；SPI 发给 Si24R1 |
+| 手柄无线 | **杰里 AC632N**（板级 bd19） | 量产看引脚：评估板同系列，如 **AC6321A**；SOP8 的 AC6328A 太少脚，只够极简 UART | 淘宝 **「AC632N 开发板」**；SDK：[fw-AC63_BT_SDK](https://github.com/Jieli-Tech/fw-AC63_BT_SDK)，HID 文档 [doc.zh-jieli.com/AC63](https://doc.zh-jieli.com/AC63/zh-cn/master/module_demo/hid/index.html) | **BLE HID** + **经典蓝牙 EDR HID** |
+| 手柄 2.4G 发射 | **Si24R1** | QFN20 4×4 mm，贴在手柄上 | 邮票孔板先焊到 M487 SPI | nRF24 兼容包，发给 U 盘 |
+| **2.4G 接收器 MCU** | **沁恒 CH32V305GBU6** | QFN28，USB HS | **CH32V307V-EVT** | USB HID **4 kHz** |
+| **2.4G 接收器射频** | **Si24R1** | 同一颗贴片 | 焊到 EVT SPI | 接收 |
 
 ```
-按键 ──► M487 ── CON1 USB HS ──► 电脑                      8 kHz
+按键 ──► M487 ── CON1 USB HS ──► 电脑                         8 kHz
             │
-            └── UART1 ──► nRF52840 ── BLE ──► 手机 / 电脑     ~133 Hz
-                               └── ESB 2Mbps ──► Si24R1
-                                                    │
-                                                    CH32V305 USB HS HID ──► 电脑   4 kHz
+            ├── UART1 ──► AC632N ── BLE ──► 手机 / 电脑
+            │                 └── EDR ──► 电脑（经典蓝牙 HID）
+            └── SPI  ──► Si24R1 ──► 空中 ──► Si24R1 + CH32V305 U 盘   4 kHz
 ```
 
-CON1 枚举后 PA.11 拉高，手柄 nRF52840 关掉 BLE 和 2.4G。
+CON1 枚举后 PA.11 拉高：AC632N 停广播，Si24R1 停发。
 
 ---
 
-## 为什么接收器从 nRF52820 换成 CH32V305
+## 为什么手柄无线改杰里、不盯 nRF52840
 
-| | nRF52820 | **CH32V305 + Si24R1** |
+| | nRF52840 | **杰里 AC632N** |
 |---|---|---|
-| USB | 只有 Full Speed → 电脑最多 **1 kHz** | **High Speed**，微帧 125 µs，`bInterval = 2` → **4 kHz** |
-| 零售价 | 立创大约 2.8 美元一颗，还不好买开发板 | CH32V305 大约几块钱；**CH32V307V-EVT 开发板淘宝到处都是** |
-| 射频 | 片内 Nordic 2.4G | 外挂 **Si24R1** 4×4 mm，和 nRF52840 的 ESB/nRF24 **空中兼容**（Nordic 文档写明） |
-| U 盘体积 | 单芯片小 | MCU 是 QFN28，射频是 QFN20，仍是 U 盘料，**不要** nRF24+PA 绿板 |
+| 经典蓝牙 EDR | **没有** | **有**。官方 HID demo：鼠标/键盘/手柄，`TCFG_USER_EDR_ENABLE` |
+| BLE HID | 很强（iOS 最稳） | 官方也有 BLE HID，国内手柄常用。iOS 手柄兼容性一般不如 Nordic，可接受 |
+| 和 LiteEMF | 接不上 EDR | 射频对得上 LiteEMF 的 `TR_EDR`；以后若接中间件，也是这颗，不是 nRF |
+| 价钱 / 板 | 模组贵 | 芯片便宜，开发板淘宝现成，Code::Blocks + 官方配置工具 |
+| 私有 2.4G | 可对 Si24R1/nRF24 | 杰里自己的 2.4G（`CFG_RF_24G_CODE_ID`）**对不上** Si24R1 |
 
-4 kHz 做不到 USB Full Speed 上。CH552、nRF52 USB、ESP32-S3 USB 都是 FS，全部淘汰。
+所以 2.4G U 盘 **不要** 用杰里私有 2.4G（对端只能再买一颗杰里，而且杰里 USB 是 FS，只有 1 kHz）。4 kHz 仍是 **CH32V305 USB HS + 两颗 Si24R1**。手柄上 Si24R1 由 **M487 SPI** 发，杰里只打蓝牙。
 
-量产 U 盘：USB-A 公头 + CH32V305GBU6 + Si24R1 + 32 MHz 晶振 + PCB 天线。外壳按普通 U 盘。
-
-Si24R1 不够稳时，同焊盘可改 **nRF24L01+** 的 QFN 原片（不是模块）。空中仍 2 Mbps、动态载荷、20 字节 `WfFrame`，4 kHz 时建议关掉 ACK，包时间才进得去 250 µs。
+杰里 USB 也不要拿来做有线 8 kHz。
 
 ---
 
-## 开发板（先买这个，不要先画 U 盘）
+## 开发板（先买，不要先画板）
 
-淘宝搜 **「CH32V307V-EVT」** 或 **「CH32V307 评估板」**（沁恒官方，带 USB **高速**口 P6）。
+1. NuMaker-PFM-M487  
+2. **AC632N 开发板**（官方 HID 工程 `apps/hid/board/bd19/AC632N_hid.cbp`）  
+3. **CH32V307V-EVT** + 两块 Si24R1 邮票孔（一块手柄、一块接收器）
 
-- USB 高速 HID 例程、MounRiver、TinyUSB 都是对着这块板写的
-- CH32V305 和 CH32V307 **同一套 USBHS 外设**，评估板上跑通再缩到 QFN28 的 305
-- 把 Si24R1 邮票孔板的 SPI（SCK/MOSI/MISO/CSN/CE/IRQ）接到 EVT 排针
-
-也能买官方 **CH32V305EVT**（板上就是 GBU6），板子少一些。
-
-不要买 CH32V203 / CH32V303 当接收器：那两颗 **没有 USB HS**，4 kHz 做不了。
+不要买 ESP32-S3/C3 当蓝牙：没有经典蓝牙。不要买 nRF52840 开发板。
 
 ---
 
-## 主板蓝牙 / 2.4G：继续用 nRF52840
+## 蓝牙能连什么（杰里）
 
-手柄无线仍要兼容性强，不换成便宜 BLE：
-
-- iOS / Android / Windows BLE HID：Nordic SoftDevice 最稳
-- 2.4G：nRF52840 可按 nRF24 兼容模式发给 Si24R1，手柄不用再加第二颗射频
-- 量产模组：Raytac MDBT50Q-1MV2（有 FCC/CE/SRRC）
-
-「兼容性强」指的是 **电脑和手机的标准 BLE 手柄**，不是主机。
-
-| 蓝牙连什么 | 行不行 | 原因 |
+| 连什么 | 行不行 | 原因 |
 |---|---|---|
-| Windows / macOS / Linux、安卓、iPhone | **行**（nRF52840 BLE HID） | 标准 BLE HID over GATT |
-| **Xbox** 主机 | **不行**（这套射频） | 只认 Xbox Wireless / 授权手柄 |
-| **Switch 1/2、PS4/PS5** | **nRF52840 不行** | 主机要 **经典蓝牙** + 官方手柄那一套，不是 BLE |
-
-主机蓝牙若一定要做，**不要自己在 nRF52 上仿，也不要把 [LiteEMF](https://github.com/LiteEMF/LiteEMF) 接到这颗 BLE 芯片上当主机方案。** LiteEMF 只是手柄中间件：HID 描述符、按键打包、`TR_EDR` 经典蓝牙。PS 那路还要外挂加密芯片（`ps_crypt` / NXP 7105），不是“一份开源逻辑就能连 PS5”。nRF52840 **没有 EDR**，跑不了那套。经典蓝牙（BR/EDR）本身不是没有芯片，只是 **Nordic nRF52/53 全家都没有**。常见带 EDR、能当蓝牙手柄从机的料：
-
-| 芯片 | 开发板好不好买 | 说明 |
-|---|---|---|
-| **ESP32（原版 WROOM-32，不是 C3/S3）** | 很好买 | 双模 BLE+经典蓝牙。S3/C3/C6 **没有**经典蓝牙 |
-| **杰里 AC632N / AC637N** 一类 | 模组多，官方 IDE 重 | 国内手柄常用，LiteEMF 也往杰里上靠 |
-| **山弯 BM769P** | 向山弯拿样 | 交钥匙，NS/PS 固件现成 |
-| CSR / 恒玄 / 炬芯双模 | 消费电子用 | 贵或不好买散板 |
-
-有 EDR 只表示主机**射频对得上**。Switch/PS 还要官方那套 HID 和认证；PS 还要加密芯片。Xbox 主机仍不认普通经典蓝牙手柄。仓库不把 LiteEMF 的主机仿冒接到任何一颗料上。电脑/手机仍用 nRF52840 BLE。
-
-国内现成的是山弯 **BM769P** 交钥匙 IC（客户给的烧录 exe）。Xbox 主机无线这颗同样做不了。
-
-| | nRF52840（已锁定，电脑/手机） | 山弯 BM769P（可选，主机蓝牙） |
-|---|---|---|
-| 射频 | 只有 BLE + 私有 2.4G | 经典蓝牙，固件里带 NS/PS 模式 |
-| 固件 | 我们可以写 BLE HID | **只能用山弯烧录器和他们的 bin**，仓库不实现主机仿冒 |
-| 和 M487 | UART 从机，有线 8 kHz 仍走 M487 | 一般是整颗手柄 SoC；USB 多半是 FS，**不是 8 kHz** |
-| 和 CH32V305 U 盘 | nRF52840 可以按 nRF24 发给 Si24R1 | **对不上** 我们的 2.4G 接收器 |
-
-所以：电脑 8 kHz 有线、电脑 4 kHz U 盘、手机蓝牙 → 仍是 M487 + nRF52840 + CH32V305。**主机蓝牙是另一颗山弯 BM769P**，向山弯买料、用他们的升级程序，不要和 nRF 那条无线混焊。Xbox 无线这颗也做不了。
-
----
-
-## 明确不采用
-
-| 候选 | 原因 |
-|---|---|
-| nRF52820 / nRF52840 当接收器 | USB FS，只有 1 kHz；52820 还贵 |
-| CH552 + Si24R1 | 便宜，但是 USB FS，只有 1 kHz |
-| ESP32-S3 SuperMini | USB FS；Wi‑Fi 模组，不是 U 盘 |
-| nRF24L01+PA+LNA 绿板 | 太大，不做进接收器 |
-| 手柄无线改 ESP32-C3 | BLE 兼容性不如 nRF52840 |
-
-备选（同样 USB HS、也有开发板，略贵）：雅特力 **AT32F405** + **AT-START-F405**。默认仍走沁恒 305/307。
-
----
-
-## 速率
-
-| 模式 | 上限 | 原因 |
-|---|---|---|
-| 有线（M487 CON1） | **8 kHz** | USB HS，`bInterval = 1` |
-| 蓝牙 | 约 **133 Hz** | BLE 连接间隔 |
-| **2.4G U 盘** | **4 kHz** | USB HS，`bInterval = 2`（250 µs）。主机若只给 1 kHz 是系统调度问题，硬件按 4 kHz 报 |
+| Windows / 安卓 BLE 或经典蓝牙 HID | **行** | AC632N 双模 HID |
+| iPhone BLE HID | **多数行** | 标准 BLE HID；个别 iOS 游戏比 Nordic 挑 |
+| 电脑经典蓝牙 | **行** | EDR HID |
+| **Xbox 主机** | **不行** | 不认普通经典蓝牙手柄 |
+| **Switch / PS4 / PS5** | **射频能对上**，本仓库 **不做** 官方仿冒。PS 还要加密芯片。要成品主机蓝牙仍买山弯 BM769P |
 
 ---
 
 ## 评估板接线
 
-### 手柄：M487 ↔ nRF52840
+### M487 ↔ AC632N
 
-| NuMaker-PFM-M487 | XIAO nRF52840 | 作用 |
+| NuMaker-PFM-M487 | AC632N 开发板 | 作用 |
 |---|---|---|
-| D1 **PB.3** UART1_TXD | **D7 / RX** | 1 Mbps `WfFrame`（1 Mbps 够喂 4 kHz） |
-| D0 PB.2 UART1_RXD | TX（可空） | 调试 |
-| NU7.7 **PA.11** | **D2** | CON1 插上后无线静音 |
-| 3V3 / GND | 3V3 / GND | |
+| D1 **PB.3** UART1_TXD | UART RX（板子丝印，常见 PA 口，以 DEMO 原理图为准） | 1 Mbps `WfFrame` |
+| NU7.7 **PA.11** | 一个 GPIO | CON1 插上后无线静音 |
+| 3V3 / GND | 3V3 / GND | 共 3.3 V |
 
-有线只用 **CON1**。
+### M487 ↔ 手柄 Si24R1
 
-### 接收器：CH32V307V-EVT ↔ Si24R1
+SPI（SCK/MOSI/MISO）+ CSN + CE + IRQ。具体脚写程序时钉到空闲 SPI。CE 可和 PA.11 一起静音。
 
-EVT 的 **USB 高速口（P6）** 插电脑。Si24R1：CE、CSN、SCK、MOSI、MISO、IRQ、3V3、GND。具体 GPIO 写程序时再钉到 EVT 空闲脚。
+### 接收器
+
+CH32V307V-EVT **USB 高速口 P6** 插电脑。Si24R1 接 EVT SPI。
 
 同一台电脑：有线、蓝牙、2.4G 不要同时连。
 
@@ -154,11 +98,11 @@ EVT 的 **USB 高速口（P6）** 插电脑。Si24R1：CE、CSN、SCK、MOSI、M
 
 | 路径 | 处理 |
 |---|---|
-| `firmware/nuvoton_m487/` | 主控，保留 |
-| `wireless/nrf52840/` | 手柄 BLE + ESB 发射草稿 |
-| 接收器固件 | **尚未写。** 目标：CH32V305 USBHS HID 4 kHz + Si24R1 RX |
+| `firmware/nuvoton_m487/` | 主控，保留。UART 对端改为杰里；以后加 SPI→Si24R1 |
+| `wireless/nrf52840/` | **废弃。** 无线改 AC632N |
+| 杰里固件 | **尚未建目录。** 基于官方 `apps/hid`，UART 收帧后 BLE/EDR HID |
+| 接收器 | CH32V305 USBHS 4 kHz + Si24R1 RX，尚未建 |
 | `firmware/esp32c3_ble/` | 废弃 |
-| `firmware/ch585/` | 废弃（那是当主控用沁恒，和接收器这颗 305 不是一回事） |
-| `firmware/nuvoton_m032bt/` | 不采用 |
+| `firmware/ch585/` | 废弃 |
 
-确认 BOM 后再写：M487 有线；手柄 nRF52840；**CH32V305 + Si24R1** 接收器。
+确认 BOM 后再写：M487；AC632N HID；CH32V305+Si24R1。

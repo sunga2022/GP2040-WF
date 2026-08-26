@@ -1,22 +1,23 @@
 # GP2040-WF
 
-**sunga2022** 的三模格斗板：**有线、蓝牙、2.4G U 盘接收器**。不要家用 Wi‑Fi。
+**sunga2022** 的三模格斗板：**有线、蓝牙、2.4G U 盘**。不要家用 Wi‑Fi。
 
-芯片锁定见 [docs/CHIP_LOCK.md](docs/CHIP_LOCK.md)。**先买板，再写程序。**
+芯片锁定见 [docs/CHIP_LOCK.md](docs/CHIP_LOCK.md)。**手柄无线是杰里 AC632N，不是 nRF52840。**
 
 | 角色 | 芯片 | 形态 |
 |---|---|---|
 | 手柄主控 | 新唐 **M487JIDAE** | NuMaker-PFM-M487，**CON1** |
-| 手柄无线 | Nordic **nRF52840**（Raytac MDBT50Q） | 手柄内小模组；评估用 XIAO |
-| **2.4G 接收器** | **CH32V305GBU6** + **Si24R1** | USB-A U 盘；评估用 **CH32V307V-EVT** |
+| 手柄蓝牙 | 杰里 **AC632N** | 评估：AC632N 开发板。BLE + 经典蓝牙 |
+| 手柄 2.4G 发射 / U 盘射频 | **Si24R1** ×2 | 4×4 mm 贴片 |
+| **2.4G 接收器** | **CH32V305GBU6** | USB-A U 盘；评估 **CH32V307V-EVT** |
 
 | 模式 | 谁干活 | 轮询 |
 |---|---|---|
 | 有线 | M487 USB High Speed | **8 kHz** |
-| 蓝牙 | nRF52840 BLE HID `GP2040-WF`（电脑/手机，**不是** Xbox/PS/Switch） | 约 133 Hz |
-| 2.4G | nRF52840 → Si24R1 → CH32V305 **USB HS** HID | **4 kHz** |
+| 蓝牙 | AC632N BLE / EDR HID `GP2040-WF` | BLE 约 133 Hz |
+| 2.4G | M487→Si24R1 → CH32V305 **USB HS** | **4 kHz** |
 
-nRF52 的 USB 是 Full Speed，做不到 4 kHz，接收器不用 nRF52820。CH32V305 有官方/淘宝评估板，比 Nordic 便宜。
+Xbox / Switch / PS 主机无线不做在这颗杰里上。电脑和手机蓝牙可以。
 
 ## 授权
 
