@@ -2,6 +2,8 @@
 
 两块 RP2040 都是 **按住 BOOT，插 USB，拖 UF2**。
 
+图纸：[`pcb/sheets/`](sheets/) 装配图 / GPIO 表，原理图 [`GP2040-WF-schematic.png`](GP2040-WF-schematic.png)。
+
 ## 手柄主板（Pico16 三模）
 
 文件：`firmware-bin/GP2040-WF_Pico16.uf2`
