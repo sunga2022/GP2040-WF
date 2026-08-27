@@ -4,6 +4,7 @@
 bool BatteryLedAddon::available()
 {
     return isValidPin(BATTERY_LOW_PIN)
+        || isValidPin(BATTERY_ADC_PIN)
         || isValidPin(BATTERY_LED_RED_PIN)
         || isValidPin(BATTERY_LED_GREEN_PIN)
         || (BATTERY_LED_INDEX >= 0);

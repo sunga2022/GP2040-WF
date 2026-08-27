@@ -15,7 +15,7 @@ Basic pin setup for a stock Raspberry Pi Pico. Combine with a simple GPIO breako
 | GPIO_PIN_18| GpioAction::BUTTON_PRESS_B1   | B1     | A      | B       | Cross   | 2      | K1     |
 | GPIO_PIN_13| GpioAction::BUTTON_PRESS_B2   | B2     | B      | A       | Circle  | 3      | K2     |
 | GPIO_PIN_14| GpioAction::BUTTON_PRESS_R2   | R2     | RT     | ZR      | R2      | 8      | K3     |
-| GPIO_PIN_15| GpioAction::BUTTON_PRESS_L2   | L2     | LT     | ZL      | L2      | 7      | K4     |
+| GPIO_PIN_05| GpioAction::BUTTON_PRESS_L2   | L2     | LT     | ZL      | L2      | 7      | K4     |
 | GPIO_PIN_12| GpioAction::BUTTON_PRESS_B3   | B3     | X      | Y       | Square  | 1      | P1     |
 | GPIO_PIN_09| GpioAction::BUTTON_PRESS_B4   | B4     | Y      | X       | Triangle| 4      | P2     |
 | GPIO_PIN_10| GpioAction::BUTTON_PRESS_R1   | R1     | RB     | R       | R1      | 6      | P3     |
@@ -26,3 +26,7 @@ Basic pin setup for a stock Raspberry Pi Pico. Combine with a simple GPIO breako
 | GPIO_PIN_19| GpioAction::BUTTON_PRESS_R3   | R3     | RS     | RS      | R3      | 12     | RS     |
 | GPIO_PIN_07| GpioAction::BUTTON_PRESS_A1   | A1     | Guide  | Home    | PS      | 13     | ~      |
 | GPIO_PIN_06| GpioAction::BUTTON_PRESS_A2   | A2     | ~      | Capture | ~       | 14     | ~      |
+
+FN is removed. GP15 is Si24R1 MOSI, GP29 is battery ADC (divider, not 4.2 V direct).
+
+Addon pins: GP0 Jerry UART TX · GP1 nRF CE · GP3/4 USB host D−/D+ · GP15 nRF MOSI · GP21 nRF CSN · GP24 Turbo · GP25 nRF SCK · GP26/27 OLED · GP28 WS2812 · GP29 battery ADC.

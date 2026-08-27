@@ -18,16 +18,16 @@
 <text x="356" y="142" font-size="12">GP20 UP  GP22 DOWN</text>
 <text x="356" y="160" font-size="12">GP23 LEFT  GP16 RIGHT</text>
 <text x="356" y="178" font-size="12">GP18 B1  GP13 B2  GP12 B3  GP9 B4</text>
-<text x="356" y="196" font-size="12">GP10 R1  GP11 L1  GP14 R2  GP15 L2</text>
+<text x="356" y="196" font-size="12">GP10 R1  GP11 L1  GP14 R2  GP5 L2</text>
 <text x="356" y="214" font-size="12">GP8 S1  GP17 S2  GP2 L3  GP19 R3</text>
-<text x="356" y="232" font-size="12">GP7 A1  GP6 A2  GP5 FN  GP24 TURBO</text>
-<text x="356" y="258" font-size="12">GP26/27 OLED  GP28 WS2812</text>
+<text x="356" y="232" font-size="12">GP7 A1  GP6 A2  GP24 TURBO（无 FN）</text>
+<text x="356" y="258" font-size="12">GP26/27 OLED  GP28 WS2812  GP29 ADC</text>
 <rect x="610" y="90" width="220" height="200" rx="8" fill="#fff" stroke="#333"/>
 <text x="626" y="118" font-size="16" font-weight="700">2.4G Si24R1</text>
 <text x="626" y="142" font-size="12">CE  GP1</text>
 <text x="626" y="160" font-size="12">CSN GP21</text>
 <text x="626" y="178" font-size="12">SCK GP25</text>
-<text x="626" y="196" font-size="12">MOSI GP29</text>
+<text x="626" y="196" font-size="12">MOSI GP15</text>
 <text x="626" y="214" font-size="12">MISO 手柄可不接</text>
 <text x="626" y="232" font-size="12">接收器 MISO = GP16</text>
 <text x="626" y="258" font-size="12">VCC 3V3  频道 80  2Mbps</text>
@@ -42,10 +42,10 @@
 <text x="866" y="258" font-size="12">Xbox/PS 走手柄 USB 认证</text>
 <rect x="30" y="320" width="500" height="200" rx="8" fill="#fff" stroke="#333"/>
 <text x="46" y="348" font-size="16" font-weight="700">USB</text>
-<text x="46" y="376" font-size="13">JUSB1 设备口：USB_DP/DM + 27Ω → 电脑 / 主机。Xbox/PS 引导认证走这口 + JUSB2 上的官方/兼容 dongle。</text>
-<text x="46" y="404" font-size="13">JUSB2 主机口：GP4 D+、GP3 D-（PIO USB）。插 PS5 / Xbox 认证狗。</text>
+<text x="46" y="376" font-size="13">JUSB1 设备口：USB_DP/DM + 27Ω → 电脑 / 主机。Xbox/PS 引导认证走这口 + JUSB2 上带 NXP7105 的官方/兼容街机手柄或 dongle。</text>
+<text x="46" y="404" font-size="13">JUSB2 主机口：GP4 D+、GP3 D-（PIO USB）。PS5 固定报街机手柄类型 7，不要用 DualShock VID/PID。</text>
 <text x="46" y="432" font-size="13">手柄 USB 一旦枚举，固件 tud_mounted() 静音无线，避免双设备。</text>
-<text x="46" y="460" font-size="13">开机：R1 Xbox · L1 PS5 · B4 PS4 · L2 Switch Pro（无线只在 Switch 模式发 Pro 报告）。</text>
+<text x="46" y="460" font-size="13">开机：A Switch Pro · B Xbox 360 · X PS3 · Y PS4 · R1 Xbox One · L1 PS5。电量 GP29 ADC（100k/100k 分压）。</text>
 <rect x="560" y="320" width="510" height="200" rx="8" fill="#fff" stroke="#333"/>
 <text x="576" y="348" font-size="16" font-weight="700">接收器（第二块板）</text>
 <text x="576" y="376" font-size="13">同样 RP2040 + W25Q16 + 12MHz + USB-C + Si24R1（多一根 MISO GP16）。</text>

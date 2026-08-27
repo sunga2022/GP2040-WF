@@ -4,7 +4,7 @@ GP2040-CE **原样**跑在 RP2040 上：按键、SOCD、热键、网页配置、
 
 | 模式 | 谁干活 |
 |------|--------|
-| **有线 Xbox One / PS5** | 手柄 USB。认证走 GP2040-CE 的 **USB 引导认证**（认证口插官方/兼容 dongle） |
+| **有线 Xbox One / PS5** | 手柄 USB。认证走 GP2040-CE 的 **USB 引导认证**（认证口插带 **NXP7105** 的官方/兼容街机手柄或 dongle）。PS5 固定报街机手柄类型 7，不用 DualShock VID/PID。 |
 | **有线 PS4** | 手柄 USB。认证密钥已编进固件，不用网页上传 `serial.txt` / `sig.bin` / `key.pem` |
 | **有线 Switch** | 手柄 USB。CE 的 Switch / Switch Pro 描述符 |
 | **蓝牙 Switch** | UART → 杰里 **AC632N**，按 CE 的 Switch Pro 协议走 **经典蓝牙 HID**（无加密芯片） |
@@ -34,9 +34,7 @@ GP2040-CE **原样**跑在 RP2040 上：按键、SOCD、热键、网页配置、
 
 开机：**A Switch Pro · B Xbox 360 · X PS3 · Y PS4 · R1 Xbox One · L1 PS5 · L2 P5 General · R2 键盘**。Xbox One / PS5 走手柄 USB + 认证口（默认打开）；PS4 用内置密钥；无线只在 Switch Pro 模式发。
 
-OLED 右上角只显示链路字母 **L** 插线 / **B** 蓝牙 / **G** 2.4G。不做百分比：RP2040 模拟采样只能用 GP26–29 里的 **一脚**（不是四脚），Pico16 这四脚都占了。
-
-电量改成双色灯：按键 WS2812 串后面再多一颗（还是 GP28 那根线）。正常绿灯，低压红灯。插 USB 一定绿灯。低压检测用数字脚接电压检测芯片（开漏、低电平=亏电），不占 26–29。Pico16 暂时没有空闲数字脚，`BATTERY_LOW_PIN` 先留空；有空脚后在 `BoardConfig.h` 里填上即可。也可以用两脚红绿双色灯：`BATTERY_LED_RED_PIN` / `BATTERY_LED_GREEN_PIN`。
+OLED 右上角显示电量百分比和链路字母，例如 **87%B**：**L** 插线 / **B** 蓝牙 / **G** 2.4G。电量走 **GP29 ADC**（锂电池必须经分压，默认 100k/100k，`BATTERY_ADC_SCALE` 2.0）。按键 WS2812 串后面再多一颗双色灯：正常绿，低于约 3.5 V 红，插 USB 一定绿。
 
 ## PCB / 嘉立创
 

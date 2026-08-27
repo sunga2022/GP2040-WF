@@ -12,6 +12,7 @@
 #include "drivers/ps4/PS4Auth.h"
 
 #include "enums.pb.h"
+#include "BoardConfig.h"
 
 // force a report to be sent every X ms
 #define PS4_KEEPALIVE_TIMER 5
@@ -85,6 +86,14 @@ void PS4Driver::initialize() {
 
     //deviceType = InputModeDeviceType::INPUT_MODE_DEVICE_TYPE_GAMEPAD;
     deviceType = options.inputDeviceType;
+
+#ifdef FORCE_NXP7105_AUTH
+    /* NXP7105 / categorized PS5: DualShock VID/PID and wheel/hotas types fail the dongle handshake. */
+    if (options.inputMode == INPUT_MODE_PS5) {
+        deviceType = InputModeDeviceType::INPUT_MODE_DEVICE_TYPE_GAMEPAD;
+        isDeviceEmulated = false;
+    }
+#endif
 
     if (!isDeviceEmulated) {
         if (deviceType == InputModeDeviceType::INPUT_MODE_DEVICE_TYPE_WHEEL) {
@@ -779,16 +788,11 @@ uint16_t PS4Driver::get_report(uint8_t report_id, hid_report_type_t report_type,
         return sizeof(ps4Report);
     }
 
-    // Do nothing if we do not have host authentication data or a driver to run on
-    if ( ps4AuthData == nullptr || ps4AuthDriver == nullptr) {
-        return sizeof(ps4Report);
-    }
-
     uint8_t data[64] = {};
     uint32_t crc32;
     uint16_t responseLen = 0;
     switch(report_id) {
-        // Controller Definition Report
+        // Controller Definition Report — must answer even if the NXP7105 dongle is not up yet
         case PS4AuthReport::PS4_GET_CALIBRATION:
             if (reqlen < sizeof(output_0x02)) {
                 return -1;
@@ -801,9 +805,17 @@ uint16_t PS4Driver::get_report(uint8_t report_id, hid_report_type_t report_type,
                 return -1;
             }
             controllerConfig.controllerType = (uint8_t)controllerType;
+#ifdef FORCE_NXP7105_AUTH
+            if (Storage::getInstance().GetGamepad()->getOptions().inputMode == INPUT_MODE_PS5) {
+                controllerConfig.controllerType = (uint8_t)PS4ControllerType::PS4_ARCADESTICK;
+            }
+#endif
             responseLen = MAX(reqlen, sizeof(controllerConfig));
             memcpy(buffer, &controllerConfig, responseLen);
-            //buffer[4] = (uint8_t)controllerType; // Change controller type in definition
+            /* Feature 0x03 byte 4 is the categorized type. NXP7105 PS5 needs 0x07 (arcade stick). */
+            if (reqlen > 4) {
+                buffer[4] = controllerConfig.controllerType;
+            }
             return responseLen;
         case PS4AuthReport::PS4_GET_MAC_ADDRESS:
             if (reqlen < sizeof(output_0x12)) {
@@ -819,6 +831,16 @@ uint16_t PS4Driver::get_report(uint8_t report_id, hid_report_type_t report_type,
             responseLen = MAX(reqlen, sizeof(output_0xa3));
             memcpy(buffer, output_0xa3, responseLen);
             return responseLen;
+        default:
+            break;
+    };
+
+    /* Auth pages need the USB host listener / baked keys. */
+    if ( ps4AuthData == nullptr || ps4AuthDriver == nullptr) {
+        return -1;
+    }
+
+    switch(report_id) {
         // Use our private RSA key to sign the nonce and return chunks
         case PS4AuthReport::PS4_GET_SIGNATURE_NONCE:
             // We send 56 byte chunks back to the PS4, we've already calculated these

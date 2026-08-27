@@ -21,7 +21,9 @@ USB 已经枚举时不发无线。
 | Si24R1 CE | **GP1** |
 | Si24R1 CSN | **GP21** |
 | Si24R1 SCK | **GP25** |
-| Si24R1 MOSI | **GP29** |
+| Si24R1 MOSI | **GP15** |
+| 电量 ADC | **GP29**（分压，ADC3） |
+| L2 | **GP5**（原 FN；FN 已取消） |
 | Si24R1 MISO | 手柄发射端可不接 |
 
 开机 **A（B1）** = Switch Pro（`BoardConfig.h` 里 `DEFAULT_INPUT_MODE_B1`）。这个模式下无线才走 Switch 协议。B = Xbox 360，X = PS3，Y = PS4（内置密钥），R1 = Xbox One、L1 = PS5 只走手柄 USB 认证。

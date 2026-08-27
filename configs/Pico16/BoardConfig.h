@@ -20,7 +20,7 @@
 #define GPIO_PIN_18 GpioAction::BUTTON_PRESS_B1     // B1     | A      | B       | Cross    | 2      | K1     |
 #define GPIO_PIN_13 GpioAction::BUTTON_PRESS_B2     // B2     | B      | A       | Circle   | 3      | K2     |
 #define GPIO_PIN_14 GpioAction::BUTTON_PRESS_R2     // R2     | RT     | ZR      | R2       | 8      | K3     |
-#define GPIO_PIN_15 GpioAction::BUTTON_PRESS_L2     // L2     | LT     | ZL      | L2       | 7      | K4     |
+#define GPIO_PIN_05 GpioAction::BUTTON_PRESS_L2     // L2     | LT     | ZL      | L2       | 7      | K4     |
 #define GPIO_PIN_12 GpioAction::BUTTON_PRESS_B3     // B3     | X      | Y       | Square   | 1      | P1     |
 #define GPIO_PIN_09 GpioAction::BUTTON_PRESS_B4     // B4     | Y      | X       | Triangle | 4      | P2     |
 #define GPIO_PIN_10 GpioAction::BUTTON_PRESS_R1     // R1     | RB     | R       | R1       | 6      | P3     |
@@ -31,7 +31,7 @@
 #define GPIO_PIN_19 GpioAction::BUTTON_PRESS_R3     // R3     | RS     | RS      | R3       | 12     | RS     |
 #define GPIO_PIN_07 GpioAction::BUTTON_PRESS_A1     // A1     | Guide  | Home    | PS       | 13     | ~      |
 #define GPIO_PIN_06 GpioAction::BUTTON_PRESS_A2     // A2     | ~      | Capture | ~        | 14     | ~      |
-#define GPIO_PIN_05 GpioAction::BUTTON_PRESS_FN     // Hotkey Function
+/* FN cancelled: GP15 is nRF MOSI, GP5 is L2. */
 
 // Setting GPIO pins to assigned by add-on
 //
@@ -44,6 +44,7 @@
 #define GPIO_PIN_01 GpioAction::ASSIGNED_TO_ADDON
 #define GPIO_PIN_21 GpioAction::ASSIGNED_TO_ADDON
 #define GPIO_PIN_25 GpioAction::ASSIGNED_TO_ADDON
+#define GPIO_PIN_15 GpioAction::ASSIGNED_TO_ADDON
 #define GPIO_PIN_29 GpioAction::ASSIGNED_TO_ADDON
 
 // Keyboard Mapping Configuration
@@ -66,7 +67,6 @@
 #define KEY_BUTTON_R3   HID_KEY_M             // R3     | RS     | RS      | R3       | 12     | RS     |
 #define KEY_BUTTON_A1   HID_KEY_9             // A1     | Guide  | Home    | PS       | 13     | ~      |
 #define KEY_BUTTON_A2   HID_KEY_F             // A2     | ~      | Capture | ~        | 14     | ~      |
-#define KEY_BUTTON_FN   HID_KEY_ESC           // Hotkey Function                                        |
 
 #define TURBO_ENABLED 1
 #define GPIO_PIN_24 GpioAction::BUTTON_PRESS_TURBO
@@ -74,6 +74,8 @@
 #define BOARD_USB_ENABLED 1
 #define USB_PERIPHERAL_ENABLED 1
 #define FORCE_USB_AUTH_PORT 1
+#define FORCE_NXP7105_AUTH 1
+#define FORCE_BOARD_GPIO_PINS 1
 #define USB_PERIPHERAL_PIN_DPLUS 4
 #define USB_PERIPHERAL_PIN_ORDER 1
 
@@ -84,7 +86,7 @@
 #define WIRELESS_NRF24_CE_PIN 1
 #define WIRELESS_NRF24_CSN_PIN 21
 #define WIRELESS_NRF24_SCK_PIN 25
-#define WIRELESS_NRF24_MOSI_PIN 29
+#define WIRELESS_NRF24_MOSI_PIN 15
 #define WIRELESS_NRF24_MISO_PIN -1
 
 /* Hold a face/shoulder button at power-on (same mapping as GP2040-CE, A=B1). */
@@ -128,10 +130,14 @@
 #define FORCE_LED_WIRE_ORDER 1
 
 /*
- * Battery lamp: extra WS2812 on the same GP28 chain (after L3), no ADC pin.
- * Green = OK / USB. Red = voltage-detector GPIO pulled low.
- * BATTERY_LOW_PIN stays -1 until a detector chip has a free digital GPIO.
+ * Battery: GP29 ADC3 through a divider (default 100k/100k, scale 2.0).
+ * Do not put 4.2 V Li-ion on the pin. Extra WS2812 after L3: green OK, red low.
  */
+#define BATTERY_ADC_PIN 29
+#define BATTERY_ADC_SCALE 2.0f
+#define BATTERY_EMPTY_MV 3300
+#define BATTERY_FULL_MV 4200
+#define BATTERY_LOW_MV 3500
 #define BATTERY_LED_INDEX 14
 #define BATTERY_LOW_PIN -1
 
@@ -147,7 +153,7 @@
 #define BUTTON_LAYOUT BUTTON_LAYOUT_STICKLESS        // 左边4个按钮
 #define BUTTON_LAYOUT_RIGHT BUTTON_LAYOUT_STICKLESSB // 右边8个按钮
 
-// GP21 / GP29 were extra UP/L3 copies; they are now Si24R1 MOSI/CSN.
+// GP15 = Si24R1 MOSI (was L2/FN). GP29 = battery ADC. GP5 = L2. No FN key.
 
 
  #define BOARD_LED_ENABLED 1

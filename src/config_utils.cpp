@@ -1104,6 +1104,18 @@ void ConfigUtils::initUnsetPropertiesWithDefaults(Config& config)
     config.gamepadOptions.has_xinputAuthType = true;
 #endif
 
+#ifdef FORCE_NXP7105_AUTH
+    /* PS5 categorized / NXP7105 dongle: arcade stick type 7, console VID/PID, USB host auth. */
+    config.gamepadOptions.inputDeviceType = INPUT_MODE_DEVICE_TYPE_GAMEPAD;
+    config.gamepadOptions.has_inputDeviceType = true;
+    config.gamepadOptions.ps4ControllerType = PS4_ARCADESTICK;
+    config.gamepadOptions.has_ps4ControllerType = true;
+    config.gamepadOptions.ps4ControllerIDMode = PS4_ID_CONSOLE;
+    config.gamepadOptions.has_ps4ControllerIDMode = true;
+    config.gamepadOptions.ps5AuthType = INPUT_MODE_AUTH_TYPE_USB;
+    config.gamepadOptions.has_ps5AuthType = true;
+#endif
+
 #ifdef FORCE_GP2040_HOTKEYS
 #define FORCE_HOTKEY(entry, aux, buttons, dpad, act) \
     config.hotkeyOptions.has_##entry = true; \
@@ -1174,6 +1186,32 @@ void ConfigUtils::initUnsetPropertiesWithDefaults(Config& config)
     config.ledOptions.has_indexA1 = true;
     config.ledOptions.indexA2 = LEDS_BUTTON_A2;
     config.ledOptions.has_indexA2 = true;
+#endif
+
+#ifdef FORCE_BOARD_GPIO_PINS
+    {
+        const GpioAction boardPins[NUM_BANK0_GPIOS] = {
+            GPIO_PIN_00, GPIO_PIN_01, GPIO_PIN_02, GPIO_PIN_03, GPIO_PIN_04,
+            GPIO_PIN_05, GPIO_PIN_06, GPIO_PIN_07, GPIO_PIN_08, GPIO_PIN_09,
+            GPIO_PIN_10, GPIO_PIN_11, GPIO_PIN_12, GPIO_PIN_13, GPIO_PIN_14,
+            GPIO_PIN_15, GPIO_PIN_16, GPIO_PIN_17, GPIO_PIN_18, GPIO_PIN_19,
+            GPIO_PIN_20, GPIO_PIN_21, GPIO_PIN_22, GPIO_PIN_23, GPIO_PIN_24,
+            GPIO_PIN_25, GPIO_PIN_26, GPIO_PIN_27, GPIO_PIN_28, GPIO_PIN_29
+        };
+        config.has_gpioMappings = true;
+        config.gpioMappings.pins_count = NUM_BANK0_GPIOS;
+        for (unsigned int i = 0; i < NUM_BANK0_GPIOS; i++) {
+            config.gpioMappings.pins[i].action = boardPins[i];
+            config.gpioMappings.pins[i].has_action = true;
+        }
+        for (pb_size_t p = 0; p < config.profileOptions.gpioMappingsSets_count; p++) {
+            config.profileOptions.gpioMappingsSets[p].pins_count = NUM_BANK0_GPIOS;
+            for (unsigned int i = 0; i < NUM_BANK0_GPIOS; i++) {
+                config.profileOptions.gpioMappingsSets[p].pins[i].action = boardPins[i];
+                config.profileOptions.gpioMappingsSets[p].pins[i].has_action = true;
+            }
+        }
+    }
 #endif
 }
 

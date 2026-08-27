@@ -1,8 +1,38 @@
 #include "status_bar.h"
 
 #include "addons/wireless.h"
+#include "hardware/adc.h"
 #include "hardware/gpio.h"
 #include "tusb.h"
+
+#include <stdio.h>
+#include <string.h>
+
+static bool s_adcReady = false;
+
+static int batteryAdcChannel()
+{
+    if (!isValidPin(BATTERY_ADC_PIN) || BATTERY_ADC_PIN < 26 || BATTERY_ADC_PIN > 29) {
+        return -1;
+    }
+    return BATTERY_ADC_PIN - 26;
+}
+
+static int batteryMillivolts()
+{
+    const int ch = batteryAdcChannel();
+    if (ch < 0 || !s_adcReady) {
+        return -1;
+    }
+
+    adc_select_input((uint)ch);
+    uint32_t acc = 0;
+    for (int i = 0; i < 8; i++) {
+        acc += adc_read();
+    }
+    const float vadc_mv = (acc / 8.0f) * (3300.0f / 4095.0f);
+    return (int)(vadc_mv * (float)BATTERY_ADC_SCALE + 0.5f);
+}
 
 char statusLinkLetter()
 {
@@ -32,6 +62,11 @@ bool batteryVoltageLow()
         return false;
     }
 
+    const int mv = batteryMillivolts();
+    if (mv >= 0) {
+        return mv < BATTERY_LOW_MV;
+    }
+
     if (!isValidPin(BATTERY_LOW_PIN)) {
         return false;
     }
@@ -40,8 +75,35 @@ bool batteryVoltageLow()
     return gpio_get(BATTERY_LOW_PIN) == 0;
 }
 
+int batteryPercent()
+{
+    if (tud_mounted()) {
+        return 100;
+    }
+
+    const int mv = batteryMillivolts();
+    if (mv < 0) {
+        return -1;
+    }
+    if (mv <= BATTERY_EMPTY_MV) {
+        return 0;
+    }
+    if (mv >= BATTERY_FULL_MV) {
+        return 100;
+    }
+    return (mv - BATTERY_EMPTY_MV) * 100 / (BATTERY_FULL_MV - BATTERY_EMPTY_MV);
+}
+
 void batteryLedGpioSetup()
 {
+    const int ch = batteryAdcChannel();
+    if (ch >= 0) {
+        adc_init();
+        adc_gpio_init(BATTERY_ADC_PIN);
+        adc_select_input((uint)ch);
+        s_adcReady = true;
+    }
+
     if (isValidPin(BATTERY_LOW_PIN)) {
         gpio_init(BATTERY_LOW_PIN);
         gpio_set_dir(BATTERY_LOW_PIN, GPIO_IN);
@@ -76,11 +138,16 @@ void batteryLedGpioProcess()
 
 void appendStatusLinkBattery(std::string& bar, int width)
 {
-    char tail[2];
-    tail[0] = statusLinkLetter();
-    tail[1] = '\0';
+    char tail[8];
+    const int pct = batteryPercent();
+    const char link = statusLinkLetter();
+    if (pct < 0) {
+        snprintf(tail, sizeof(tail), "--%%%c", link);
+    } else {
+        snprintf(tail, sizeof(tail), "%d%%%c", pct, link);
+    }
 
-    const int tlen = 1;
+    const int tlen = (int)strlen(tail);
     if (width < tlen) {
         bar.assign(tail);
         return;

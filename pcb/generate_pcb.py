@@ -29,11 +29,11 @@ RP2040 = {
 # Pico16 firmware GPIO map.
 STICK_GPIO = {
     0: "UART_TX/Jerry", 1: "nRF_CE", 2: "L3", 3: "USB_HOST_DM", 4: "USB_HOST_DP",
-    5: "FN", 6: "A2/Capture", 7: "A1/Home", 8: "S1/Select", 9: "B4/Y",
-    10: "R1", 11: "L1", 12: "B3/X", 13: "B2/B", 14: "R2", 15: "L2",
+    5: "L2", 6: "A2/Capture", 7: "A1/Home", 8: "S1/Select", 9: "B4/Y",
+    10: "R1", 11: "L1", 12: "B3/X", 13: "B2/B", 14: "R2", 15: "nRF_MOSI",
     16: "RIGHT", 17: "S2/Start", 18: "B1/A", 19: "R3", 20: "UP", 21: "nRF_CSN",
     22: "DOWN", 23: "LEFT", 24: "TURBO", 25: "nRF_SCK", 26: "OLED_SDA",
-    27: "OLED_SCL", 28: "WS2812", 29: "nRF_MOSI",
+    27: "OLED_SCL", 28: "WS2812", 29: "VBAT_ADC",
 }
 
 RX_GPIO = {1: "nRF_CE", 16: "nRF_MISO", 21: "nRF_CSN", 25: "nRF_SCK", 29: "nRF_MOSI"}
@@ -270,12 +270,12 @@ def stick_board(out: Path):
         "B3": (78, 58), "B4": (90, 54), "R1": (102, 58), "L1": (114, 62),
         "B1": (78, 70), "B2": (90, 66), "R2": (102, 70), "L2": (114, 74),
         "S1": (48, 54), "S2": (60, 54), "A1": (48, 46), "A2": (60, 46),
-        "L3": (36, 70), "R3": (66, 70), "FN": (54, 78), "TURBO": (66, 78),
+        "L3": (36, 70), "R3": (66, 70), "TURBO": (66, 78),
     }
     btn_gpio = {
         "UP": 20, "DOWN": 22, "LEFT": 23, "RIGHT": 16,
-        "B1": 18, "B2": 13, "B3": 12, "B4": 9, "R1": 10, "L1": 11, "R2": 14, "L2": 15,
-        "S1": 8, "S2": 17, "A1": 7, "A2": 6, "L3": 2, "R3": 19, "FN": 5, "TURBO": 24,
+        "B1": 18, "B2": 13, "B3": 12, "B4": 9, "R1": 10, "L1": 11, "R2": 14, "L2": 5,
+        "S1": 8, "S2": 17, "A1": 7, "A2": 6, "L3": 2, "R3": 19, "TURBO": 24,
     }
 
     gtl, gbl, gto, gts, gko = Gerber("GTL"), Gerber("GBL"), Gerber("GTO"), Gerber("GTS"), Gerber("GKO")
@@ -349,6 +349,15 @@ def stick_board(out: Path):
         gtl.flash_circ(x, y, 1.7)
         drl.add(x, y, 0.9)
 
+    # Battery ADC divider (GP29). 100k/100k: VBAT -- R1 -- GP29 -- R2 -- GND
+    bat = (oled[0], oled[1] + 10)
+    svg.append(f'<text class="slks" x="{bat[0]-8:.1f}" y="{bat[1]-3:.1f}">J3 VBAT ADC GP29</text>')
+    for i, p in enumerate(["GND", "GP29", "VBAT"]):
+        x, y = bat[0] - 4 + i * 2.54, bat[1]
+        svg.append(svg_th(x, y, 1.7, 0.9, p))
+        gtl.flash_circ(x, y, 1.7)
+        drl.add(x, y, 0.9)
+
     # USB host auth
     svg.append('<rect class="usb" x="0.4" y="48" width="7.5" height="9" rx="0.6"/>')
     svg.append('<text class="slks" x="0.6" y="47.3">USB-C AUTH (PS/Xbox)</text>')
@@ -369,7 +378,7 @@ def stick_board(out: Path):
         gtl.line(x, y, u1[0] + 8, u1[1], 0.25)
 
     # SPI traces to nRF
-    for label, gx in [("CE", 1), ("CSN", 21), ("SCK", 25), ("MOSI", 29)]:
+    for label, gx in [("CE", 1), ("CSN", 21), ("SCK", 25), ("MOSI", 15)]:
         gtl.line(u1[0] + 4, u1[1], nrf[0] - 6.5, nrf[1], 0.3)
     gtl.line(u1[0], u1[1], jerry[0], jerry[1], 0.25)
 
@@ -523,16 +532,16 @@ def schematic_svg(path: Path):
 <text x="356" y="142" font-size="12">GP20 UP  GP22 DOWN</text>
 <text x="356" y="160" font-size="12">GP23 LEFT  GP16 RIGHT</text>
 <text x="356" y="178" font-size="12">GP18 B1  GP13 B2  GP12 B3  GP9 B4</text>
-<text x="356" y="196" font-size="12">GP10 R1  GP11 L1  GP14 R2  GP15 L2</text>
+<text x="356" y="196" font-size="12">GP10 R1  GP11 L1  GP14 R2  GP5 L2</text>
 <text x="356" y="214" font-size="12">GP8 S1  GP17 S2  GP2 L3  GP19 R3</text>
-<text x="356" y="232" font-size="12">GP7 A1  GP6 A2  GP5 FN  GP24 TURBO</text>
-<text x="356" y="258" font-size="12">GP26/27 OLED  GP28 WS2812</text>
+<text x="356" y="232" font-size="12">GP7 A1  GP6 A2  GP24 TURBO（无 FN）</text>
+<text x="356" y="258" font-size="12">GP26/27 OLED  GP28 WS2812  GP29 ADC</text>
 <rect x="610" y="90" width="220" height="200" rx="8" fill="#fff" stroke="#333"/>
 <text x="626" y="118" font-size="16" font-weight="700">2.4G Si24R1</text>
 <text x="626" y="142" font-size="12">CE  GP1</text>
 <text x="626" y="160" font-size="12">CSN GP21</text>
 <text x="626" y="178" font-size="12">SCK GP25</text>
-<text x="626" y="196" font-size="12">MOSI GP29</text>
+<text x="626" y="196" font-size="12">MOSI GP15</text>
 <text x="626" y="214" font-size="12">MISO 手柄可不接</text>
 <text x="626" y="232" font-size="12">接收器 MISO = GP16</text>
 <text x="626" y="258" font-size="12">VCC 3V3  频道 80  2Mbps</text>
@@ -547,10 +556,10 @@ def schematic_svg(path: Path):
 <text x="866" y="258" font-size="12">Xbox/PS 走手柄 USB 认证</text>
 <rect x="30" y="320" width="500" height="200" rx="8" fill="#fff" stroke="#333"/>
 <text x="46" y="348" font-size="16" font-weight="700">USB</text>
-<text x="46" y="376" font-size="13">JUSB1 设备口：USB_DP/DM + 27Ω → 电脑 / 主机。Xbox/PS 引导认证走这口 + JUSB2 上的官方/兼容 dongle。</text>
-<text x="46" y="404" font-size="13">JUSB2 主机口：GP4 D+、GP3 D-（PIO USB）。插 PS5 / Xbox 认证狗。</text>
+<text x="46" y="376" font-size="13">JUSB1 设备口：USB_DP/DM + 27Ω → 电脑 / 主机。Xbox/PS 引导认证走这口 + JUSB2 上带 NXP7105 的官方/兼容街机手柄或 dongle。</text>
+<text x="46" y="404" font-size="13">JUSB2 主机口：GP4 D+、GP3 D-（PIO USB）。PS5 固定报街机手柄类型 7，不要用 DualShock VID/PID。</text>
 <text x="46" y="432" font-size="13">手柄 USB 一旦枚举，固件 tud_mounted() 静音无线，避免双设备。</text>
-<text x="46" y="460" font-size="13">开机：R1 Xbox · L1 PS5 · B4 PS4 · L2 Switch Pro（无线只在 Switch 模式发 Pro 报告）。</text>
+<text x="46" y="460" font-size="13">开机：A Switch Pro · B Xbox 360 · X PS3 · Y PS4 · R1 Xbox One · L1 PS5。电量 GP29 ADC（100k/100k 分压）。</text>
 <rect x="560" y="320" width="510" height="200" rx="8" fill="#fff" stroke="#333"/>
 <text x="576" y="348" font-size="16" font-weight="700">接收器（第二块板）</text>
 <text x="576" y="376" font-size="13">同样 RP2040 + W25Q16 + 12MHz + USB-C + Si24R1（多一根 MISO GP16）。</text>

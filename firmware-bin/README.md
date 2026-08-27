@@ -32,16 +32,16 @@ Xbox One / PS5 把官方或兼容认证狗插在板上 **USB-C AUTH** 口。PS4 
 
 **插着手柄 USB 时无线不发射。** 用蓝牙 / 2.4G 时拔掉手柄 USB。
 
-OLED 右上角只显示 **L** 插线 / **B** 蓝牙 / **G** 2.4G，不做电量百分比。
+OLED 右上角显示 **87%B** 这种百分比 + **L** 插线 / **B** 蓝牙 / **G** 2.4G。
 
-双色电量灯：按键灯串后面再串一颗 WS2812（Pico16 下标 14，还是 GP28）。正常绿，低压红，插 USB 一定绿。检测不走 ADC：电压检测芯片开漏接到 `BATTERY_LOW_PIN`（低=亏电）。Pico16 脚满了所以这个脚先是 -1，灯会一直绿，直到你给检测芯片找一个空闲数字脚。
+双色电量灯：按键灯串后面再串一颗 WS2812（Pico16 下标 14，还是 GP28）。正常绿，低于约 3.5 V 红，插 USB 一定绿。电量 ADC 在 **GP29**（100k/100k 分压，`BATTERY_ADC_SCALE` 2.0）。不要把电芯正极直接焊到 GP29。
 
 快捷键（A2=TOUCH，S2=START，S1=SELECT）写进固件，开机强制覆盖网页配置：
 
 - A2+START+LEFT 左摇杆 · A2+START+RIGHT 右摇杆 · A2+START+UP 十字键
 - A2+SELECT+UP 上优先 · A2+SELECT+LEFT 后输入优先 · A2+SELECT+DOWN 回中 · A2+SELECT+RIGHT 先输入优先
 
-RGB 只跟灯珠串联顺序，改键值不会把灯挪到别的位置。USB-C AUTH 认证口默认打开。
+RGB 只跟灯珠串联顺序，改键值不会把灯挪到别的位置。USB-C AUTH 认证口默认打开。PS5 固定为带 NXP7105 的街机手柄类型 7（USB 引导认证），不要改成 DualShock 仿冒。
 
 ## 2.4G 接收器
 
@@ -73,5 +73,6 @@ AC632N 是独立蓝牙 MCU。**不烧它，Switch 蓝牙不能用。**
 
 ## 手柄 Si24R1 脚位（Pico16）
 
-CE GP1 · CSN GP21 · SCK GP25 · MOSI GP29 · MISO 可不接  
-接收器多接 MISO **GP16**
+CE GP1 · CSN GP21 · SCK GP25 · MOSI **GP15** · MISO 可不接  
+电量 ADC **GP29**（分压）· L2 **GP5** · 无 FN  
+接收器多接 MISO **GP16**（接收器 MOSI 仍是 GP29）
