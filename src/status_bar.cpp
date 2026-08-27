@@ -1,6 +1,5 @@
 #include "status_bar.h"
 
-#include "helper.h"
 #include "addons/wireless.h"
 #include "hardware/gpio.h"
 #include "tusb.h"

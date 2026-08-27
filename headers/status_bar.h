@@ -2,6 +2,7 @@
 #define STATUS_BAR_H_
 
 #include <string>
+#include "helper.h"
 
 #ifndef BATTERY_LOW_PIN
 #define BATTERY_LOW_PIN -1
