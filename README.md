@@ -48,10 +48,13 @@ OLED 右上角显示电量百分比和链路字母，例如 **87%B**：**L** 插
 
 ![2.4G 接收器](pcb/sheets/receiver.png)
 
-| 板 | 尺寸 | Gerber |
-|----|------|--------|
-| 手柄主板 | 120×82 mm | [`pcb/stick/GP2040-WF-stick-gerber.zip`](pcb/stick/GP2040-WF-stick-gerber.zip) |
-| 2.4G 接收器 | 42×18 mm | [`pcb/receiver/GP2040-WF-receiver-gerber.zip`](pcb/receiver/GP2040-WF-receiver-gerber.zip) |
+| 板 | 尺寸 | Gerber | 嘉立创EDA 标准版 |
+|----|------|--------|------------------|
+| 手柄主板 | 120×82 mm | [`pcb/stick/GP2040-WF-stick-gerber.zip`](pcb/stick/GP2040-WF-stick-gerber.zip) | [`pcb/lceda/GP2040-WF-stick.json`](pcb/lceda/GP2040-WF-stick.json) |
+| 2.4G 接收器 | 42×18 mm | [`pcb/receiver/GP2040-WF-receiver-gerber.zip`](pcb/receiver/GP2040-WF-receiver-gerber.zip) | [`pcb/lceda/GP2040-WF-receiver.json`](pcb/lceda/GP2040-WF-receiver.json) |
+| 原理图 | — | — | [`pcb/lceda/GP2040-WF-schematic.json`](pcb/lceda/GP2040-WF-schematic.json) |
+
+立创EDA **标准版** → 文件 → 打开 → 选 JSON。导入步骤见 [`pcb/lceda/README.md`](pcb/lceda/README.md)。专业版不要直接开这些文件。
 
 KiCad 8：`pcb/stick/*.kicad_pcb`、`pcb/receiver/*.kicad_pcb`。投产前铺 GND 铜皮、补齐 USB-C、跑 DRC。QFN-56 按 RP2040 数据手册。重新出图：`python3 pcb/generate_pcb.py`。
 
