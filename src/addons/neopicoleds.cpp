@@ -15,6 +15,7 @@
 #include "usbdriver.h"
 #include "enums.h"
 #include "helper.h"
+#include "hardware/gpio.h"
 
 #define FRAME_MAX 100
 #define AL_ROW	5
@@ -503,6 +504,145 @@ void NeoPicoLEDAddon::ambientLightLinkage() {
 	}
 }
 
+#ifdef FORCE_LED_WIRE_ORDER
+static int8_t factoryPinForAction(GpioAction action)
+{
+    int8_t pin = -1;
+#define MATCH_FACTORY_PIN(macro, gpio) \
+    if (GPIO_PIN_##macro == action) { pin = gpio; }
+#ifdef GPIO_PIN_00
+    MATCH_FACTORY_PIN(00, 0)
+#endif
+#ifdef GPIO_PIN_01
+    MATCH_FACTORY_PIN(01, 1)
+#endif
+#ifdef GPIO_PIN_02
+    MATCH_FACTORY_PIN(02, 2)
+#endif
+#ifdef GPIO_PIN_03
+    MATCH_FACTORY_PIN(03, 3)
+#endif
+#ifdef GPIO_PIN_04
+    MATCH_FACTORY_PIN(04, 4)
+#endif
+#ifdef GPIO_PIN_05
+    MATCH_FACTORY_PIN(05, 5)
+#endif
+#ifdef GPIO_PIN_06
+    MATCH_FACTORY_PIN(06, 6)
+#endif
+#ifdef GPIO_PIN_07
+    MATCH_FACTORY_PIN(07, 7)
+#endif
+#ifdef GPIO_PIN_08
+    MATCH_FACTORY_PIN(08, 8)
+#endif
+#ifdef GPIO_PIN_09
+    MATCH_FACTORY_PIN(09, 9)
+#endif
+#ifdef GPIO_PIN_10
+    MATCH_FACTORY_PIN(10, 10)
+#endif
+#ifdef GPIO_PIN_11
+    MATCH_FACTORY_PIN(11, 11)
+#endif
+#ifdef GPIO_PIN_12
+    MATCH_FACTORY_PIN(12, 12)
+#endif
+#ifdef GPIO_PIN_13
+    MATCH_FACTORY_PIN(13, 13)
+#endif
+#ifdef GPIO_PIN_14
+    MATCH_FACTORY_PIN(14, 14)
+#endif
+#ifdef GPIO_PIN_15
+    MATCH_FACTORY_PIN(15, 15)
+#endif
+#ifdef GPIO_PIN_16
+    MATCH_FACTORY_PIN(16, 16)
+#endif
+#ifdef GPIO_PIN_17
+    MATCH_FACTORY_PIN(17, 17)
+#endif
+#ifdef GPIO_PIN_18
+    MATCH_FACTORY_PIN(18, 18)
+#endif
+#ifdef GPIO_PIN_19
+    MATCH_FACTORY_PIN(19, 19)
+#endif
+#ifdef GPIO_PIN_20
+    MATCH_FACTORY_PIN(20, 20)
+#endif
+#ifdef GPIO_PIN_21
+    MATCH_FACTORY_PIN(21, 21)
+#endif
+#ifdef GPIO_PIN_22
+    MATCH_FACTORY_PIN(22, 22)
+#endif
+#ifdef GPIO_PIN_23
+    MATCH_FACTORY_PIN(23, 23)
+#endif
+#ifdef GPIO_PIN_24
+    MATCH_FACTORY_PIN(24, 24)
+#endif
+#ifdef GPIO_PIN_25
+    MATCH_FACTORY_PIN(25, 25)
+#endif
+#ifdef GPIO_PIN_26
+    MATCH_FACTORY_PIN(26, 26)
+#endif
+#ifdef GPIO_PIN_27
+    MATCH_FACTORY_PIN(27, 27)
+#endif
+#ifdef GPIO_PIN_28
+    MATCH_FACTORY_PIN(28, 28)
+#endif
+#ifdef GPIO_PIN_29
+    MATCH_FACTORY_PIN(29, 29)
+#endif
+#undef MATCH_FACTORY_PIN
+    return pin;
+}
+
+static int8_t factoryPinForLedIndex(int ledIndex)
+{
+    if (ledIndex < 0) {
+        return -1;
+    }
+    if (ledIndex == LEDS_DPAD_LEFT)  return factoryPinForAction(GpioAction::BUTTON_PRESS_LEFT);
+    if (ledIndex == LEDS_DPAD_DOWN)  return factoryPinForAction(GpioAction::BUTTON_PRESS_DOWN);
+    if (ledIndex == LEDS_DPAD_RIGHT) return factoryPinForAction(GpioAction::BUTTON_PRESS_RIGHT);
+    if (ledIndex == LEDS_DPAD_UP)    return factoryPinForAction(GpioAction::BUTTON_PRESS_UP);
+    if (ledIndex == LEDS_BUTTON_B1)  return factoryPinForAction(GpioAction::BUTTON_PRESS_B1);
+    if (ledIndex == LEDS_BUTTON_B2)  return factoryPinForAction(GpioAction::BUTTON_PRESS_B2);
+    if (ledIndex == LEDS_BUTTON_B3)  return factoryPinForAction(GpioAction::BUTTON_PRESS_B3);
+    if (ledIndex == LEDS_BUTTON_B4)  return factoryPinForAction(GpioAction::BUTTON_PRESS_B4);
+    if (ledIndex == LEDS_BUTTON_L1)  return factoryPinForAction(GpioAction::BUTTON_PRESS_L1);
+    if (ledIndex == LEDS_BUTTON_R1)  return factoryPinForAction(GpioAction::BUTTON_PRESS_R1);
+    if (ledIndex == LEDS_BUTTON_L2)  return factoryPinForAction(GpioAction::BUTTON_PRESS_L2);
+    if (ledIndex == LEDS_BUTTON_R2)  return factoryPinForAction(GpioAction::BUTTON_PRESS_R2);
+    if (ledIndex == LEDS_BUTTON_S1)  return factoryPinForAction(GpioAction::BUTTON_PRESS_S1);
+    if (ledIndex == LEDS_BUTTON_S2)  return factoryPinForAction(GpioAction::BUTTON_PRESS_S2);
+    if (ledIndex == LEDS_BUTTON_L3)  return factoryPinForAction(GpioAction::BUTTON_PRESS_L3);
+    if (ledIndex == LEDS_BUTTON_R3)  return factoryPinForAction(GpioAction::BUTTON_PRESS_R3);
+    if (ledIndex == LEDS_BUTTON_A1)  return factoryPinForAction(GpioAction::BUTTON_PRESS_A1);
+    if (ledIndex == LEDS_BUTTON_A2)  return factoryPinForAction(GpioAction::BUTTON_PRESS_A2);
+    return -1;
+}
+
+static bool pixelPressedOnWire(const Pixel& pixel)
+{
+    if (pixel.index < 0) {
+        return false;
+    }
+    const int8_t pin = factoryPinForLedIndex(pixel.index);
+    if (pin < 0) {
+        return false;
+    }
+    return gpio_get(pin) == 0;
+}
+#endif
+
 void NeoPicoLEDAddon::process() {
     const LEDOptions& ledOptions = Storage::getInstance().getLedOptions();
     if (!isValidPin(ledOptions.dataPin) || !time_reached(this->nextRunTime))
@@ -546,6 +686,17 @@ void NeoPicoLEDAddon::process() {
         as.HandleEvent(action);
     }
 
+#ifdef FORCE_LED_WIRE_ORDER
+    vector<Pixel> pressed;
+    for (auto row : matrix.pixels)
+    {
+        for (auto pixel : row)
+        {
+            if (pixelPressedOnWire(pixel))
+                pressed.push_back(pixel);
+        }
+    }
+#else
     uint32_t buttonState = gamepad->state.dpad << 16 | gamepad->state.buttons;
     vector<Pixel> pressed;
     for (auto row : matrix.pixels)
@@ -556,6 +707,7 @@ void NeoPicoLEDAddon::process() {
                 pressed.push_back(pixel);
         }
     }
+#endif
     if (pressed.size() > 0)
         as.HandlePressed(pressed);
     else

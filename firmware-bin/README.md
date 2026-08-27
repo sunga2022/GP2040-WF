@@ -32,6 +32,15 @@ Xbox One / PS5 把官方或兼容认证狗插在板上 **USB-C AUTH** 口。PS4 
 
 **插着手柄 USB 时无线不发射。** 用蓝牙 / 2.4G 时拔掉手柄 USB。
 
+OLED 右上角最后是电量 + 链路字母：`--L` 插线，`--B` 蓝牙，`--G` 2.4G。Pico16 没有空闲 ADC（GP26–29 都被占用），所以百分比是 `--`，不是假电压。以后板子如果有分压脚，在 `BoardConfig.h` 里设 `BATTERY_ADC_PIN` 就会显示 `87%B` 这种。
+
+快捷键（A2=TOUCH，S2=START，S1=SELECT）写进固件，开机强制覆盖网页配置：
+
+- A2+START+LEFT 左摇杆 · A2+START+RIGHT 右摇杆 · A2+START+UP 十字键
+- A2+SELECT+UP 上优先 · A2+SELECT+LEFT 后输入优先 · A2+SELECT+DOWN 回中 · A2+SELECT+RIGHT 先输入优先
+
+RGB 只跟灯珠串联顺序，改键值不会把灯挪到别的位置。USB-C AUTH 认证口默认打开。
+
 ## 2.4G 接收器
 
 1. 按住 BOOT，插接收器 USB-C

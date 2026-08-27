@@ -32,7 +32,9 @@ GP2040-CE **原样**跑在 RP2040 上：按键、SOCD、热键、网页配置、
 
 **杰里 AC632N 必须另烧固件**（UF2 进不去那颗芯片）。现成 `firmware-bin/GP2040-WF_AC632N.ufw`，GitHub Actions 工作流 `Jieli AC632N HID` 也会编。步骤见 [`firmware/jieli_ac632n/README.md`](firmware/jieli_ac632n/README.md)。只用有线 / 2.4G 可以不焊它。
 
-开机：**A Switch Pro · B Xbox 360 · X PS3 · Y PS4 · R1 Xbox One · L1 PS5 · L2 P5 General · R2 键盘**。Xbox One / PS5 走手柄 USB + 认证口；PS4 用内置密钥；无线只在 Switch Pro 模式发。
+开机：**A Switch Pro · B Xbox 360 · X PS3 · Y PS4 · R1 Xbox One · L1 PS5 · L2 P5 General · R2 键盘**。Xbox One / PS5 走手柄 USB + 认证口（默认打开）；PS4 用内置密钥；无线只在 Switch Pro 模式发。
+
+OLED 右上角：电量（Pico16 无空闲 ADC，显示 `--`）+ **L** 插线 / **B** 蓝牙 / **G** 2.4G。快捷键锁死：A2+START+左/右/上 = 左摇杆 / 右摇杆 / 十字键；A2+SELECT+上/左/下/右 = 上优先 / 后输入优先 / 回中 / 先输入优先。RGB 按灯珠线路亮，不跟键值重映射。
 
 ## PCB / 嘉立创
 

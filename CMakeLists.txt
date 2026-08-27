@@ -295,6 +295,7 @@ src/addons/gamepad_usb_host.cpp
 src/addons/gamepad_usb_host_listener.cpp
 src/addons/tg16_input.cpp
 src/addons/wireless.cpp
+src/status_bar.cpp
 wireless/nrf24.c
 src/animationstation/animation.cpp
 src/animationstation/animationstation.cpp

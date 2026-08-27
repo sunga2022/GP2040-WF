@@ -1086,6 +1086,95 @@ void ConfigUtils::initUnsetPropertiesWithDefaults(Config& config)
     config.gamepadOptions.has_ps4AuthType = true;
 #undef FORCE_PROPERTY_BYTES
 #endif
+
+#ifdef FORCE_USB_AUTH_PORT
+    config.has_peripheralOptions = true;
+    config.peripheralOptions.has_blockUSB0 = true;
+    config.peripheralOptions.blockUSB0.enabled = true;
+    config.peripheralOptions.blockUSB0.has_enabled = true;
+    config.peripheralOptions.blockUSB0.dp = USB_PERIPHERAL_PIN_DPLUS;
+    config.peripheralOptions.blockUSB0.has_dp = true;
+    config.peripheralOptions.blockUSB0.order = USB_PERIPHERAL_PIN_ORDER;
+    config.peripheralOptions.blockUSB0.has_order = true;
+    config.peripheralOptions.blockUSB0.enable5v = USB_PERIPHERAL_PIN_5V;
+    config.peripheralOptions.blockUSB0.has_enable5v = true;
+    config.gamepadOptions.ps5AuthType = DEFAULT_PS5AUTHENTICATION_TYPE;
+    config.gamepadOptions.has_ps5AuthType = true;
+    config.gamepadOptions.xinputAuthType = DEFAULT_XINPUTAUTHENTICATION_TYPE;
+    config.gamepadOptions.has_xinputAuthType = true;
+#endif
+
+#ifdef FORCE_GP2040_HOTKEYS
+#define FORCE_HOTKEY(entry, aux, buttons, dpad, act) \
+    config.hotkeyOptions.has_##entry = true; \
+    config.hotkeyOptions.entry.auxMask = (aux); \
+    config.hotkeyOptions.entry.has_auxMask = true; \
+    config.hotkeyOptions.entry.buttonsMask = (buttons); \
+    config.hotkeyOptions.entry.has_buttonsMask = true; \
+    config.hotkeyOptions.entry.dpadMask = (dpad); \
+    config.hotkeyOptions.entry.has_dpadMask = true; \
+    config.hotkeyOptions.entry.action = static_cast<GamepadHotkey>(act); \
+    config.hotkeyOptions.entry.has_action = true;
+
+    FORCE_HOTKEY(hotkey01, HOTKEY_01_AUX_MASK, HOTKEY_01_BUTTONS_MASK, HOTKEY_01_DPAD_MASK, HOTKEY_01_ACTION);
+    FORCE_HOTKEY(hotkey02, HOTKEY_02_AUX_MASK, HOTKEY_02_BUTTONS_MASK, HOTKEY_02_DPAD_MASK, HOTKEY_02_ACTION);
+    FORCE_HOTKEY(hotkey03, HOTKEY_03_AUX_MASK, HOTKEY_03_BUTTONS_MASK, HOTKEY_03_DPAD_MASK, HOTKEY_03_ACTION);
+    FORCE_HOTKEY(hotkey04, HOTKEY_04_AUX_MASK, HOTKEY_04_BUTTONS_MASK, HOTKEY_04_DPAD_MASK, HOTKEY_04_ACTION);
+    FORCE_HOTKEY(hotkey05, HOTKEY_05_AUX_MASK, HOTKEY_05_BUTTONS_MASK, HOTKEY_05_DPAD_MASK, HOTKEY_05_ACTION);
+    FORCE_HOTKEY(hotkey06, HOTKEY_06_AUX_MASK, HOTKEY_06_BUTTONS_MASK, HOTKEY_06_DPAD_MASK, HOTKEY_06_ACTION);
+    FORCE_HOTKEY(hotkey07, HOTKEY_07_AUX_MASK, HOTKEY_07_BUTTONS_MASK, HOTKEY_07_DPAD_MASK, HOTKEY_07_ACTION);
+    FORCE_HOTKEY(hotkey08, HOTKEY_08_AUX_MASK, HOTKEY_08_BUTTONS_MASK, HOTKEY_08_DPAD_MASK, HOTKEY_08_ACTION);
+    FORCE_HOTKEY(hotkey09, HOTKEY_09_AUX_MASK, HOTKEY_09_BUTTONS_MASK, HOTKEY_09_DPAD_MASK, HOTKEY_09_ACTION);
+    FORCE_HOTKEY(hotkey10, HOTKEY_10_AUX_MASK, HOTKEY_10_BUTTONS_MASK, HOTKEY_10_DPAD_MASK, HOTKEY_10_ACTION);
+    FORCE_HOTKEY(hotkey11, HOTKEY_11_AUX_MASK, HOTKEY_11_BUTTONS_MASK, HOTKEY_11_DPAD_MASK, HOTKEY_11_ACTION);
+    FORCE_HOTKEY(hotkey12, HOTKEY_12_AUX_MASK, HOTKEY_12_BUTTONS_MASK, HOTKEY_12_DPAD_MASK, HOTKEY_12_ACTION);
+    FORCE_HOTKEY(hotkey13, HOTKEY_13_AUX_MASK, HOTKEY_13_BUTTONS_MASK, HOTKEY_13_DPAD_MASK, HOTKEY_13_ACTION);
+    FORCE_HOTKEY(hotkey14, HOTKEY_14_AUX_MASK, HOTKEY_14_BUTTONS_MASK, HOTKEY_14_DPAD_MASK, HOTKEY_14_ACTION);
+    FORCE_HOTKEY(hotkey15, HOTKEY_15_AUX_MASK, HOTKEY_15_BUTTONS_MASK, HOTKEY_15_DPAD_MASK, HOTKEY_15_ACTION);
+    FORCE_HOTKEY(hotkey16, HOTKEY_16_AUX_MASK, HOTKEY_16_BUTTONS_MASK, HOTKEY_16_DPAD_MASK, HOTKEY_16_ACTION);
+#undef FORCE_HOTKEY
+    config.has_hotkeyOptions = true;
+#endif
+
+#ifdef FORCE_LED_WIRE_ORDER
+    config.has_ledOptions = true;
+    config.ledOptions.indexUp = LEDS_DPAD_UP;
+    config.ledOptions.has_indexUp = true;
+    config.ledOptions.indexDown = LEDS_DPAD_DOWN;
+    config.ledOptions.has_indexDown = true;
+    config.ledOptions.indexLeft = LEDS_DPAD_LEFT;
+    config.ledOptions.has_indexLeft = true;
+    config.ledOptions.indexRight = LEDS_DPAD_RIGHT;
+    config.ledOptions.has_indexRight = true;
+    config.ledOptions.indexB1 = LEDS_BUTTON_B1;
+    config.ledOptions.has_indexB1 = true;
+    config.ledOptions.indexB2 = LEDS_BUTTON_B2;
+    config.ledOptions.has_indexB2 = true;
+    config.ledOptions.indexB3 = LEDS_BUTTON_B3;
+    config.ledOptions.has_indexB3 = true;
+    config.ledOptions.indexB4 = LEDS_BUTTON_B4;
+    config.ledOptions.has_indexB4 = true;
+    config.ledOptions.indexL1 = LEDS_BUTTON_L1;
+    config.ledOptions.has_indexL1 = true;
+    config.ledOptions.indexR1 = LEDS_BUTTON_R1;
+    config.ledOptions.has_indexR1 = true;
+    config.ledOptions.indexL2 = LEDS_BUTTON_L2;
+    config.ledOptions.has_indexL2 = true;
+    config.ledOptions.indexR2 = LEDS_BUTTON_R2;
+    config.ledOptions.has_indexR2 = true;
+    config.ledOptions.indexS1 = LEDS_BUTTON_S1;
+    config.ledOptions.has_indexS1 = true;
+    config.ledOptions.indexS2 = LEDS_BUTTON_S2;
+    config.ledOptions.has_indexS2 = true;
+    config.ledOptions.indexL3 = LEDS_BUTTON_L3;
+    config.ledOptions.has_indexL3 = true;
+    config.ledOptions.indexR3 = LEDS_BUTTON_R3;
+    config.ledOptions.has_indexR3 = true;
+    config.ledOptions.indexA1 = LEDS_BUTTON_A1;
+    config.ledOptions.has_indexA1 = true;
+    config.ledOptions.indexA2 = LEDS_BUTTON_A2;
+    config.ledOptions.has_indexA2 = true;
+#endif
 }
 
 

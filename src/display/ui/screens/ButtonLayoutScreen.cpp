@@ -5,6 +5,7 @@
 #include "drivers/xbone/XBOneDriver.h"
 #include "drivers/xinput/XInputDriver.h"
 #include "drivers/p5general/P5GeneralDriver.h"
+#include "status_bar.h"
 
 void ButtonLayoutScreen::init() {
     isInputHistoryEnabled = Storage::getInstance().getDisplayOptions().inputHistoryEnabled;
@@ -265,6 +266,7 @@ void ButtonLayoutScreen::generateHeader() {
     }
 
     trim(statusBar);
+    appendStatusLinkBattery(statusBar);
 }
 
 void ButtonLayoutScreen::drawScreen() {
