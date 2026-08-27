@@ -1,12 +1,17 @@
 # GP2040-WF PCB
 
-两块板：
+看图从 `sheets/` 开始（字大、能读）。1:1 Gerber / KiCad 在 `stick/`、`receiver/`。
 
-1. `stick/` 三模手柄主板（RP2040 + Si24R1 + 杰里 UART + 双 USB-C）
-2. `receiver/` 2.4G 接收器（RP2040 + Si24R1，USB Switch Pro）
+| 图纸 | 文件 |
+|------|------|
+| 原理图 | [GP2040-WF-schematic.png](GP2040-WF-schematic.png) |
+| 手柄装配图 | [sheets/stick-layout.png](sheets/stick-layout.png) |
+| GPIO 脚位表 | [sheets/gpio-map.png](sheets/gpio-map.png) |
+| 接收器 | [sheets/receiver.png](sheets/receiver.png) |
 
-打开 `GP2040-WF-schematic.svg` 看原理图，打开 `stick/GP2040-WF-stick.svg` / `receiver/GP2040-WF-receiver.svg` 看板图。
+- `stick/` 三模手柄主板 120×82 mm（RP2040 + Si24R1 + 杰里 UART + 双 USB-C + GP29 电量 ADC）
+- `receiver/` 2.4G 接收器 42×18 mm（MOSI 仍是 GP29）
 
-KiCad 8：`*.kicad_pcb`。投产前请：铺 GND 铜皮、补齐 USB-C 封装、跑 DRC。Gerber zip 可给嘉立创，**建议先在 KiCad 里确认 QFN 扇出**。
+KiCad 8：`*.kicad_pcb`。投产前请铺 GND 铜皮、补齐 USB-C 封装、跑 DRC。QFN-56 按 RP2040 数据手册表 615–621。
 
-RP2040 引脚号来自官方数据手册表 615–621，和 `configs/Pico16/BoardConfig.h` 一致。
+重新出图：`python3 pcb/generate_pcb.py`

@@ -1,62 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 780" width="1100" height="780">
-<rect width="1100" height="780" fill="#f7f4ea"/>
-<text x="32" y="40" font-size="22" font-family="DejaVu Sans" font-weight="700">GP2040-WF 原理图 · 三模手柄 + 2.4G 接收器</text>
-<text x="32" y="64" font-size="13" font-family="DejaVu Sans">RP2040 QFN-56 pin 号来自 Raspberry Pi 数据手册表 615–621。固件脚位 = configs/Pico16/BoardConfig.h</text>
-<rect x="30" y="90" width="280" height="200" rx="8" fill="#fff" stroke="#333"/>
-<text x="46" y="118" font-size="16" font-weight="700">U1 RP2040</text>
-<text x="46" y="142" font-size="12">USB_DP 47 · USB_DM 46 · 27Ω</text>
-<text x="46" y="160" font-size="12">XIN 20 / XOUT 21 · 12MHz</text>
-<text x="46" y="178" font-size="12">QSPI 51–56 · W25Q16</text>
-<text x="46" y="196" font-size="12">VREG_VIN 44 ← 3V3</text>
-<text x="46" y="214" font-size="12">VREG_VOUT 45 → DVDD 23/50</text>
-<text x="46" y="232" font-size="12">IOVDD 1/10/22/33/42/49 = 3V3</text>
-<text x="46" y="250" font-size="12">TESTEN 19 = GND · RUN 26</text>
-<text x="46" y="272" font-size="12">BOOT: QSPI_CSn 经 1k 拉到 BOOT 键</text>
-<rect x="340" y="90" width="240" height="200" rx="8" fill="#fff" stroke="#333"/>
-<text x="356" y="118" font-size="16" font-weight="700">按键 (对 GND)</text>
-<text x="356" y="142" font-size="12">GP20 UP  GP22 DOWN</text>
-<text x="356" y="160" font-size="12">GP23 LEFT  GP16 RIGHT</text>
-<text x="356" y="178" font-size="12">GP18 B1  GP13 B2  GP12 B3  GP9 B4</text>
-<text x="356" y="196" font-size="12">GP10 R1  GP11 L1  GP14 R2  GP5 L2</text>
-<text x="356" y="214" font-size="12">GP8 S1  GP17 S2  GP2 L3  GP19 R3</text>
-<text x="356" y="232" font-size="12">GP7 A1  GP6 A2  GP24 TURBO（无 FN）</text>
-<text x="356" y="258" font-size="12">GP26/27 OLED  GP28 WS2812  GP29 ADC</text>
-<rect x="610" y="90" width="220" height="200" rx="8" fill="#fff" stroke="#333"/>
-<text x="626" y="118" font-size="16" font-weight="700">2.4G Si24R1</text>
-<text x="626" y="142" font-size="12">CE  GP1</text>
-<text x="626" y="160" font-size="12">CSN GP21</text>
-<text x="626" y="178" font-size="12">SCK GP25</text>
-<text x="626" y="196" font-size="12">MOSI GP15</text>
-<text x="626" y="214" font-size="12">MISO 手柄可不接</text>
-<text x="626" y="232" font-size="12">接收器 MISO = GP16</text>
-<text x="626" y="258" font-size="12">VCC 3V3  频道 80  2Mbps</text>
-<rect x="850" y="90" width="220" height="200" rx="8" fill="#fff" stroke="#333"/>
-<text x="866" y="118" font-size="16" font-weight="700">杰里 AC632N</text>
-<text x="866" y="142" font-size="12">GP0 UART0 TX 1Mbps</text>
-<text x="866" y="160" font-size="12">→ AC632N UART RX</text>
-<text x="866" y="178" font-size="12">共地 3.3V</text>
-<text x="866" y="196" font-size="12">BT 名 Pro Controller</text>
-<text x="866" y="214" font-size="12">VID 057E PID 2009</text>
-<text x="866" y="232" font-size="12">Switch Pro 无加密</text>
-<text x="866" y="258" font-size="12">Xbox/PS 走手柄 USB 认证</text>
-<rect x="30" y="320" width="500" height="200" rx="8" fill="#fff" stroke="#333"/>
-<text x="46" y="348" font-size="16" font-weight="700">USB</text>
-<text x="46" y="376" font-size="13">JUSB1 设备口：USB_DP/DM + 27Ω → 电脑 / 主机。Xbox/PS 引导认证走这口 + JUSB2 上带 NXP7105 的官方/兼容街机手柄或 dongle。</text>
-<text x="46" y="404" font-size="13">JUSB2 主机口：GP4 D+、GP3 D-（PIO USB）。PS5 固定报街机手柄类型 7，不要用 DualShock VID/PID。</text>
-<text x="46" y="432" font-size="13">手柄 USB 一旦枚举，固件 tud_mounted() 静音无线，避免双设备。</text>
-<text x="46" y="460" font-size="13">开机：A Switch Pro · B Xbox 360 · X PS3 · Y PS4 · R1 Xbox One · L1 PS5。电量 GP29 ADC（100k/100k 分压）。</text>
-<rect x="560" y="320" width="510" height="200" rx="8" fill="#fff" stroke="#333"/>
-<text x="576" y="348" font-size="16" font-weight="700">接收器（第二块板）</text>
-<text x="576" y="376" font-size="13">同样 RP2040 + W25Q16 + 12MHz + USB-C + Si24R1（多一根 MISO GP16）。</text>
-<text x="576" y="404" font-size="13">USB 枚举 Switch Pro 057E:2009，处理 0x80 握手和 0x01 子命令。</text>
-<text x="576" y="432" font-size="13">空中 20 字节 WfFrame，管道 E7 E7 E7 E7 57，2480MHz。</text>
-<text x="576" y="460" font-size="13">插 Switch 底座或 PC/Steam。不要插 Xbox/PS 主机。</text>
-<rect x="30" y="546" width="1040" height="200" rx="8" fill="#1a1a1a"/>
-<text x="46" y="578" fill="#f4f0e0" font-size="16" font-weight="700">电源</text>
-<text x="46" y="606" fill="#ddd" font-size="13">VBUS 5V → AMS1117-3.3 → 3V3。每个 IOVDD 100nF，VREG_VIN 1uF+100nF，VREG_VOUT 1uF 到 DVDD。</text>
-<text x="46" y="630" fill="#ddd" font-size="13">ADC_AVDD 经 47Ω + 100nF 到 3V3。USB_VDD 接 3V3。热焊盘 GND 过孔阵列。</text>
-<text x="46" y="654" fill="#ddd" font-size="13">投板：嘉立创 2 层，最小线宽 0.12mm（QFN 扇出 0.2mm pad / 0.12mm 线），过孔 0.3/0.15 或 0.4/0.2。</text>
-<text x="46" y="686" fill="#f4c542" font-size="13">QFN-56 必须按数据手册焊盘图。先在 KiCad 打开 .kicad_pcb 填铜、DRC，再下 Gerber。</text>
-<text x="46" y="718" fill="#aaa" font-size="12">GP2040-WF · sunga2022 · 2026-08-26 · 与仓库 configs/Pico16 和 firmware/receiver_pico 一致</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1220 680" width="1220" height="680">
+<title>GP2040-WF 原理图</title>
+<rect width="1220" height="680" fill="#0f1419"/>
+<text x="40" y="48" fill="#f4f0e0" font-size="28" font-family="DejaVu Sans, sans-serif" font-weight="700">GP2040-WF 原理图</text>
+<text x="40" y="74" fill="#9aa3ad" font-size="14" font-family="DejaVu Sans, sans-serif">GP2040-WF Pico16 · 与 firmware-bin/GP2040-WF_Pico16.uf2 同一套脚位 · 无 FN 键</text>
+<rect x="40" y="100" width="280" height="390" rx="10" fill="#1b2430" stroke="#d8dee6" stroke-width="1.4"/>
+<text x="54" y="126" fill="#f4f0e0" font-size="16" font-family="DejaVu Sans, sans-serif" font-weight="700">U1 RP2040  QFN-56</text>
+<text x="54" y="150" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">12 MHz 晶振 · W25Q16 QSPI</text>
+<text x="54" y="168" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">设备 USB：脚 47 DP / 46 DM</text>
+<text x="54" y="186" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">认证 USB：GP4 D+  GP3 D−</text>
+<text x="54" y="204" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">3V3 ← AMS1117 ← VBUS 5V</text>
+<text x="54" y="222" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif"></text>
+<text x="54" y="240" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">GP0  UART → 杰里 RX</text>
+<text x="54" y="258" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">GP1  Si24R1 CE</text>
+<text x="54" y="276" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">GP15 Si24R1 MOSI（从 29 挪来）</text>
+<text x="54" y="294" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">GP21 CSN   GP25 SCK</text>
+<text x="54" y="312" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">GP26/27 OLED I2C</text>
+<text x="54" y="330" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">GP28 WS2812 + 电量灯</text>
+<text x="54" y="348" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">GP29 VBAT ADC3 必须分压</text>
+<text x="54" y="366" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">GP5  L2（原 FN 焊盘）</text>
+<text x="54" y="384" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">FN 按键已取消</text>
+<rect x="380" y="100" width="240" height="170" rx="10" fill="#1d4e89" stroke="#d8dee6" stroke-width="1.4"/>
+<text x="394" y="126" fill="#f4f0e0" font-size="16" font-family="DejaVu Sans, sans-serif" font-weight="700">U4  Si24R1 / nRF24</text>
+<text x="394" y="150" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">CE   GP1</text>
+<text x="394" y="168" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">CSN  GP21</text>
+<text x="394" y="186" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">SCK  GP25</text>
+<text x="394" y="204" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">MOSI GP15   手柄发射</text>
+<text x="394" y="222" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">MISO 可不接</text>
+<text x="394" y="240" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">3V3 / GND   2 Mbps ch80</text>
+<rect x="660" y="100" width="240" height="170" rx="10" fill="#9a3412" stroke="#d8dee6" stroke-width="1.4"/>
+<text x="674" y="126" fill="#f4f0e0" font-size="16" font-family="DejaVu Sans, sans-serif" font-weight="700">杰里 AC632N</text>
+<text x="674" y="150" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">GP0 UART0 TX 1 Mbps</text>
+<text x="674" y="168" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">→ 芯片 UART RX (PA5)</text>
+<text x="674" y="186" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">共地 3.3 V</text>
+<text x="674" y="204" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">BT 名 Pro Controller</text>
+<text x="674" y="222" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">VID 057E PID 2009</text>
+<text x="674" y="240" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">只做 Switch 经典蓝牙</text>
+<rect x="940" y="100" width="240" height="170" rx="10" fill="#0f766e" stroke="#d8dee6" stroke-width="1.4"/>
+<text x="954" y="126" fill="#f4f0e0" font-size="16" font-family="DejaVu Sans, sans-serif" font-weight="700">J2 OLED + 灯</text>
+<text x="954" y="150" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">SDA GP26  SCL GP27</text>
+<text x="954" y="168" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">SSD1306 128×64</text>
+<text x="954" y="186" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">WS2812 DIN GP28</text>
+<text x="954" y="204" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">按键灯 0–13 + 电量灯 14</text>
+<text x="954" y="222" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">绿=正常  红≈3.5 V</text>
+<text x="954" y="240" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">插 USB 一定绿</text>
+<rect x="380" y="300" width="240" height="200" rx="10" fill="#b45309" stroke="#d8dee6" stroke-width="1.4"/>
+<text x="394" y="326" fill="#f4f0e0" font-size="16" font-family="DejaVu Sans, sans-serif" font-weight="700">J3 电量 ADC</text>
+<text x="394" y="350" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">锂电池 4.2 V 禁止直焊 GP29</text>
+<text x="394" y="368" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">VBAT — 100k — GP29</text>
+<text x="394" y="386" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">GP29 — 100k — GND</text>
+<text x="394" y="404" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">BATTERY_ADC_SCALE = 2.0</text>
+<text x="394" y="422" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">空 3.3 V · 满 4.2 V</text>
+<text x="394" y="440" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">亏电阈值 3.5 V</text>
+<text x="394" y="458" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">RP2040 ADC3 = GPIO29</text>
+<rect x="660" y="300" width="240" height="200" rx="10" fill="#7b2d8e" stroke="#d8dee6" stroke-width="1.4"/>
+<text x="674" y="326" fill="#f4f0e0" font-size="16" font-family="DejaVu Sans, sans-serif" font-weight="700">USB</text>
+<text x="674" y="350" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">JUSB1 设备口 → 电脑/主机</text>
+<text x="674" y="368" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">  USB_DP 47  USB_DM 46</text>
+<text x="674" y="386" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">  串 27 Ω</text>
+<text x="674" y="404" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">JUSB2 认证口 NXP7105</text>
+<text x="674" y="422" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">  GP4 D+  GP3 D−</text>
+<text x="674" y="440" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">  PIO USB host order=1</text>
+<text x="674" y="458" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">PS5 街机类型 7 引导认证</text>
+<rect x="940" y="300" width="240" height="200" rx="10" fill="#2d6a4f" stroke="#d8dee6" stroke-width="1.4"/>
+<text x="954" y="326" fill="#f4f0e0" font-size="16" font-family="DejaVu Sans, sans-serif" font-weight="700">按键（对 GND）</text>
+<text x="954" y="350" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">方向  GP20/22/23/16</text>
+<text x="954" y="368" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">B1–B4 GP18/13/12/9</text>
+<text x="954" y="386" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">R1 L1 R2 L2</text>
+<text x="954" y="404" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">     GP10/11/14/5</text>
+<text x="954" y="422" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">S1 S2 A1 A2 L3 R3</text>
+<text x="954" y="440" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">     8 / 17 / 7 / 6 / 2 / 19</text>
+<text x="954" y="458" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">TURBO GP24   无 FN</text>
+<rect x="40" y="520" width="1140" height="100" rx="10" fill="#1b2430" stroke="#d8dee6" stroke-width="1.4"/>
+<text x="54" y="546" fill="#f4f0e0" font-size="16" font-family="DejaVu Sans, sans-serif" font-weight="700">接收器（第二块板 42×18 mm，脚位与手柄不同）</text>
+<text x="54" y="570" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">RP2040 + Si24R1：CE GP1 · CSN GP21 · SCK GP25 · MOSI GP29 · MISO GP16</text>
+<text x="54" y="588" fill="#e8edf2" font-size="13" font-family="DejaVu Sans, sans-serif">接收器 MOSI 仍是 GP29。手柄 MOSI 才是 GP15。USB 枚举 Switch Pro 057E:2009。插 Switch 底座或 Steam，不要插 Xbox / PS。</text>
+<path d="M320 185 L380 185" fill="none" stroke="#8ab4ff" stroke-width="2"/>
+<path d="M320 220 L380 220" fill="none" stroke="#8ab4ff" stroke-width="2"/>
+<path d="M320 160 L660 160" fill="none" stroke="#ffb38a" stroke-width="2"/>
+<path d="M320 400 L380 400" fill="none" stroke="#fbbf24" stroke-width="2"/>
+<path d="M320 440 L660 400" fill="none" stroke="#d8b4fe" stroke-width="2"/>
+<text x="40" y="650" fill="#9aa3ad" font-size="13" font-family="DejaVu Sans, sans-serif">投板：嘉立创 2 层 1.6 mm。QFN-56 按 RP2040 数据手册表 615–621。先 KiCad 铺铜、DRC，再下 Gerber。</text>
 </svg>

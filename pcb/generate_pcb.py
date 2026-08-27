@@ -429,6 +429,8 @@ def stick_board(out: Path):
         "JUSB2,USB-C 16P,USB-C-16,1,PS/Xbox auth dongle host",
         "J1,4P 2.54,Header,1,Jerry AC632N UART 3V3 GND GP0",
         "J2,4P 2.54,Header,1,SSD1306 I2C GP26/27",
+        "J3,3P 2.54,Header,1,VBAT ADC GP29 through 100k/100k divider",
+        "Rdiv,100k,0402,2,VBAT divider to GP29",
         "SW_BOOT,6x6 tactile,TH,1,USB boot",
         "SW_RST,6x6 tactile,TH,1,RUN to GND",
         "BTN_*,Arcade / 6mm pad,TH 1.2mm,20,see silk GP numbers",
@@ -436,7 +438,7 @@ def stick_board(out: Path):
         "C_dec,100nF,0402,12,each IOVDD + flash + radio",
         "C_xosc,15pF,0402,2,crystal load",
         "R_usb,27 ohm,0402,2,USB_DP/DM series",
-        "LED,WS2812B,5050,14,GP28",
+        "LED,WS2812B,5050,15,GP28 buttons 0-13 plus battery lamp 14",
     ]
     (out / "BOM.csv").write_text("\n".join(bom) + "\n", encoding="utf-8")
     return w, h
@@ -596,20 +598,31 @@ def main():
     receiver_board(rx)
     zip_gerbers(stick / "gerber", "GP2040-WF-stick-gerber.zip")
     zip_gerbers(rx / "gerber", "GP2040-WF-receiver-gerber.zip")
+    import sys
+
+    sys.path.insert(0, str(ROOT))
+    from draw_sheets import write_all
+
+    write_all()
     readme = ROOT / "README.md"
     readme.write_text(
         """# GP2040-WF PCB
 
-两块板：
+看图从 `sheets/` 开始（字大、能读）。1:1 Gerber / KiCad 在 `stick/`、`receiver/`。
 
-1. `stick/` 三模手柄主板（RP2040 + Si24R1 + 杰里 UART + 双 USB-C）
-2. `receiver/` 2.4G 接收器（RP2040 + Si24R1，USB Switch Pro）
+| 图纸 | 文件 |
+|------|------|
+| 原理图 | [GP2040-WF-schematic.png](GP2040-WF-schematic.png) |
+| 手柄装配图 | [sheets/stick-layout.png](sheets/stick-layout.png) |
+| GPIO 脚位表 | [sheets/gpio-map.png](sheets/gpio-map.png) |
+| 接收器 | [sheets/receiver.png](sheets/receiver.png) |
 
-打开 `GP2040-WF-schematic.svg` 看原理图，打开 `stick/GP2040-WF-stick.svg` / `receiver/GP2040-WF-receiver.svg` 看板图。
+- `stick/` 三模手柄主板 120×82 mm（RP2040 + Si24R1 + 杰里 UART + 双 USB-C + GP29 电量 ADC）
+- `receiver/` 2.4G 接收器 42×18 mm（MOSI 仍是 GP29）
 
-KiCad 8：`*.kicad_pcb`。投产前请：铺 GND 铜皮、补齐 USB-C 封装、跑 DRC。Gerber zip 可给嘉立创，**建议先在 KiCad 里确认 QFN 扇出**。
+KiCad 8：`*.kicad_pcb`。投产前请铺 GND 铜皮、补齐 USB-C 封装、跑 DRC。QFN-56 按 RP2040 数据手册表 615–621。
 
-RP2040 引脚号来自官方数据手册表 615–621，和 `configs/Pico16/BoardConfig.h` 一致。
+重新出图：`python3 pcb/generate_pcb.py`
 """,
         encoding="utf-8",
     )
@@ -618,9 +631,9 @@ RP2040 引脚号来自官方数据手册表 615–621，和 `configs/Pico16/Boar
         import cairosvg
 
         for svg, png, wpx in [
-            (ROOT / "GP2040-WF-schematic.svg", ROOT / "GP2040-WF-schematic.png", 2400),
-            (stick / "GP2040-WF-stick.svg", stick / "GP2040-WF-stick.png", 2400),
-            (rx / "GP2040-WF-receiver.svg", rx / "GP2040-WF-receiver.png", 2000),
+            (ROOT / "GP2040-WF-schematic.svg", ROOT / "GP2040-WF-schematic.png", 1800),
+            (stick / "GP2040-WF-stick.svg", stick / "GP2040-WF-stick-1to1.png", 2400),
+            (rx / "GP2040-WF-receiver.svg", rx / "GP2040-WF-receiver-1to1.png", 2000),
         ]:
             cairosvg.svg2png(url=str(svg), write_to=str(png), output_width=wpx)
     except Exception as exc:
