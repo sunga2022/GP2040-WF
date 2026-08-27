@@ -268,6 +268,7 @@ src/config_utils.cpp
 src/webconfig.cpp
 src/addons/analog.cpp
 src/addons/board_led.cpp
+src/addons/battery_led.cpp
 src/addons/bootsel_button.cpp
 src/addons/focus_mode.cpp
 src/addons/he_trigger.cpp

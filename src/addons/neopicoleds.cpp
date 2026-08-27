@@ -16,6 +16,8 @@
 #include "enums.h"
 #include "helper.h"
 #include "hardware/gpio.h"
+#include "status_bar.h"
+#include "animation.h"
 
 #define FRAME_MAX 100
 #define AL_ROW	5
@@ -277,6 +279,11 @@ void NeoPicoLEDAddon::setup() {
 	// Add Case RGB LEDs to LED Count
     if (ledOptions.caseRGBType != CASE_RGB_TYPE_NONE ) {
         ledCount += (int)ledOptions.caseRGBCount;
+    }
+
+    /* Extra WS2812 after the button chain: green = OK, red = low battery. Same DIN. */
+    if (BATTERY_LED_INDEX >= 0 && ledCount <= BATTERY_LED_INDEX) {
+        ledCount = BATTERY_LED_INDEX + 1;
     }
 
 	// Setup NeoPico ws2812 PIO
@@ -763,6 +770,11 @@ void NeoPicoLEDAddon::process() {
 			this->ambientLightLinkage(); //Custom mode
 		}
 	}
+
+    if (BATTERY_LED_INDEX >= 0 && BATTERY_LED_INDEX < FRAME_MAX) {
+        const RGB color = batteryVoltageLow() ? ColorRed : ColorGreen;
+        frame[BATTERY_LED_INDEX] = color.value(neopico.GetFormat(), as.GetBrightnessX());
+    }
 
     neopico.SetFrame(frame);
     neopico.Show();

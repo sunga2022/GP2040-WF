@@ -117,6 +117,9 @@
 
 #define FORCE_LED_WIRE_ORDER 1
 
+#define BATTERY_LED_INDEX 15
+#define BATTERY_LOW_PIN -1
+
  #define HAS_I2C_DISPLAY 1
  #define I2C0_ENABLED 1
  #define I2C0_PIN_SDA 0

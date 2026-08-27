@@ -127,6 +127,14 @@
 /* RGB chain order is physical wire order, not remapped key values. */
 #define FORCE_LED_WIRE_ORDER 1
 
+/*
+ * Battery lamp: extra WS2812 on the same GP28 chain (after L3), no ADC pin.
+ * Green = OK / USB. Red = voltage-detector GPIO pulled low.
+ * BATTERY_LOW_PIN stays -1 until a detector chip has a free digital GPIO.
+ */
+#define BATTERY_LED_INDEX 14
+#define BATTERY_LOW_PIN -1
+
 
  #define HAS_I2C_DISPLAY 1
  #define I2C0_ENABLED 0
