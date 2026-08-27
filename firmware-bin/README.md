@@ -14,16 +14,20 @@
 3. 把 `GP2040-WF_Pico16.uf2` 拖进 `RPI-RP2`
 4. 绿灯闪完自动弹出即可
 
-开机按住按键再上电 / 插 USB：
+开机按住按键再上电 / 插 USB（和 GP2040-CE 一样，A=B1）：
 
 | 按键 | 模式 |
 |------|------|
-| R1 | Xbox（有线，USB 引导认证） |
+| A（B1） | Switch Pro（有线 USB + 蓝牙 + 2.4G） |
+| B（B2） | Xbox 360（XInput） |
+| X（B3） | PS3 |
+| Y（B4） | PS4（固件已内置认证密钥，不用网页上传） |
+| R1 | Xbox One（有线，USB 引导认证） |
 | L1 | PS5（有线，USB 引导认证） |
-| B4 | PS4（有线，USB 引导认证） |
-| L2 | Switch Pro（有线 USB + 蓝牙 + 2.4G） |
+| L2 | P5 General |
+| R2 | 键盘 |
 
-Xbox / PS 把官方或兼容认证狗插在板上 **USB-C AUTH** 口。  
+Xbox One / PS5 把官方或兼容认证狗插在板上 **USB-C AUTH** 口。PS4 用编进固件的 `serial.txt` / `sig.bin` / `key.pem`，不必再去网页后台传。
 网页配置：手柄插电脑后打开 https://192.168.7.1
 
 **插着手柄 USB 时无线不发射。** 用蓝牙 / 2.4G 时拔掉手柄 USB。

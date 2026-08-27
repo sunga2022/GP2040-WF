@@ -4,7 +4,8 @@ GP2040-CE **原样**跑在 RP2040 上：按键、SOCD、热键、网页配置、
 
 | 模式 | 谁干活 |
 |------|--------|
-| **有线 Xbox / PS** | 手柄 USB。认证走 GP2040-CE 原来的 **USB 引导认证**（PS4/PS5/Xbox 插官方/兼容 dongle） |
+| **有线 Xbox One / PS5** | 手柄 USB。认证走 GP2040-CE 的 **USB 引导认证**（认证口插官方/兼容 dongle） |
+| **有线 PS4** | 手柄 USB。认证密钥已编进固件，不用网页上传 `serial.txt` / `sig.bin` / `key.pem` |
 | **有线 Switch** | 手柄 USB。CE 的 Switch / Switch Pro 描述符 |
 | **蓝牙 Switch** | UART → 杰里 **AC632N**，按 CE 的 Switch Pro 协议走 **经典蓝牙 HID**（无加密芯片） |
 | **2.4G Switch** | Si24R1 → 第二块 Pico 接收器，USB 枚举成 **Switch Pro**（VID `057E` PID `2009`） |
@@ -17,7 +18,7 @@ GP2040-CE **原样**跑在 RP2040 上：按键、SOCD、热键、网页配置、
                  └── Si24R1 ──► Pico 接收器 USB Switch Pro ──► Switch / Steam
 ```
 
-开机按键选模式跟 CE 一样：L2 = Switch Pro 时，无线帧带 `WF_MODE_SWITCH`，杰里才发 0x30 报告。
+开机按键和 GP2040-CE 一样（A=B1）：**A Switch Pro · B Xbox 360 · X PS3 · Y PS4 · R1 Xbox One · L1 PS5 · L2 P5 General · R2 键盘**。无线只在 Switch Pro 模式发。PS4 密钥已内置。
 
 ## 烧录（现成 UF2）
 
@@ -31,7 +32,7 @@ GP2040-CE **原样**跑在 RP2040 上：按键、SOCD、热键、网页配置、
 
 **杰里 AC632N 必须另烧固件**（UF2 进不去那颗芯片）。现成 `firmware-bin/GP2040-WF_AC632N.ufw`，GitHub Actions 工作流 `Jieli AC632N HID` 也会编。步骤见 [`firmware/jieli_ac632n/README.md`](firmware/jieli_ac632n/README.md)。只用有线 / 2.4G 可以不焊它。
 
-开机：**R1 Xbox · L1 PS5 · B4 PS4 · L2 Switch Pro**。Xbox/PS 走手柄 USB + 认证口；无线只在 Switch Pro 模式发。
+开机：**A Switch Pro · B Xbox 360 · X PS3 · Y PS4 · R1 Xbox One · L1 PS5 · L2 P5 General · R2 键盘**。Xbox One / PS5 走手柄 USB + 认证口；PS4 用内置密钥；无线只在 Switch Pro 模式发。
 
 ## PCB / 嘉立创
 

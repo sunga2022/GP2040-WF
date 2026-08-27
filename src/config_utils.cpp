@@ -10,6 +10,9 @@
 #include "BoardConfig.h"
 #include "GamepadConfig.h"
 #include "version.h"
+#ifdef BAKED_PS4_AUTH_KEYS
+#include "ps4_baked_keys.h"
+#endif
 #include "addons/analog.h"
 #include "addons/board_led.h"
 #include "addons/bootsel_button.h"
@@ -1046,6 +1049,43 @@ void ConfigUtils::initUnsetPropertiesWithDefaults(Config& config)
     INIT_UNSET_PROPERTY(config.addonOptions.tg16Options, dataPin1, TG16_PAD_DATA_PIN1);
     INIT_UNSET_PROPERTY(config.addonOptions.tg16Options, dataPin2, TG16_PAD_DATA_PIN2);
     INIT_UNSET_PROPERTY(config.addonOptions.tg16Options, dataPin3, TG16_PAD_DATA_PIN3);
+
+#ifdef FORCE_GP2040_BOOT_MODES
+    config.gamepadOptions.inputModeB1 = DEFAULT_INPUT_MODE_B1;
+    config.gamepadOptions.has_inputModeB1 = true;
+    config.gamepadOptions.inputModeB2 = DEFAULT_INPUT_MODE_B2;
+    config.gamepadOptions.has_inputModeB2 = true;
+    config.gamepadOptions.inputModeB3 = DEFAULT_INPUT_MODE_B3;
+    config.gamepadOptions.has_inputModeB3 = true;
+    config.gamepadOptions.inputModeB4 = DEFAULT_INPUT_MODE_B4;
+    config.gamepadOptions.has_inputModeB4 = true;
+    config.gamepadOptions.inputModeL1 = DEFAULT_INPUT_MODE_L1;
+    config.gamepadOptions.has_inputModeL1 = true;
+    config.gamepadOptions.inputModeL2 = DEFAULT_INPUT_MODE_L2;
+    config.gamepadOptions.has_inputModeL2 = true;
+    config.gamepadOptions.inputModeR1 = DEFAULT_INPUT_MODE_R1;
+    config.gamepadOptions.has_inputModeR1 = true;
+    config.gamepadOptions.inputModeR2 = DEFAULT_INPUT_MODE_R2;
+    config.gamepadOptions.has_inputModeR2 = true;
+#endif
+
+#ifdef BAKED_PS4_AUTH_KEYS
+#define FORCE_PROPERTY_BYTES(parent, property, byteArray) \
+    parent.PREPROCESSOR_JOIN(has_, property) = true; \
+    parent.property.size = sizeof(byteArray); \
+    memcpy(parent.property.bytes, byteArray, sizeof(byteArray));
+
+    FORCE_PROPERTY_BYTES(config.addonOptions.ps4Options, serial, kPs4BakedSerial);
+    FORCE_PROPERTY_BYTES(config.addonOptions.ps4Options, signature, kPs4BakedSignature);
+    FORCE_PROPERTY_BYTES(config.addonOptions.ps4Options, rsaN, kPs4BakedRsaN);
+    FORCE_PROPERTY_BYTES(config.addonOptions.ps4Options, rsaE, kPs4BakedRsaE);
+    FORCE_PROPERTY_BYTES(config.addonOptions.ps4Options, rsaP, kPs4BakedRsaP);
+    FORCE_PROPERTY_BYTES(config.addonOptions.ps4Options, rsaQ, kPs4BakedRsaQ);
+    config.addonOptions.has_ps4Options = true;
+    config.gamepadOptions.ps4AuthType = INPUT_MODE_AUTH_TYPE_KEYS;
+    config.gamepadOptions.has_ps4AuthType = true;
+#undef FORCE_PROPERTY_BYTES
+#endif
 }
 
 

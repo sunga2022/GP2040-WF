@@ -11,16 +11,20 @@
 3. 出现 `RPI-RP2` 磁盘
 4. 把 `GP2040-WF_Pico16.uf2` 拖进去，绿灯闪完即可
 
-开机按键（按住再插 USB / 上电）：
+开机按键（按住再插 USB / 上电，和 GP2040-CE 一样，A=B1）：
 
 | 按键 | 模式 |
 |------|------|
-| R1 | Xbox（有线，USB 引导认证） |
-| L1 | PS5（有线，USB 引导认证） |
-| B4 | PS4（有线，USB 引导认证） |
-| L2 | Switch Pro（有线 USB + 蓝牙 + 2.4G） |
+| A（B1） | Switch Pro（有线 USB + 蓝牙 + 2.4G） |
+| B（B2） | Xbox 360（XInput） |
+| X（B3） | PS3 |
+| Y（B4） | PS4（固件已内置认证密钥） |
+| R1 | Xbox One（USB 引导认证） |
+| L1 | PS5（USB 引导认证） |
+| L2 | P5 General |
+| R2 | 键盘 |
 
-Xbox / PS 把官方或兼容认证狗插在板上 **USB-C AUTH** 口。
+Xbox One / PS5 把官方或兼容认证狗插在板上 **USB-C AUTH** 口。PS4 不用网页上传密钥。
 
 网页配置：https://192.168.7.1 （手柄插电脑时）
 

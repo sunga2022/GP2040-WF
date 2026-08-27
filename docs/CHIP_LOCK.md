@@ -24,7 +24,7 @@ USB 已经枚举时不发无线。
 | Si24R1 MOSI | **GP29** |
 | Si24R1 MISO | 手柄发射端可不接 |
 
-开机 **L2** = Switch Pro（`BoardConfig.h` 里 `DEFAULT_INPUT_MODE_L2`）。这个模式下无线才走 Switch 协议。R1 = Xbox、L1 = PS5，那两路只走手柄 USB 认证。
+开机 **A（B1）** = Switch Pro（`BoardConfig.h` 里 `DEFAULT_INPUT_MODE_B1`）。这个模式下无线才走 Switch 协议。B = Xbox 360，X = PS3，Y = PS4（内置密钥），R1 = Xbox One、L1 = PS5 只走手柄 USB 认证。
 
 ### G2（有线 + 蓝牙）
 
