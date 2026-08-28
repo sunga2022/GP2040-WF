@@ -7,6 +7,6 @@
 | 目录 | 芯片 | 干什么 |
 |------|------|--------|
 | [`jieli_ac632n/`](jieli_ac632n/) | 杰里 **AC632N** | Switch Pro 经典蓝牙（无加密） |
-| [`receiver_pico/`](receiver_pico/) | **RP2040 Pico** + Si24R1 | 2.4G 接收器，USB Switch Pro |
+| [`receiver_ch32/`](receiver_ch32/) | **CH32X035F8U6** + **XN297L**（都是 3×3） | 2.4G USB-A 接收器，键盘接收器大小 |
 
-`nuvoton_*` / `ch585` / `esp32*` / `teensy41` 是旧实验，不要当产品路径。
+`receiver_pico/` 是旧的 RP2040 接收器，板子太大，不要当产品。`nuvoton_*` / `ch585` / `esp32*` / `teensy41` 也是旧实验。

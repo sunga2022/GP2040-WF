@@ -6,11 +6,11 @@ GP2040-WF Pico19 交付包
 烧录/
   GP2040-WF.uf2            手柄 RP2040。BOOT + USB-C 设备口，出现 RPI-RP2 后拖进去
   GP2040-WF_AC632N.ufw     杰理 AC632N / AC6321A。杰理烧录助手选 AC632N。不要烧 AC6956A
-  GP2040-WF_receiver.uf2   2.4G USB-A 接收器 RP2040。BOOT 再插电脑
+  GP2040-WF_receiver.hex   2.4G USB-A 接收器 CH32X035F8U6。WCHISPStudio 选该型号
 
 嘉立创/
   GP2040-WF-stick.json     手柄 PCB（立创EDA 标准版 → 文件 → 打开）
-  GP2040-WF-receiver.json  2.4G 接收器 PCB，USB-A 40×18 mm
+  GP2040-WF-receiver.json  2.4G 接收器 PCB，USB-A 22×12 mm，两颗 3×3
   BOM.csv                  物料表
   打开说明.txt
 
@@ -19,7 +19,7 @@ GP2040-WF Pico19 交付包
   GP2/GP3 认证口 D− / D+（BOARD_USB_ENABLED，DPLUS=3，ORDER=1）
   GP28 WS2812，灯序只跟线，不跟键值
   GP24 杰里 UART1 TX
-  GP25/4/11/16 Si24R1 CE/CSN/SCK/MOSI
+  GP25/4/11/16 XN297L CE/CSN/SCK/MOSI
   GP29 电量 ADC 100k/100k
 
 开机（A=B1）：A Switch Pro · B Xbox 360 · X PS3 · Y PS4 · R1 Xbox One · L1 PS5 · L2 P5 General · R2 键盘
@@ -31,7 +31,11 @@ PS4 授权已编进固件。PS5 / Xbox One 走认证口 NXP7105。Xbox 360 默�
   A2+SELECT+UP 上优先  A2+SELECT+LEFT 后输入优先
   A2+SELECT+DOWN 回中  A2+SELECT+RIGHT 先输入优先
 
-2.4G 接收器用 RP2040：和手柄同一套 UF2，Switch Pro 已经编好。
-CH552 更小，但要另写 USB、不能拖 UF2，所以不用。
+2.4G 接收器做成键盘接收器大小：
+  CH32X035F8U6 QFN20 3×3  USB
+  XN297L       QFN20 3×3  2.4G（nRF24 协议）
+  板子 USB-A 22×12 mm。不要用 RP2040。
 
-嘉立创 JSON 是布局源，USB-C 是占位。投板前换成库封装，补线铺铜跑 DRC。
+烧接收器：WCHISPStudio 选 CH32X035F8U6，上电时短接 ISP 焊盘进下载。
+
+嘉立创 JSON 是布局源。USB-C / USB-A / QFN 投板前换成库封装，补线铺铜跑 DRC。

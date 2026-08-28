@@ -34,7 +34,7 @@
 | 2 / 3 | USB 认证口 D− / D+（`USB_PERIPHERAL_PIN_DPLUS 3`，`ORDER 1`） |
 | 28 | WS2812，灯序只跟线，不跟键值 |
 | 24 | 杰里 UART1 TX |
-| 25 / 4 / 11 / 16 | Si24R1 CE / CSN / SCK / MOSI |
+| 25 / 4 / 11 / 16 | XN297L CE / CSN / SCK / MOSI（Si24R1 4×4 电兼容） |
 | 29 | 电量 ADC（100k/100k 分压） |
 
 OLED 右上角：`87%B` 电量百分比 + **L** 插线 / **B** 蓝牙 / **G** 2.4G。灯串后面再多一颗 WS2812：正常绿，低电红。

@@ -3,7 +3,7 @@
 1. 打开 https://lceda.cn 或安装客户端「嘉立创EDA 标准版」
 2. 文件 → 打开 → 选 json
 3. 手柄用 GP2040-WF-stick.json
-4. 2.4G 接收器用 GP2040-WF-receiver.json
+4. 2.4G 接收器用 GP2040-WF-receiver.json（USB-A 22×12 mm，两颗 3×3）
 5. 物料表 BOM.csv
 
-投板前：把 USB-C / USB-A / RP2040 换成嘉立创库里的封装，补线，铺铜，跑 DRC。现在的 USB-C 是占位焊盘，不能直接拿去生产。
+投板前：把 USB-C / USB-A / RP2040 / CH32X035 / XN297L 换成嘉立创库里的封装，补线，铺铜，跑 DRC。现在的封装是占位，不能直接拿去生产。

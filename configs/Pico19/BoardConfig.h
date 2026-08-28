@@ -39,11 +39,11 @@
 #define GPIO_PIN_01 GpioAction::ASSIGNED_TO_ADDON /* OLED SCL */
 #define GPIO_PIN_02 GpioAction::ASSIGNED_TO_ADDON /* USB AUTH D- */
 #define GPIO_PIN_03 GpioAction::ASSIGNED_TO_ADDON /* USB AUTH D+ */
-#define GPIO_PIN_04 GpioAction::ASSIGNED_TO_ADDON /* Si24R1 CSN */
-#define GPIO_PIN_11 GpioAction::ASSIGNED_TO_ADDON /* Si24R1 SCK */
-#define GPIO_PIN_16 GpioAction::ASSIGNED_TO_ADDON /* Si24R1 MOSI */
+#define GPIO_PIN_04 GpioAction::ASSIGNED_TO_ADDON /* XN297L CSN */
+#define GPIO_PIN_11 GpioAction::ASSIGNED_TO_ADDON /* XN297L SCK */
+#define GPIO_PIN_16 GpioAction::ASSIGNED_TO_ADDON /* XN297L MOSI */
 #define GPIO_PIN_24 GpioAction::ASSIGNED_TO_ADDON /* Jerry UART TX */
-#define GPIO_PIN_25 GpioAction::ASSIGNED_TO_ADDON /* Si24R1 CE */
+#define GPIO_PIN_25 GpioAction::ASSIGNED_TO_ADDON /* XN297L CE */
 #define GPIO_PIN_28 GpioAction::ASSIGNED_TO_ADDON /* WS2812 */
 #define GPIO_PIN_29 GpioAction::ASSIGNED_TO_ADDON /* VBAT ADC */
 

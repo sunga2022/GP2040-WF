@@ -1,6 +1,6 @@
 # GP2040-WF
 
-GP2040-CE 跑在 RP2040 上，板型只保留 **Pico19**。有线协议原样；外面加杰里蓝牙和 Si24R1 2.4G，都只报 Switch Pro。插着手柄 USB 时无线静音。
+GP2040-CE 跑在 RP2040 上，板型只保留 **Pico19**。有线协议原样；外面加杰里蓝牙和 **XN297L 3×3** 2.4G，都只报 Switch Pro。插着手柄 USB 时无线静音。
 
 | 模式 | 谁干活 |
 |------|--------|
@@ -9,7 +9,7 @@ GP2040-CE 跑在 RP2040 上，板型只保留 **Pico19**。有线协议原样；
 | 有线 PS4 | 手柄 USB，三份授权文件已编进固件 |
 | 有线 Switch | 手柄 USB |
 | 蓝牙 Switch | UART GP24 → 杰里 AC632N |
-| 2.4G Switch | Si24R1 → USB-A 接收器（Switch Pro `057E:2009`） |
+| 2.4G Switch | XN297L → USB-A 接收器（CH32X035 + XN297L，都是 3×3） |
 
 开机（A=B1）：**A Switch Pro · B Xbox 360 · X PS3 · Y PS4 · R1 Xbox One · L1 PS5 · L2 P5 General · R2 键盘**
 
@@ -21,7 +21,9 @@ OLED GP0/GP1，右上角 `87%B`（电量 + L/B/G）。RGB GP28，灯只跟线不
 
 1. `GP2040-WF.uf2` → 手柄 RP2040
 2. `GP2040-WF_AC632N.ufw` → 杰理 AC632N
-3. `GP2040-WF_receiver.uf2` → 2.4G USB-A 接收器
+3. `GP2040-WF_receiver.hex` → 2.4G USB-A 接收器 CH32X035F8U6（WCHISPStudio）
+
+接收器是键盘接收器大小 **22×12 mm**，不要用 RP2040。
 
 ## 嘉立创
 
@@ -32,7 +34,7 @@ OLED GP0/GP1，右上角 `87%B`（电量 + L/B/G）。RGB GP28，灯只跟线不
 ```bash
 export PICO_SDK_PATH=/path/to/pico-sdk
 GP2040_BOARDCONFIG=Pico19 cmake -B build && cmake --build build
-cmake -S firmware/receiver_pico -B firmware/receiver_pico/build && cmake --build firmware/receiver_pico/build
+make -C firmware/receiver_ch32
 ```
 
 脚位：[`configs/Pico19/BoardConfig.h`](configs/Pico19/BoardConfig.h)

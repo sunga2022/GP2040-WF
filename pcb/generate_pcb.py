@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate GP2040-WF stick + 2.4G receiver PCB drawings, KiCad, Gerbers, BOM."""
+"""Generate leftover KiCad/SVG drawings. Product PCB is pcb/lceda/ (嘉立创标准版 JSON)."""
 from __future__ import annotations
 
 import math

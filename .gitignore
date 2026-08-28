@@ -25,8 +25,16 @@ www/src_gen/enums.ts
 __pycache__/
 *.pyc
 wireless/host_test/test_uart_rx
-wireless/host_test/test_uart_rx
 wireless/host_test/test_hid_pack
 wireless/host_test/test_nrf24_stub
 wireless/host_test/test_jieli
 wireless/host_test/test_switch_pro
+
+# CH32 receiver build products (hex ships from firmware-bin/)
+firmware/receiver_ch32/*.elf
+firmware/receiver_ch32/*.bin
+firmware/receiver_ch32/*.hex
+firmware/receiver_ch32/*.map
+firmware/receiver_ch32/*.lst
+firmware/receiver_ch32/third_party/ch32fun/generated_*.ld
+firmware/receiver_ch32/.minichlink-unused/

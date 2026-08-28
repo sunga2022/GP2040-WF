@@ -10,6 +10,14 @@
 #define WF_RD(p)       gpio_get(p)
 #define WF_DELAY_US(u) busy_wait_us_32(u)
 #define WF_SPI_GAP()   busy_wait_at_least_cycles(12)
+#elif defined(CH32X03x) || defined(CH32V20x)
+#include "ch32fun.h"
+#define WF_GPIO_OUT(p) funPinMode((p), GPIO_CFGLR_OUT_50Mhz_PP)
+#define WF_GPIO_IN(p)  do { funPinMode((p), GPIO_CFGLR_IN_PUPD); funDigitalWrite((p), FUN_HIGH); } while (0)
+#define WF_WR(p, v)    funDigitalWrite((p), (v))
+#define WF_RD(p)       funDigitalRead(p)
+#define WF_DELAY_US(u) Delay_Us(u)
+#define WF_SPI_GAP()   Delay_Us(1)
 #else
 /* Host unit tests compile this file as a stub. */
 #define WF_GPIO_OUT(p) (void)(p)
