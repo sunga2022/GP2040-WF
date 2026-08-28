@@ -17,7 +17,7 @@
 | PC16 / PC17 | USB D− / D+ |
 | PC18 / PC19 | SWDIO / SWCLK（调试用，量产走 WCHISP） |
 
-烧录：上电时把 ISP 焊盘短到 3V3（D+ 经 4.7 kΩ），WCHISPStudio 选 `CH32X035F8U6`，烧 `firmware-bin/GP2040-WF_receiver.hex`。
+烧录：上电时把 ISP 焊盘短到 3V3（D+ 经 4.7 kΩ），WCHISPStudio 选 `CH32X035F8U6`，打开 `firmware-bin/GP2040-WF_receiver.bin`，起始地址 `0x00000000`。
 
 ```bash
 make -C firmware/receiver_ch32

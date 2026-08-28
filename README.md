@@ -21,7 +21,7 @@ OLED GP0/GP1，右上角 `87%B`（电量 + L/B/G）。RGB GP28，灯只跟线不
 
 1. `GP2040-WF.uf2` → 手柄 RP2040
 2. `GP2040-WF_AC632N.ufw` → 杰理 AC632N
-3. `GP2040-WF_receiver.hex` → 2.4G USB-A 接收器 **CH32X035F8U6**（WCHISP）
+3. `GP2040-WF_receiver.bin` → 2.4G USB-A 接收器 **CH32X035F8U6**（WCHISP，起始地址 `0x00000000`）
 
 接收器是 **两颗芯片**：USB MCU **CH32X035F8U6 QFN20 3×3**（全速 USB，**1 kHz** 轮询）+ 射频 **Si24R1 QFN20 4×4**（立创 C14436）。板子 USB-A **16.30×11.20 mm**。不要用 nRF52820，也不要用 RP2040 做接收器。
 

@@ -27,4 +27,4 @@ PS4：板载 `configs/Pico19/PS4Auth/` 三文件编进固件。PS5 / Xbox One：
 | **CH32X035F8U6** | QFN20 **3×3** | C42442062 | USB FS HID Switch Pro `057E:2009`，`bInterval=1` → **1 kHz** |
 | **Si24R1** | QFN20 **4×4** P0.5 | C14436 | 2.4G RX，对齐手柄 XN297L |
 
-板子 USB-A **16.30×11.20 mm**（略小于 12 mm USB-A 外壳内宽）。VBUS 经 LDO 到 3.3 V。烧录走 WCHISP（上电 D+ 经 4.7 kΩ 到 3V3），文件 `firmware-bin/GP2040-WF_receiver.hex`。
+板子 USB-A **16.30×11.20 mm**（略小于 12 mm USB-A 外壳内宽）。VBUS 经 LDO 到 3.3 V。烧录走 WCHISP（上电 D+ 经 4.7 kΩ 到 3V3），文件 `firmware-bin/GP2040-WF_receiver.bin`，起始地址 `0x00000000`。

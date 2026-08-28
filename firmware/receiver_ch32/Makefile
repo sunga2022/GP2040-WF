@@ -16,3 +16,4 @@ clean: cv_clean
 .PHONY: ship
 ship: all
 	cp $(TARGET).hex ../../firmware-bin/GP2040-WF_receiver.hex
+	cp $(TARGET).bin ../../firmware-bin/GP2040-WF_receiver.bin

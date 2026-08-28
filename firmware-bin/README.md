@@ -4,7 +4,8 @@
 |------|--------|
 | `GP2040-WF.uf2` | 手柄 RP2040。按住 BOOT，USB-C **设备口** 出现 `RPI-RP2` 后拖进去 |
 | `GP2040-WF_AC632N.ufw` | 杰理 **AC632N / AC6321A**。杰理烧录助手选 AC632N。不要烧到 AC6956A |
-| `GP2040-WF_receiver.hex` | 2.4G USB-A 接收器 **CH32X035F8U6**。WCHISPStudio，上电短接 ISP |
+| `GP2040-WF_receiver.bin` | 2.4G USB-A 接收器 **CH32X035F8U6**。WCHISPStudio 选这个刷，起始地址 `0x00000000` |
+| `GP2040-WF_receiver.hex` | 同上，Intel HEX 备份 |
 
 `SHA256SUMS` 是校验，不能烧。杰理的 `app.bin` / `jl_isd.bin` 是同一份固件的别的格式，日常用 `.ufw` 即可。
 
@@ -33,6 +34,6 @@ USB-A **16.30×11.20 mm**，两颗芯片：
 
 不要用 nRF52820。CH582 更好买，但射频对不上 nRF24。不要用 RP2040 做接收器。
 
-烧录：WCHISPStudio → `CH32X035F8U6` → `GP2040-WF_receiver.hex`。上电时短接 ISP 焊盘（D+ 经 4.7 kΩ 到 3V3）。
+烧录：WCHISPStudio → 芯片 `CH32X035F8U6` → 打开 `GP2040-WF_receiver.bin`，起始地址 **`0x00000000`**。上电时短接 ISP 焊盘（D+ 经 4.7 kΩ 到 3V3）。
 
 插 Switch 底座或 PC（Steam 认 Pro）。手柄选 Switch Pro，拔掉手柄 USB。不要插 Xbox / PS。

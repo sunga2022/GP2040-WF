@@ -6,7 +6,8 @@ GP2040-WF Pico19 交付包
 烧录/
   GP2040-WF.uf2            手柄 RP2040。BOOT + USB-C 设备口，出现 RPI-RP2 后拖进去
   GP2040-WF_AC632N.ufw     杰理 AC632N / AC6321A。杰理烧录助手选 AC632N。不要烧 AC6956A
-  GP2040-WF_receiver.hex   2.4G USB-A 接收器 CH32X035F8U6。WCHISP，上电短接 ISP
+  GP2040-WF_receiver.bin   2.4G USB-A 接收器 CH32X035F8U6。WCHISP 用这个刷，起始地址 0x00000000
+  GP2040-WF_receiver.hex   同上，Intel HEX 备份
 
 嘉立创/
   GP2040-WF-stick.json     手柄 PCB（立创EDA 标准版 → 文件 → 打开）
@@ -36,7 +37,7 @@ PS4 授权已编进固件。PS5 / Xbox One 走认证口 NXP7105。Xbox 360 默�
   Si24R1 QFN20 4×4  2.4G RX（立创 C14436）
   板子 USB-A 16.30×11.20 mm。不要 nRF52820，不要 RP2040。
 
-烧接收器：WCHISPStudio 选 CH32X035F8U6。
-  上电短接 ISP（D+ 经 4.7k 到 3V3）。
+烧接收器：WCHISPStudio 选 CH32X035F8U6，打开 GP2040-WF_receiver.bin。
+  起始地址 0x00000000。上电短接 ISP（D+ 经 4.7k 到 3V3）。
 
 嘉立创 JSON 是布局源。USB-C / USB-A / QFN 投板前换成库封装，补线铺铜跑 DRC。
