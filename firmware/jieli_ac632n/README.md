@@ -1,6 +1,6 @@
 # 杰里 AC632N：必须单独烧固件
 
-AC632N **一定要烧蓝牙固件**。手柄上的 `GP2040-WF_Pico16.uf2` 只进 RP2040，**烧不到杰里里**。
+AC632N **一定要烧蓝牙固件**。手柄上的 `GP2040-WF.uf2` 只进 RP2040，**烧不到杰里里**。
 
 ## 现成文件（已在 GitHub 上编出来）
 
@@ -14,7 +14,7 @@ AC632N **一定要烧蓝牙固件**。手柄上的 `GP2040-WF_Pico16.uf2` 只进
 
 推 `main` 后，Actions 工作流 **Jieli AC632N HID** 会再编一份，Artifacts 里也能下。
 
-蓝牙名 **Pro Controller**。Pico **GP0 TX** → 模块 UART **RX**（固件默认芯片脚 **PA5**），1 Mbps 8N1，共地 3.3 V。
+蓝牙名 **Pro Controller**。Pico **GP24 TX**（UART1）→ 模块 UART **RX**（固件默认芯片脚 **PA5**），1 Mbps 8N1，共地 3.3 V。
 
 ## 自己在 Linux / GitHub 上编
 

@@ -15,23 +15,7 @@ on:
         type: choice
         options:
           - ""
-          - 14PNEW
-          - 17P
-          - G2
-          - G4F
-          - G5F
-          - QF
-          - QFG
-          - RUYI
-          - Pico16
-          - Pico16N
           - Pico19
-          - HaM
-          - hnu
-          - d26
-          - G2G
-          - doio
-          - 17PNT
 
 env:
   BUILD_TYPE: Release
@@ -47,7 +31,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        GP2040_BOARDCONFIG: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.board_config != '' && fromJSON(format('["{0}"]', github.event.inputs.board_config)) || fromJSON('["14PNEW", "17P", "17PNT", "G2", "G4F", "G5F", "QF", "QFG", "RUYI", "Pico16", "Pico16N", "Pico19", "HaM", "hnu", "d26", "G2G", "doio"]') }}
+        GP2040_BOARDCONFIG: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.board_config != '' && fromJSON(format('["{0}"]', github.event.inputs.board_config)) || fromJSON('["Pico19"]') }}
     steps:
       - name: Setup cmake
         uses: jwlawson/actions-setup-cmake@v2
@@ -104,7 +88,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload .elf Artifact
-        if: ${{ matrix.GP2040_BOARDCONFIG == 'G2'}}
+        if: ${{ matrix.GP2040_BOARDCONFIG == 'Pico19'}}
         uses: actions/upload-artifact@v6.0.0
         with:
           name: elf

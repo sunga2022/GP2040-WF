@@ -1,9 +1,0 @@
-Reference,Value,Footprint,Qty,Notes
-U1,RP2040,QFN-56 7x7 P0.4,1,
-U2,W25Q16JV,SOIC-8,1,
-U3,Si24R1 / nRF24L01+,2.54 8-pin,1,MISO wired GP16
-Y1,12MHz,3225,1,
-JUSB,USB-C 16P,USB-C,1,Switch Pro 057E:2009
-U4,AMS1117-3.3,SOT-223,1,
-R_usb,27 ohm,0402,2,
-C_dec,100nF,0402,8,

@@ -10,16 +10,16 @@
 #define CE_PIN 1
 #endif
 #ifndef CSN_PIN
-#define CSN_PIN 21
+#define CSN_PIN 2
 #endif
 #ifndef SCK_PIN
-#define SCK_PIN 25
+#define SCK_PIN 3
 #endif
 #ifndef MOSI_PIN
-#define MOSI_PIN 29
+#define MOSI_PIN 4
 #endif
 #ifndef MISO_PIN
-#define MISO_PIN 16
+#define MISO_PIN 5
 #endif
 
 #define HID_KEEPALIVE_US 5000u

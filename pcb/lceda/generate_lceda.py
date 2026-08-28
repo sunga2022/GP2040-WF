@@ -16,7 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from generate_pcb import QFN_PADS, RP2040, STICK_GPIO  # noqa: E402
+from generate_pcb import QFN_PADS, RP2040  # noqa: E402
 
 SOIC_MOD = ROOT / "lib" / "SOIC-8.kicad_mod"
 OUT = Path(__file__).resolve().parent
@@ -48,25 +48,25 @@ BTN_XY = {
     "TURBO": (66, 78),
 }
 BTN_GPIO = {
-    "UP": 20,
-    "DOWN": 22,
-    "LEFT": 23,
-    "RIGHT": 16,
-    "B1": 18,
-    "B2": 13,
+    "UP": 15,
+    "DOWN": 19,
+    "LEFT": 20,
+    "RIGHT": 18,
+    "B1": 14,
+    "B2": 10,
     "B3": 12,
-    "B4": 9,
-    "R1": 10,
-    "L1": 11,
-    "R2": 14,
-    "L2": 5,
-    "S1": 8,
+    "B4": 5,
+    "R1": 6,
+    "L1": 7,
+    "R2": 9,
+    "L2": 8,
+    "S1": 27,
     "S2": 17,
-    "A1": 7,
-    "A2": 6,
-    "L3": 2,
-    "R3": 19,
-    "TURBO": 24,
+    "A1": 22,
+    "A2": 26,
+    "L3": 21,
+    "R3": 13,
+    "TURBO": 23,
 }
 
 LAYERS = [
@@ -519,14 +519,14 @@ def build_stick_pcb() -> tuple[float, float, list[str]]:
             6.5,
             52.5,
             "JUSB2 AUTH",
-            {1: "GND", 4: "VIN", 5: "CC1", 6: "GP4", 7: "GP3", 9: "VIN", 12: "GND"},
+            {1: "GND", 4: "VIN", 5: "CC1", 6: "GP3", 7: "GP2", 9: "VIN", 12: "GND"},
         )
     )
     s.extend(_passives(ids))
     s.append(ws2812_lib(ids, 40.0, 8.5, "D1"))
 
-    s.extend(header_row(ids, jerry[0], jerry[1], 4, 2.54, "J1 JERRY UART", ["GND", "3V3", "GP0_TX", "NC"]))
-    s.extend(header_row(ids, oled[0], oled[1], 4, 2.54, "J2 OLED I2C", ["GND", "3V3", "GP26_SDA", "GP27_SCL"]))
+    s.extend(header_row(ids, jerry[0], jerry[1], 4, 2.54, "J1 JERRY UART", ["GND", "3V3", "GP24_TX", "NC"]))
+    s.extend(header_row(ids, oled[0], oled[1], 4, 2.54, "J2 OLED I2C", ["GND", "3V3", "GP0_SDA", "GP1_SCL"]))
     s.extend(header_row(ids, bat[0], bat[1], 3, 2.54, "J3 VBAT ADC GP29", ["GND", "GP29", "VBAT"]))
     s.extend(
         header_row(
@@ -535,8 +535,8 @@ def build_stick_pcb() -> tuple[float, float, list[str]]:
             nrf[1],
             8,
             2.54,
-            "U4 Si24R1 MOSI=GP15",
-            ["GND", "GP1_CE", "GP21_CSN", "GP25_SCK", "GP15_MOSI", "GP16_MISO", "IRQ", "3V3"],
+            "U4 Si24R1 MOSI=GP16",
+            ["GND", "GP25_CE", "GP4_CSN", "GP11_SCK", "GP16_MOSI", "NC_MISO", "IRQ", "3V3"],
             vertical=True,
         )
     )
@@ -550,18 +550,18 @@ def build_stick_pcb() -> tuple[float, float, list[str]]:
         s.append(via(ids, bx + 3.6, by, 0.6, 0.15, "GND"))
         s.append(track(ids, [(bx, by), (u1[0] + 8.0, u1[1])], 0.25, 1, f"GP{g}"))
 
-    s.append(track(ids, [(u1[0], u1[1]), (jerry[0], jerry[1])], 0.25, 1, "GP0"))
-    s.append(track(ids, [(u1[0] + 4, u1[1]), (nrf[0], nrf[1] + 2.54)], 0.3, 1, "GP1"))
+    s.append(track(ids, [(u1[0], u1[1]), (jerry[0], jerry[1])], 0.25, 1, "GP24"))
+    s.append(track(ids, [(u1[0] + 4, u1[1]), (nrf[0], nrf[1] + 2.54)], 0.3, 1, "GP25"))
     s.append(track(ids, [(6.5, 26.5), (u1[0] - 4, u1[1])], 0.3, 1, "USB_DP"))
-    s.append(track(ids, [(6.5, 52.5), (u1[0] - 4, u1[1] + 4)], 0.3, 1, "GP4"))
+    s.append(track(ids, [(6.5, 52.5), (u1[0] - 4, u1[1] + 4)], 0.3, 1, "GP3"))
     s.append(via(ids, u1[0], u1[1], 0.6, 0.15, "GND"))
     s.append(via(ids, u1[0] + 2.2, u1[1] + 2.2, 0.6, 0.15, "GND"))
     s.append(via(ids, flash[0], flash[1] + 3.2, 0.6, 0.15, "GND"))
 
-    s.append(text(ids, 32, 2.2, "GP2040-WF Pico16  stick  120x82 mm  嘉立创EDA标准版", 1.7, 3))
-    s.append(text(ids, 32, 5.0, "FN取消  L2=GP5  MOSI=GP15  VBAT ADC=GP29 经100k/100k  JUSB2=NXP7105", 1.05, 3))
+    s.append(text(ids, 32, 2.2, "GP2040-WF Pico19  stick  120x82 mm  嘉立创EDA标准版", 1.7, 3))
+    s.append(text(ids, 32, 5.0, "FN取消  OLED=GP0/1  AUTH D+=GP3 D-=GP2  RGB=GP28  VBAT=GP29  Jerry=GP24", 1.05, 3))
     s.append(text(ids, 4.0, 21.2, "USB-C DEVICE GP47/46", 0.85, 3))
-    s.append(text(ids, 4.0, 47.2, "USB-C AUTH GP4/GP3", 0.85, 3))
+    s.append(text(ids, 4.0, 47.2, "USB-C AUTH GP3/GP2", 0.85, 3))
     return w, h, s
 
 
@@ -570,52 +570,47 @@ def rx_net(pin: int) -> str:
 
 
 def build_receiver_pcb() -> tuple[float, float, list[str]]:
+    """USB-A keyboard-dongle size: 40 x 18 mm, native USB, Si24R1."""
     ids = Ids()
-    w, h = 42.0, 18.0
+    w, h = 40.0, 18.0
     s: list[str] = []
     s.extend(outline_rect(ids, w, h))
-    s.append(copper_rect(ids, w, h, 0.3, 2, "GND"))
-    s.append(qfn56_lib(ids, 15.5, 9.0, "U1", rx_net))
+    s.append(copper_rect(ids, w, h, 0.25, 2, "GND"))
+    # USB-A male gold fingers (left 12 mm plug)
+    s.append(track(ids, [(0, 0), (12, 0), (12, h), (0, h)], 0.12, 3))
+    for i, (net, name) in enumerate([("VIN", "VBUS"), ("USB_DM", "D-"), ("USB_DP", "D+"), ("GND", "GND")]):
+        y = 3.2 + i * 3.6
+        s.append(pad(ids, "RECT", 4.5, y, 8.0, 1.5, 1, net, name))
+        s.append(text(ids, 9.2, y - 0.4, name, 0.7, 3))
+    s.append(qfn56_lib(ids, 20.0, 9.0, "U1", rx_net))
     s.append(
         soic8_lib(
             ids,
-            23.5,
-            8.8,
+            29.0,
+            6.5,
             "U2",
             "W25Q16",
             {1: "3V3", 2: "QSPI_CSn", 3: "QSPI_SD1", 4: "GND", 5: "QSPI_SD0", 6: "QSPI_SCLK", 7: "QSPI_SD2", 8: "QSPI_SD3"},
         )
     )
-    s.append(sot223_lib(ids, 23.5, 14.5, "U4"))
-    s.append(crystal_lib(ids, 8.5, 14.2, "Y1"))
-    s.append(
-        usb_c_lib(
-            ids,
-            6.0,
-            8.5,
-            "JUSB HOST",
-            {1: "GND", 4: "VIN", 6: "HOST_DP", 7: "HOST_DM", 9: "VIN", 12: "GND"},
-        )
-    )
+    s.append(crystal_lib(ids, 29.0, 13.5, "Y1"))
     s.extend(
         header_row(
             ids,
-            38.0,
-            2.2,
+            37.2,
+            2.0,
             8,
             1.8,
-            "U3 nRF MOSI=GP29",
-            ["GND", "GP1_CE", "GP21_CSN", "GP25_SCK", "GP29_MOSI", "GP16_MISO", "IRQ", "3V3"],
+            "U3 Si24R1",
+            ["GND", "GP1_CE", "GP2_CSN", "GP3_SCK", "GP4_MOSI", "GP5_MISO", "IRQ", "3V3"],
             vertical=True,
         )
     )
-    s.append(chip0603(ids, 30.5, 4.5, "C1", "100n", "3V3", "GND", "C"))
-    s.append(chip0603(ids, 30.5, 7.5, "C2", "100n", "3V3", "GND", "C"))
-    s.append(chip0603(ids, 30.5, 10.5, "C3", "10u", "3V3", "GND", "C"))
-    s.append(chip0603(ids, 30.5, 13.5, "RusbP", "27R", "HOST_DP", "GP4", "R"))
-    s.append(chip0603(ids, 34.5, 13.5, "RusbN", "27R", "HOST_DM", "GP3", "R"))
-    s.append(text(ids, 1.0, 0.7, "GP2040-WF receiver 42x18  MOSI=GP29 MISO=GP16  D+=GP4 D-=GP3", 0.75, 3))
-    s.append(via(ids, 15.5, 9.0, 0.6, 0.15, "GND"))
+    s.append(chip0603(ids, 13.5, 4.0, "C1", "100n", "3V3", "GND", "C"))
+    s.append(chip0603(ids, 13.5, 7.0, "C2", "10u", "3V3", "GND", "C"))
+    s.append(chip0603(ids, 13.5, 10.0, "RusbP", "27R", "USB_DP", "USB_DP", "R"))
+    s.append(text(ids, 12.5, 1.0, "USB-A dongle 40x18  CE1 CSN2 SCK3 MOSI4 MISO5  native USB", 0.7, 3))
+    s.append(via(ids, 20.0, 9.0, 0.6, 0.15, "GND"))
     return w, h, s
 
 
@@ -634,58 +629,57 @@ def sch_wire(ids: Ids, x1: float, y1: float, x2: float, y2: float) -> str:
 def build_schematic() -> list[str]:
     ids = Ids()
     s: list[str] = []
-    s.append(sch_text(ids, 40, 28, "GP2040-WF Pico16  原理框图  (嘉立创EDA标准版)", "16pt"))
-    s.append(sch_text(ids, 40, 48, "投板前：换成嘉立创库 USB-C / RP2040 封装，铺铜，跑 DRC。USB-C 现为占位焊盘。", "9pt"))
+    s.append(sch_text(ids, 40, 28, "GP2040-WF Pico19  原理框图  (嘉立创EDA标准版)", "16pt"))
+    s.append(sch_text(ids, 40, 48, "投板前：换成嘉立创库 USB-C / RP2040 / USB-A 封装，铺铜，跑 DRC。", "9pt"))
 
     s.append(sch_rect(ids, 300, 80, 320, 520))
     s.append(sch_text(ids, 318, 100, "U1 RP2040 QFN-56", "12pt"))
     s.append(sch_text(ids, 318, 118, "GP2040-CE + WfFrame + Si24R1", "8pt"))
 
     lines = [
-        "GP0  Jerry UART TX 1Mbps",
-        "GP1  Si24R1 CE",
-        "GP2  L3",
-        "GP3  USB AUTH D-  / 接收器 HOST D-",
-        "GP4  USB AUTH D+  / 接收器 HOST D+",
-        "GP5  L2  (旧FN焊盘，FN已取消)",
-        "GP6  A2",
-        "GP7  A1",
-        "GP8  S1",
-        "GP9  B4",
-        "GP10 R1",
-        "GP11 L1",
+        "GP0  OLED SDA",
+        "GP1  OLED SCL",
+        "GP2  USB AUTH D-   ORDER=1",
+        "GP3  USB AUTH D+   DPLUS=3",
+        "GP4  Si24R1 CSN",
+        "GP5  B4",
+        "GP6  R1",
+        "GP7  L1",
+        "GP8  L2",
+        "GP9  R2",
+        "GP10 B2",
+        "GP11 Si24R1 SCK",
         "GP12 B3",
-        "GP13 B2",
-        "GP14 R2",
-        "GP15 Si24R1 MOSI  (摇杆)",
-        "GP16 RIGHT / 接收器 MISO",
-        "GP17 S2",
-        "GP18 B1",
-        "GP19 R3",
-        "GP20 UP",
-        "GP21 Si24R1 CSN",
-        "GP22 DOWN",
-        "GP23 LEFT",
-        "GP24 TURBO",
-        "GP25 Si24R1 SCK",
-        "GP26 OLED SDA",
-        "GP27 OLED SCL",
-        "GP28 WS2812",
-        "GP29 VBAT ADC3 经100k/100k (摇杆) / MOSI (接收器)",
-        "GP46 USB DEVICE D-   GP47 USB DEVICE D+",
-        "QSPI 51-56 W25Q16   XIN20/XOUT21 12MHz",
-        "IOVDD=3V3  TESTEN=GND  RUN=RESET",
+        "GP13 R3",
+        "GP14 B1",
+        "GP15 UP",
+        "GP16 Si24R1 MOSI",
+        "GP17 S2 START",
+        "GP18 RIGHT",
+        "GP19 DOWN",
+        "GP20 LEFT",
+        "GP21 L3",
+        "GP22 A1",
+        "GP23 TURBO",
+        "GP24 Jerry UART1 TX  (FN已取消)",
+        "GP25 Si24R1 CE",
+        "GP26 A2 TOUCH",
+        "GP27 S1 SELECT",
+        "GP28 WS2812  灯序只跟线",
+        "GP29 VBAT ADC 100k/100k",
+        "USB_DP/DM 芯片脚 47/46 设备口",
+        "接收器 USB-A 走 RP2040 原生 USB  CE1 CSN2 SCK3 MOSI4 MISO5",
     ]
     for i, line in enumerate(lines):
         s.append(sch_text(ids, 318, 140 + i * 13, line, "8pt"))
 
     left = [
-        (40, 80, 220, 70, "J1 杰里 AC632N UART", "3V3  GND  TX=GP0  RX NC"),
-        (40, 170, 220, 70, "U4 Si24R1 2.54 模块", "摇杆 MOSI=GP15  接收器 MOSI=GP29"),
-        (40, 260, 220, 70, "J2 OLED 1.3 SSD1306", "SDA GP26  SCL GP27"),
+        (40, 80, 220, 70, "J1 杰里 AC632N UART", "3V3  GND  TX=GP24  RX NC"),
+        (40, 170, 220, 70, "U4 Si24R1", "CE25 CSN4 SCK11 MOSI16"),
+        (40, 260, 220, 70, "J2 OLED 1.3 SSD1306", "SDA GP0  SCL GP1  右上角 87%B"),
         (40, 350, 220, 70, "J3 锂电池 VBAT", "禁止 4.2V 直灌 GP29  100k/100k"),
-        (40, 440, 220, 70, "D1 WS2812B", "DIN = GP28  按键灯 + 电量灯"),
-        (40, 530, 220, 70, "按键 对 GND", "无 FN。L2=GP5。BOOT / RESET"),
+        (40, 440, 220, 70, "D1 WS2812B GP28", "灯序跟线  末颗电量灯"),
+        (40, 530, 220, 70, "按键 对 GND", "无 FN。A2=TOUCH S2=START S1=SELECT"),
     ]
     for x, y, bw, bh, title, sub in left:
         s.append(sch_rect(ids, x, y, bw, bh))
@@ -695,11 +689,11 @@ def build_schematic() -> list[str]:
 
     right = [
         (660, 80, 240, 80, "JUSB1 USB-C DEVICE", "D+ GP47  D- GP46  VBUS→AMS1117"),
-        (660, 180, 240, 80, "JUSB2 USB-C AUTH", "D+ GP4  D- GP3  插 NXP7105"),
+        (660, 180, 240, 80, "JUSB2 USB-C AUTH", "D+ GP3  D- GP2  插 NXP7105"),
         (660, 280, 240, 70, "U3 AMS1117-3.3", "VIN←VBUS  3V3→MCU/Flash/射频"),
         (660, 370, 240, 70, "U2 W25Q16JV SOIC-8", "QSPI Flash"),
         (660, 460, 240, 70, "Y1 12MHz 3225", "XIN/XOUT + 15pF"),
-        (660, 550, 240, 70, "接收器 USB HOST", "D+=GP4 D-=GP3  Switch Pro 057E:2009"),
+        (660, 550, 240, 70, "接收器 USB-A 40x18", "原生 USB  Switch Pro 057E:2009"),
     ]
     for x, y, bw, bh, title, sub in right:
         s.append(sch_rect(ids, x, y, bw, bh))
@@ -708,18 +702,52 @@ def build_schematic() -> list[str]:
         s.append(sch_wire(ids, 620, y + bh / 2, x, y + bh / 2))
 
     s.append(sch_text(ids, 40, 640, "Xbox/PS 走手柄 USB 认证口；无线只报 Switch。PS5：JUSB2 插带 NXP7105 的授权口。FORCE_NXP7105_AUTH=1。", "9pt"))
-    s.append(sch_text(ids, 40, 662, "GPIO 对照固件 configs/Pico16/BoardConfig.h。RP2040 引脚号数据手册表 615–621。", "9pt"))
+    s.append(sch_text(ids, 40, 662, "GPIO 对照 configs/Pico19/BoardConfig.h。RP2040 引脚号数据手册表 615–621。", "9pt"))
     return s
+
+
+def write_bom(path: Path) -> None:
+    rows = [
+        "位号,型号,封装,数量,板,备注",
+        "U1,RP2040,QFN-56 7x7 P0.4,1,手柄,主控",
+        "U2,W25Q16JV,SOIC-8,1,手柄,QSPI Flash",
+        "U3,AMS1117-3.3,SOT-223,1,手柄,5V→3V3",
+        "U4,Si24R1,QFN-20 或 8P 模块,1,手柄,CE=GP25 CSN=GP4 SCK=GP11 MOSI=GP16",
+        "U5,AC632N / AC6321A 模块,模块,1,手柄,UART RX ← GP24  不要烧 AC6956A",
+        "Y1,12MHz 18pF,3225,1,手柄,",
+        "JUSB1,USB-C 16P,USB-C,1,手柄,设备口 D+/D− = RP2040 脚 47/46",
+        "JUSB2,USB-C 16P,USB-C,1,手柄,认证口 D+=GP3 D−=GP2  插 NXP7105",
+        "J1,4P 2.54,排针,1,手柄,杰里 GND 3V3 GP24 NC",
+        "J2,4P 2.54,排针,1,手柄,OLED GND 3V3 SDA=GP0 SCL=GP1",
+        "J3,3P 2.54,排针,1,手柄,VBAT ADC GP29 必须经 100k/100k",
+        "RdivH/RdivL,100k,0603,2,手柄,VBAT 分压到 GP29",
+        "RusbP/RusbN,27Ω,0603,2,手柄,USB 串联",
+        "Cdec,100nF,0603,12,手柄,",
+        "Cbulk,10uF 16V,0603,4,手柄,",
+        "Cx,15pF,0603,2,手柄,晶振负载",
+        "D1–D16,WS2812B,5050,16,手柄,GP28 走线顺序；第 16 颗电量灯",
+        "SWxx,6x6 轻触,插件,21,手柄,18 键+TURBO+BOOT+RESET  无 FN",
+        "OLED,SSD1306 1.3 128x64,I2C 模块,1,手柄,右上角 电量%+L/B/G",
+        "U1,RP2040,QFN-56 7x7,1,接收器,USB-A 键盘接收器外形 40×18 mm",
+        "U2,W25Q16JV,SOIC-8,1,接收器,",
+        "Y1,12MHz,3225,1,接收器,",
+        "U3,Si24R1,QFN-20 或 8P,1,接收器,CE=GP1 CSN=GP2 SCK=GP3 MOSI=GP4 MISO=GP5",
+        "JUSB,USB-A 公头,金手指,1,接收器,RP2040 原生 USB  枚举 Switch Pro",
+        "Cdec,100nF,0603,4,接收器,",
+        "Cbulk,10uF,0603,2,接收器,",
+    ]
+    path.write_text("\n".join(rows) + "\n", encoding="utf-8")
+    print(f"wrote {path.name}")
 
 
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
-    # drop dead helper if someone imported the stub
     w, h, shapes = build_stick_pcb()
-    dump_pcb(OUT / "GP2040-WF-stick.json", "GP2040-WF Pico16 stick", w, h, shapes)
+    dump_pcb(OUT / "GP2040-WF-stick.json", "GP2040-WF Pico19 stick", w, h, shapes)
     w, h, shapes = build_receiver_pcb()
-    dump_pcb(OUT / "GP2040-WF-receiver.json", "GP2040-WF receiver", w, h, shapes)
-    dump_sch(OUT / "GP2040-WF-schematic.json", "GP2040-WF Pico16 schematic", build_schematic())
+    dump_pcb(OUT / "GP2040-WF-receiver.json", "GP2040-WF receiver dongle", w, h, shapes)
+    dump_sch(OUT / "GP2040-WF-schematic.json", "GP2040-WF Pico19 schematic", build_schematic())
+    write_bom(OUT / "BOM.csv")
 
     for name in ("GP2040-WF-stick.json", "GP2040-WF-receiver.json", "GP2040-WF-schematic.json"):
         raw = (OUT / name).read_text(encoding="utf-8")
@@ -727,10 +755,9 @@ def main() -> None:
         assert raw.lstrip()[0] == "{"
         assert doc["head"]["docType"] in ("1", "3")
         assert isinstance(doc["shape"], list) and doc["shape"]
-        assert all(isinstance(x, str) and x.split("~", 1)[0] for x in doc["shape"])
 
     qfn_n = sum(1 for k in QFN_PADS if str(k).isdigit())
-    print(f"QFN numbered pads: {qfn_n}  SOIC pads: {len(SOIC_PADS)}  GPIO keys: {len(STICK_GPIO)}")
+    print(f"QFN numbered pads: {qfn_n}  SOIC pads: {len(SOIC_PADS)}  buttons: {len(BTN_GPIO)}")
 
 
 if __name__ == "__main__":

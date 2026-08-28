@@ -1,6 +1,6 @@
 /*
  * Glue for fw-AC63_BT_SDK HID (AC632N / bd19).
- * Pico GP0 TX (1 Mbps) -> this chip UART1 RX.
+ * Pico GP24 UART1 TX (1 Mbps) -> this chip UART1 RX (PA5).
  */
 #include "app_config.h"
 #include "system/includes.h"

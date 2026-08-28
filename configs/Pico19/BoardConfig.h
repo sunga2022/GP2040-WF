@@ -31,15 +31,21 @@
 #define GPIO_PIN_13 GpioAction::BUTTON_PRESS_R3     // R3     | RS     | RS      | R3       | 12     | RS     |
 #define GPIO_PIN_22 GpioAction::BUTTON_PRESS_A1     // A1     | Guide  | Home    | PS       | 13     | ~      |
 #define GPIO_PIN_26 GpioAction::BUTTON_PRESS_A2     // A2     | ~      | Capture | ~        | 14     | ~      |
-#define GPIO_PIN_24 GpioAction::BUTTON_PRESS_FN     // Hotkey Function
+/* FN cancelled. GP24 = Jerry UART1 TX. */
 
 // Setting GPIO pins to assigned by add-on
 //
-#define GPIO_PIN_00 GpioAction::ASSIGNED_TO_ADDON
-#define GPIO_PIN_01 GpioAction::ASSIGNED_TO_ADDON
-#define GPIO_PIN_02 GpioAction::ASSIGNED_TO_ADDON
-#define GPIO_PIN_03 GpioAction::ASSIGNED_TO_ADDON
-#define GPIO_PIN_28 GpioAction::ASSIGNED_TO_ADDON
+#define GPIO_PIN_00 GpioAction::ASSIGNED_TO_ADDON /* OLED SDA */
+#define GPIO_PIN_01 GpioAction::ASSIGNED_TO_ADDON /* OLED SCL */
+#define GPIO_PIN_02 GpioAction::ASSIGNED_TO_ADDON /* USB AUTH D- */
+#define GPIO_PIN_03 GpioAction::ASSIGNED_TO_ADDON /* USB AUTH D+ */
+#define GPIO_PIN_04 GpioAction::ASSIGNED_TO_ADDON /* Si24R1 CSN */
+#define GPIO_PIN_11 GpioAction::ASSIGNED_TO_ADDON /* Si24R1 SCK */
+#define GPIO_PIN_16 GpioAction::ASSIGNED_TO_ADDON /* Si24R1 MOSI */
+#define GPIO_PIN_24 GpioAction::ASSIGNED_TO_ADDON /* Jerry UART TX */
+#define GPIO_PIN_25 GpioAction::ASSIGNED_TO_ADDON /* Si24R1 CE */
+#define GPIO_PIN_28 GpioAction::ASSIGNED_TO_ADDON /* WS2812 */
+#define GPIO_PIN_29 GpioAction::ASSIGNED_TO_ADDON /* VBAT ADC */
 
 // Keyboard Mapping Configuration
 //                                            // GP2040 | Xinput | Switch  | PS3/4/5  | Dinput | Arcade |
@@ -61,25 +67,41 @@
 #define KEY_BUTTON_R3   HID_KEY_M             // R3     | RS     | RS      | R3       | 12     | RS     |
 #define KEY_BUTTON_A1   HID_KEY_9             // A1     | Guide  | Home    | PS       | 13     | ~      |
 #define KEY_BUTTON_A2   HID_KEY_F             // A2     | ~      | Capture | ~        | 14     | ~      |
-#define KEY_BUTTON_FN   HID_KEY_ESC           // Hotkey Function                                        |
 
 #define TURBO_ENABLED 1
 #define GPIO_PIN_23 GpioAction::BUTTON_PRESS_TURBO
 
-#define BOARD_USB_ENABLED 1 
+#define BOARD_USB_ENABLED 1
+#define USB_PERIPHERAL_ENABLED 1
+#define FORCE_USB_AUTH_PORT 1
+#define FORCE_NXP7105_AUTH 1
+#define FORCE_BOARD_GPIO_PINS 1
 #define USB_PERIPHERAL_PIN_DPLUS 3
 #define USB_PERIPHERAL_PIN_ORDER 1
 
-#define DEFAULT_INPUT_MODE_R1 INPUT_MODE_XBONE      // 模式1: XBox
-#define DEFAULT_INPUT_MODE_L1 INPUT_MODE_PS5        // 模式2: PS5 (USB认证)
+#define WIRELESS_ENABLED 1
+#define WIRELESS_UART_TX_PIN 24
+#define WIRELESS_UART_ID 1
+#define WIRELESS_NRF24_CE_PIN 25
+#define WIRELESS_NRF24_CSN_PIN 4
+#define WIRELESS_NRF24_SCK_PIN 11
+#define WIRELESS_NRF24_MOSI_PIN 16
+#define WIRELESS_NRF24_MISO_PIN -1
+
+#define FORCE_GP2040_BOOT_MODES 1
+#define DEFAULT_INPUT_MODE_B1 INPUT_MODE_SWITCH_PRO
+#define DEFAULT_INPUT_MODE_B2 INPUT_MODE_XINPUT
+#define DEFAULT_INPUT_MODE_B3 INPUT_MODE_PS3
+#define DEFAULT_INPUT_MODE_B4 INPUT_MODE_PS4
+#define DEFAULT_INPUT_MODE_R1 INPUT_MODE_XBONE
+#define DEFAULT_INPUT_MODE_L1 INPUT_MODE_PS5
+#define DEFAULT_INPUT_MODE_L2 INPUT_MODE_P5GENERAL
+#define DEFAULT_INPUT_MODE_R2 INPUT_MODE_KEYBOARD
+
+#define BAKED_PS4_AUTH_KEYS 1
+#define DEFAULT_PS4AUTHENTICATION_TYPE INPUT_MODE_AUTH_TYPE_KEYS
 #define DEFAULT_PS5AUTHENTICATION_TYPE INPUT_MODE_AUTH_TYPE_USB
-
-// 新增的模式配置
-#define DEFAULT_INPUT_MODE_B4 INPUT_MODE_PS4        // 模式3: PS4 (改为USB认证)
-#define DEFAULT_INPUT_MODE_L2 INPUT_MODE_SWITCH_PRO // 模式4: Nintendo Switch Pro
-
-// PS4使用USB认证（与PS5相同）
-#define DEFAULT_PS4AUTHENTICATION_TYPE INPUT_MODE_AUTH_TYPE_USB
+#define DEFAULT_XINPUTAUTHENTICATION_TYPE INPUT_MODE_AUTH_TYPE_USB
 
 
 #define BOARD_LEDS_PIN 28
@@ -104,21 +126,25 @@
 #define LEDS_BUTTON_L3   13
 #define LEDS_BUTTON_S2   14
 
- #define HAS_I2C_DISPLAY 1
- #define I2C0_ENABLED 1
- #define I2C0_PIN_SDA 0
- #define I2C0_PIN_SCL 1
- #define SPLASH_MODE SPLASH_MODE_STATIC
- #define SPLASH_DURATION 3000
- 
-#define BUTTON_LAYOUT BUTTON_LAYOUT_STICKLESS        // 左边4个按钮
-#define BUTTON_LAYOUT_RIGHT BUTTON_LAYOUT_STICKLESSB // 右边8个按钮
+#define FORCE_LED_WIRE_ORDER 1
 
-// Additional Button Support
-#define GPIO_PIN_29 GpioAction::BUTTON_PRESS_UP
-#define GPIO_PIN_16 static_cast<GpioAction>(int(GpioAction::BUTTON_PRESS_B1) | int(GpioAction::BUTTON_PRESS_B3))
-#define GPIO_PIN_11 static_cast<GpioAction>(int(GpioAction::BUTTON_PRESS_B2) | int(GpioAction::BUTTON_PRESS_B4))
-#define GPIO_PIN_04 static_cast<GpioAction>(int(GpioAction::BUTTON_PRESS_R1) | int(GpioAction::BUTTON_PRESS_R2))
+#define BATTERY_ADC_PIN 29
+#define BATTERY_ADC_SCALE 2.0f
+#define BATTERY_EMPTY_MV 3300
+#define BATTERY_FULL_MV 4200
+#define BATTERY_LOW_MV 3500
+#define BATTERY_LED_INDEX 15
+#define BATTERY_LOW_PIN -1
+
+#define HAS_I2C_DISPLAY 1
+#define I2C0_ENABLED 1
+#define I2C0_PIN_SDA 0
+#define I2C0_PIN_SCL 1
+#define SPLASH_MODE SPLASH_MODE_STATIC
+#define SPLASH_DURATION 3000
+
+#define BUTTON_LAYOUT BUTTON_LAYOUT_STICKLESS
+#define BUTTON_LAYOUT_RIGHT BUTTON_LAYOUT_STICKLESSB
 
  #define BOARD_LED_ENABLED 1
  #define BOARD_LED_TYPE ON_BOARD_LED_MODE_MODE_INDICATOR
@@ -189,39 +215,6 @@
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, \
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-#define HOTKEY_00_AUX_MASK AUX_MASK_FUNCTION
-#define HOTKEY_00_BUTTONS_MASK (GAMEPAD_MASK_S1 | GAMEPAD_MASK_DR)   // FN + S1 + RIGHT
-#define HOTKEY_00_DPAD_MASK 0
-#define HOTKEY_00_ACTION 11 // SOCD FIRST WIN
-
-#define HOTKEY_01_AUX_MASK AUX_MASK_FUNCTION
-#define HOTKEY_01_BUTTONS_MASK (GAMEPAD_MASK_S1 | GAMEPAD_MASK_DL)   // FN + S1 + LEFT
-#define HOTKEY_01_DPAD_MASK 0
-#define HOTKEY_01_ACTION 8  // SOCD LAST WIN
-
-#define HOTKEY_02_AUX_MASK AUX_MASK_FUNCTION
-#define HOTKEY_02_BUTTONS_MASK (GAMEPAD_MASK_S1 | GAMEPAD_MASK_DU)   // FN + S1 + UP
-#define HOTKEY_02_DPAD_MASK 0
-#define HOTKEY_02_ACTION 6  // SOCD UP PRIORITY
-
-#define HOTKEY_03_AUX_MASK AUX_MASK_FUNCTION
-#define HOTKEY_03_BUTTONS_MASK (GAMEPAD_MASK_S1 | GAMEPAD_MASK_DD)   // FN + S1 + DOWN
-#define HOTKEY_03_DPAD_MASK 0
-#define HOTKEY_03_ACTION 7  // SOCD NEUTRAL
-
-#define HOTKEY_04_AUX_MASK AUX_MASK_FUNCTION
-#define HOTKEY_04_BUTTONS_MASK (GAMEPAD_MASK_S2 | GAMEPAD_MASK_DR)   // FN + S2 + RIGHT
-#define HOTKEY_04_DPAD_MASK 0
-#define HOTKEY_04_ACTION 3  // DPAD RIGHT ANALOG
-
-#define HOTKEY_05_AUX_MASK AUX_MASK_FUNCTION
-#define HOTKEY_05_BUTTONS_MASK (GAMEPAD_MASK_S2 | GAMEPAD_MASK_DL)   // FN + S2 + LEFT
-#define HOTKEY_05_DPAD_MASK 0
-#define HOTKEY_05_ACTION 2  // DPAD LEFT ANALOG
-
-#define HOTKEY_06_AUX_MASK AUX_MASK_FUNCTION
-#define HOTKEY_06_BUTTONS_MASK (GAMEPAD_MASK_S2 | GAMEPAD_MASK_DU)   // FN + S2 + UP
-#define HOTKEY_06_DPAD_MASK 0
-#define HOTKEY_06_ACTION 1  // DPAD DIGITAL
+#include "wf_forced_hotkeys.h"
 
 #endif
