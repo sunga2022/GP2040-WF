@@ -16,13 +16,12 @@
 
 PS4：板载 `configs/Pico19/PS4Auth/` 三文件编进固件。PS5 / Xbox One：认证口 NXP7105。Xbox 360：默认已认证。无线只报 Switch。
 
-## 2.4G 接收器（要小）
+## 2.4G 接收器（键盘接收器那种一只芯片）
 
-不要用 RP2040（QFN-56 7×7 + W25Q16）。A7105 是 4×4 且没有 USB。
+不要用 RP2040（QFN-56 7×7 + W25Q16）。不要用两颗 3×3（CH32 + XN297L）。CH582 更好买，但射频不是 nRF24，手柄还得再焊一颗。
 
 | 芯片 | 封装 | 干什么 |
 |------|------|--------|
-| **XN297L** | QFN20 **3×3** | 2.4G，和手柄同一套 ShockBurst 协议 |
-| **CH32X035F8U6** | QFN20 **3×3** | USB FS，WCHISP 能烧 |
+| **nRF52820-QDAA** | QFN40 **5×5** | USB FS + 2.4G 同一颗。立创 C3015612 |
 
-板子 USB-A **22×12 mm**。CH32：CE=PA0 CSN=PA1 SCK=PA2 MOSI=PA3 MISO=PA4，USB D−/D+=PC16/PC17。烧录文件 `firmware-bin/GP2040-WF_receiver.hex`。
+板子 USB-A **22×12 mm**。VBUS 脚直接 5V（VDDH 短到 VBUS），D−/D+=脚 12/13，ANT=脚 24，32 MHz 晶振脚 28/29。烧录走 SWD（脚 19/20），文件 `firmware-bin/GP2040-WF_receiver.hex`。手柄射频仍是 XN297L，不用改。

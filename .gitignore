@@ -30,7 +30,8 @@ wireless/host_test/test_nrf24_stub
 wireless/host_test/test_jieli
 wireless/host_test/test_switch_pro
 
-# CH32 receiver build products (hex ships from firmware-bin/)
+# nRF52820 receiver build products (hex ships from firmware-bin/)
+firmware/receiver_nrf52820/build/
 firmware/receiver_ch32/*.elf
 firmware/receiver_ch32/*.bin
 firmware/receiver_ch32/*.hex

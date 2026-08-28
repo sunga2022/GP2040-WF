@@ -14,7 +14,7 @@
   "canvas": "CA~1000~1000~#FFFFFF~yes~#CCCCCC~10~1000~1000~line~5~pixel~5~0~0",
   "shape": [
     "T~L~40~28~0~#000000~~16pt~~~~comment~GP2040-WF Pico19  原理框图  (嘉立创EDA标准版)~1~start~gge1~0~",
-    "T~L~40~48~0~#000000~~9pt~~~~comment~投板前：换成嘉立创库 USB-C / USB-A / RP2040 / CH32X035 / XN297L 封装，铺铜，跑 DRC。~1~start~gge2~0~",
+    "T~L~40~48~0~#000000~~9pt~~~~comment~投板前：换成嘉立创库 USB-C / USB-A / RP2040 / nRF52820-QDAA / XN297L 封装，铺铜，跑 DRC。~1~start~gge2~0~",
     "R~300~80~~~320~520~#000000~1~0~none~gge3~0~",
     "T~L~318~100~0~#000000~~12pt~~~~comment~U1 RP2040 QFN-56~1~start~gge4~0~",
     "T~L~318~118~0~#000000~~8pt~~~~comment~GP2040-CE + WfFrame + XN297L~1~start~gge5~0~",
@@ -49,7 +49,7 @@
     "T~L~318~504~0~#000000~~8pt~~~~comment~GP28 WS2812  灯序只跟线~1~start~gge34~0~",
     "T~L~318~517~0~#000000~~8pt~~~~comment~GP29 VBAT ADC 100k/100k~1~start~gge35~0~",
     "T~L~318~530~0~#000000~~8pt~~~~comment~USB_DP/DM 芯片脚 47/46 设备口~1~start~gge36~0~",
-    "T~L~318~543~0~#000000~~8pt~~~~comment~接收器 22x12 USB-A  CH32X035+XN297L 都是 3x3~1~start~gge37~0~",
+    "T~L~318~543~0~#000000~~8pt~~~~comment~接收器 22x12 USB-A  一颗 nRF52820 QFN40 5x5~1~start~gge37~0~",
     "R~40~80~~~220~70~#000000~1~0~none~gge38~0~",
     "T~L~50~102~0~#000000~~10pt~~~~comment~J1 杰里 AC632N UART~1~start~gge39~0~",
     "T~L~50~124~0~#000000~~8pt~~~~comment~3V3  GND  TX=GP24  RX NC~1~start~gge40~0~",
@@ -96,7 +96,7 @@
     "W~620 495.0 660 495.0~#008800~1~0~none~gge81~0",
     "R~660~550~~~240~70~#000000~1~0~none~gge82~0~",
     "T~L~670~572~0~#000000~~10pt~~~~comment~接收器 USB-A 22x12~1~start~gge83~0~",
-    "T~L~670~594~0~#000000~~8pt~~~~comment~CH32X035F8U6 + XN297L  都是 3x3~1~start~gge84~0~",
+    "T~L~670~594~0~#000000~~8pt~~~~comment~nRF52820-QDAA QFN40 5x5  USB+2.4G 一只芯片~1~start~gge84~0~",
     "W~620 585.0 660 585.0~#008800~1~0~none~gge85~0",
     "T~L~40~640~0~#000000~~9pt~~~~comment~Xbox/PS 走手柄 USB 认证口；无线只报 Switch。PS5：JUSB2 插带 NXP7105 的授权口。FORCE_NXP7105_AUTH=1。~1~start~gge86~0~",
     "T~L~40~662~0~#000000~~9pt~~~~comment~GPIO 对照 configs/Pico19/BoardConfig.h。RP2040 引脚号数据手册表 615–621。~1~start~gge87~0~"

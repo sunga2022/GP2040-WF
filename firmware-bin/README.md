@@ -4,7 +4,7 @@
 |------|--------|
 | `GP2040-WF.uf2` | 手柄 RP2040。按住 BOOT，USB-C **设备口** 出现 `RPI-RP2` 后拖进去 |
 | `GP2040-WF_AC632N.ufw` | 杰理 **AC632N / AC6321A**。杰理烧录助手选 AC632N。不要烧到 AC6956A |
-| `GP2040-WF_receiver.hex` | 2.4G USB-A 接收器 **CH32X035F8U6**。WCHISPStudio 选该型号，USB 下载 |
+| `GP2040-WF_receiver.hex` | 2.4G USB-A 接收器 **nRF52820-QDAA**。J-Link 或 WCH-Link 走 SWD |
 
 `SHA256SUMS` 是校验，不能烧。杰理的 `app.bin` / `jl_isd.bin` 是同一份固件的别的格式，日常用 `.ufw` 即可。
 
@@ -23,15 +23,16 @@ PS4 用固件里的三份授权文件。PS5 / Xbox One 走认证口 NXP7105。Xb
 
 网页配置：https://192.168.7.1
 
-## 2.4G 接收器（键盘接收器大小）
+## 2.4G 接收器（键盘接收器那种一只芯片）
 
-USB-A **22×12 mm**，两颗都是 **QFN20 3×3 mm**：
+USB-A **22×12 mm**，**一颗** **nRF52820-QDAA QFN40 5×5 mm**（立创 C3015612）：
 
-- **XN297L**：2.4G，和 nRF24 / Si24R1 同一套 SPI 协议
-- **CH32X035F8U6**：自带全速 USB，枚举 Switch Pro `057E:2009`
+- 片上全速 USB，枚举 Switch Pro `057E:2009`
+- 片上 2.4G，空中和手柄 XN297L / nRF24 / Si24R1 兼容
+- VBUS 脚直接吃 5V，不用外挂 LDO，也不用第二颗射频
 
-不要用 RP2040 做接收器，7×7 加 Flash 太大。A7105 是 4×4 且没有 USB。
+不要用 CH32+XN297L 两颗 3×3。CH582 更好买，但射频对不上 nRF24。不要用 RP2040 做接收器。
 
-烧录：WCHISPStudio → 芯片 `CH32X035F8U6` → 打开 `GP2040-WF_receiver.hex`。进 ISP：上电时把板子上的 **ISP** 两焊盘短接（D+ 经 4.7k 拉到 3V3），插电脑后再松开。
+烧录：J-Link / WCH-Link（SWD）→ `nRF52820_xxAA` → `GP2040-WF_receiver.hex`。脚 19 SWDIO、脚 20 SWDCLK。没有 USB ISP。
 
 插 Switch 底座或 PC（Steam 认 Pro）。手柄选 Switch Pro，拔掉手柄 USB。不要插 Xbox / PS。
