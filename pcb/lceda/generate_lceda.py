@@ -338,7 +338,7 @@ def crystal_lib(
 def sot23_ldo(ids: Ids, cx: float, cy: float, ref: str = "U3") -> str:
     """SOT-23 3.3 V LDO placeholder (ME6206 / XC6206 class). Swap LCSC footprint before fab."""
     inner = [
-        pad(ids, "RECT", cx - 0.95, cy + 0.55, 0.8, 0.9, 1, "VIN", "1"),
+        pad(ids, "RECT", cx - 0.95, cy + 0.55, 0.8, 0.9, 1, "VBUS", "1"),
         pad(ids, "RECT", cx + 0.95, cy + 0.55, 0.8, 0.9, 1, "GND", "2"),
         pad(ids, "RECT", cx, cy - 0.95, 0.8, 0.9, 1, "3V3", "3"),
         text(ids, cx - 2.2, cy - 2.2, f"{ref} 3V3", 0.6, 3, kind="P"),
@@ -379,6 +379,41 @@ def qfn20_3x3_lib(ids: Ids, cx: float, cy: float, ref: str, name: str, nets: dic
     inner.append(text(ids, cx - 2.2, cy - 2.6, ref, 0.7, 3, kind="P"))
     inner.append(text(ids, cx - 2.2, cy + 2.7, name, 0.55, 3, kind="N"))
     return lib_wrap(ids, cx, cy, "QFN-20-3x3-P0.4", ref, inner)
+
+
+def qfn20_4x4_lib(ids: Ids, cx: float, cy: float, ref: str, name: str, nets: dict[int, str]) -> str:
+    """QFN20 4x4 mm, 0.5 mm pitch, 5 pins per side (Si24R1)."""
+    pitch = 0.5
+    span = 1.0
+    off = 1.95
+    long_pad, short_pad = 0.7, 0.28
+    pads: dict[int, tuple[float, float, float, float]] = {}
+    for i, y in enumerate([span, span - pitch, 0.0, -pitch, -span]):
+        pads[i + 1] = (-off, y, long_pad, short_pad)
+    for i, x in enumerate([-span, -pitch, 0.0, pitch, span]):
+        pads[i + 6] = (x, -off, short_pad, long_pad)
+    for i, y in enumerate([-span, -pitch, 0.0, pitch, span]):
+        pads[i + 11] = (off, y, long_pad, short_pad)
+    for i, x in enumerate([span, pitch, 0.0, -pitch, -span]):
+        pads[i + 16] = (x, off, short_pad, long_pad)
+    pads[21] = (0.0, 0.0, 2.2, 2.2)
+    inner: list[str] = []
+    half = 2.0
+    inner.append(
+        track(
+            ids,
+            [(cx - half, cy - half), (cx + half, cy - half), (cx + half, cy + half), (cx - half, cy + half), (cx - half, cy - half)],
+            0.1,
+            3,
+        )
+    )
+    inner.append(circle(ids, cx - 1.7, cy - 1.7, 0.14, 3))
+    for n, (px, py, pw, ph) in pads.items():
+        ax, ay = cx + px, cy - py
+        inner.append(pad(ids, "RECT", ax, ay, pw, ph, 1, nets.get(n, "GND" if n == 21 else ""), str(n if n != 21 else "EP")))
+    inner.append(text(ids, cx - 2.6, cy - 3.2, ref, 0.7, 3, kind="P"))
+    inner.append(text(ids, cx - 2.6, cy + 3.3, name, 0.55, 3, kind="N"))
+    return lib_wrap(ids, cx, cy, "QFN-20-4x4-P0.5", ref, inner)
 
 
 def qfn40_5x5_lib(ids: Ids, cx: float, cy: float, ref: str, name: str, nets: dict[int, str]) -> str:
@@ -672,88 +707,98 @@ def build_stick_pcb() -> tuple[float, float, list[str]]:
     return w, h, s
 
 
-def nrf52820_net(pin: int) -> str:
-    """nRF52820-QDAA QFN40 (Product Spec table 115)."""
+def ch32_f8u6_net(pin: int) -> str:
+    """CH32X035F8U6 QFN20 3x3 (WCH DS). PA0–PA4 = radio SPI."""
     return {
-        1: "DEC1",
-        2: "P0.00",
-        3: "P0.01",
-        4: "P0.04",
-        5: "P0.05",
-        6: "P0.06",
-        7: "P0.07",
-        8: "VDD",
-        9: "VBUS",  # VDDH = VBUS, USB-only (PS config 1)
-        10: "VBUS",
-        11: "DECUSB",
-        12: "USB_DM",
-        13: "USB_DP",
-        14: "P0.14",
-        15: "P0.15",
-        16: "nRESET",
-        17: "P0.20",
-        18: "VDD",
-        19: "SWDIO",
-        20: "SWDCLK",
-        21: "DEC5",
-        22: "P0.16",
-        23: "P0.17",
-        24: "ANT",
-        25: "GND",
-        26: "DEC4",  # DEC6 must short to DEC4
-        27: "DEC3",
-        28: "XC1",
-        29: "XC2",
-        30: "VDD",
-        31: "P0.08",
-        32: "P0.29",
-        33: "P0.30",
-        34: "P0.28",
-        35: "P0.03",
-        36: "P0.02",
-        37: "GND",
-        38: "DEC4",
-        39: "DCC",
-        40: "VDD",
-        41: "GND",
+        1: "3V3",
+        2: "CE",
+        3: "CSN",
+        4: "SCK",
+        5: "MOSI",
+        6: "MISO",
+        7: "PA5",
+        8: "PA6",
+        9: "PA7",
+        10: "PB0",
+        11: "PB1",
+        12: "PB3",
+        13: "PB11",
+        14: "SWDIO",
+        15: "PB12",
+        16: "SWCLK",
+        17: "USB_DM",
+        18: "USB_DP",
+        19: "PC14",
+        20: "PC15",
+        21: "GND",
+    }.get(pin, "")
+
+
+def si24r1_net(pin: int) -> str:
+    """Si24R1 QFN20 4x4 (datasheet Figure 2-1)."""
+    return {
+        1: "CE",
+        2: "CSN",
+        3: "SCK",
+        4: "MOSI",
+        5: "MISO",
+        6: "IRQ",
+        7: "3V3",
+        8: "GND",
+        9: "RF_XO",
+        10: "RF_XI",
+        11: "3V3",
+        12: "ANT",
+        13: "RFN",
+        14: "GND",
+        15: "3V3",
+        16: "IREF",
+        17: "GND",
+        18: "3V3",
+        19: "3V3",
+        20: "GND",
+        21: "GND",
     }.get(pin, "")
 
 
 def build_receiver_pcb() -> tuple[float, float, list[str]]:
-    """USB-A keyboard dongle: 22 x 12 mm, one nRF52820 QFN40 5x5."""
+    """USB-A nano dongle: 16.30 x 11.20 mm, CH32X035F8U6 3x3 + Si24R1 4x4."""
     ids = Ids()
-    w, h = 22.0, 12.0
+    w, h = 16.30, 11.20
     s: list[str] = []
     s.extend(outline_rect(ids, w, h))
-    s.append(copper_rect(ids, w, h, 0.2, 2, "GND"))
-    s.append(track(ids, [(0, 0), (10.0, 0), (10.0, h), (0, h)], 0.1, 3))
+    s.append(copper_rect(ids, w, h, 0.15, 2, "GND"))
+    s.append(track(ids, [(0, 0), (5.4, 0), (5.4, h), (0, h)], 0.1, 3))
     for i, (net, name) in enumerate([("VBUS", "VBUS"), ("USB_DM", "D-"), ("USB_DP", "D+"), ("GND", "GND")]):
-        y = 1.8 + i * 2.8
-        s.append(pad(ids, "RECT", 4.2, y, 7.2, 1.2, 1, net, name))
-        s.append(text(ids, 8.0, y - 0.35, name, 0.55, 3))
-    mcu = (15.4, 5.6)
-    s.append(qfn40_5x5_lib(ids, mcu[0], mcu[1], "U1", "nRF52820 5x5", {n: nrf52820_net(n) for n in range(1, 42)}))
-    s.append(crystal_lib(ids, 15.4, 10.2, "Y1", "32MHz", "XC1", "XC2"))
-    s.append(chip0603(ids, 10.6, 2.0, "C1", "4u7", "VBUS", "GND", "C"))
-    s.append(chip0603(ids, 10.6, 3.8, "C2", "4u7", "DECUSB", "GND", "C"))
-    s.append(chip0603(ids, 10.6, 5.6, "C3", "4u7", "VDD", "GND", "C"))
-    s.append(chip0603(ids, 10.6, 7.4, "C4", "1u", "DEC1", "GND", "C"))
-    s.append(chip0603(ids, 10.6, 9.2, "C5", "100n", "DEC3", "GND", "C"))
-    s.append(chip0603(ids, 10.6, 11.0, "C6", "100n", "DEC4", "GND", "C"))
-    s.append(chip0603(ids, 19.4, 9.4, "Cx1", "8p", "XC1", "GND", "C"))
-    s.append(chip0603(ids, 19.4, 11.0, "Cx2", "8p", "XC2", "GND", "C"))
-    s.append(chip0603(ids, 19.4, 2.2, "L1", "4n7", "ANT", "ANT_M", "L"))
-    s.append(pad(ids, "ELLIPSE", 21.2, 2.2, 1.1, 1.1, 1, "ANT_M", "ANT"))
-    s.append(text(ids, 19.6, 3.5, "ANT", 0.45, 3))
-    for i, (net, name) in enumerate([("SWDIO", "SWDIO"), ("SWDCLK", "SWDCLK"), ("nRESET", "RST"), ("GND", "GND")]):
-        s.append(pad(ids, "ELLIPSE", 12.4 + i * 2.2, 0.7, 0.9, 0.9, 1, net, name))
-        s.append(text(ids, 12.0 + i * 2.2, 1.35, name, 0.35, 3))
-    s.append(track(ids, [(4.2, 4.6), (mcu[0] - 2.6, mcu[1])], 0.25, 1, "USB_DM"))
-    s.append(track(ids, [(4.2, 7.4), (mcu[0] - 2.6, mcu[1] + 0.6)], 0.25, 1, "USB_DP"))
-    s.append(track(ids, [(4.2, 1.8), (mcu[0] - 2.0, mcu[1] - 1.2)], 0.3, 1, "VBUS"))
-    s.append(via(ids, mcu[0], mcu[1], 0.45, 0.12, "GND"))
-    s.append(text(ids, 10.6, 0.2, "GP2040-WF RX  22x12  nRF52820 one MCU", 0.45, 3))
-    s.append(text(ids, 12.4, 11.45, "C3015612  SWD J-Link/WCH-Link", 0.4, 3))
+        y = 1.35 + i * 2.7
+        s.append(pad(ids, "RECT", 2.6, y, 4.8, 1.05, 1, net, name))
+        s.append(text(ids, 5.2, y - 0.28, name, 0.4, 3))
+    mcu = (8.05, 3.70)
+    rf = (13.15, 6.85)
+    s.append(qfn20_3x3_lib(ids, mcu[0], mcu[1], "U1", "CH32X035 3x3", {n: ch32_f8u6_net(n) for n in range(1, 22)}))
+    s.append(qfn20_4x4_lib(ids, rf[0], rf[1], "U2", "Si24R1 4x4", {n: si24r1_net(n) for n in range(1, 22)}))
+    s.append(crystal_lib(ids, 13.15, 2.15, "Y1", "16MHz", "RF_XO", "RF_XI"))
+    s.append(sot23_ldo(ids, 8.05, 9.05, "U3"))
+    s.append(chip0603(ids, 5.85, 1.35, "C1", "10u", "VBUS", "GND", "C"))
+    s.append(chip0603(ids, 5.85, 3.15, "C2", "10u", "3V3", "GND", "C"))
+    s.append(chip0603(ids, 5.85, 4.95, "C3", "100n", "3V3", "GND", "C"))
+    s.append(chip0603(ids, 11.15, 1.15, "C4", "100n", "3V3", "GND", "C"))
+    s.append(chip0603(ids, 15.30, 3.55, "Riref", "12k", "IREF", "GND", "R"))
+    s.append(chip0603(ids, 11.0, 10.35, "Risp", "4k7", "USB_DP", "ISP", "R"))
+    s.append(pad(ids, "RECT", 13.3, 10.55, 1.0, 0.7, 1, "ISP", "ISP"))
+    s.append(pad(ids, "RECT", 14.5, 10.55, 1.0, 0.7, 1, "3V3", "3V3"))
+    s.append(pad(ids, "ELLIPSE", 15.65, 9.55, 0.9, 0.9, 1, "ANT", "ANT"))
+    s.append(text(ids, 14.7, 8.55, "ANT", 0.4, 3))
+    s.append(track(ids, [(2.6, 4.05), (mcu[0] - 1.7, mcu[1])], 0.2, 1, "USB_DM"))
+    s.append(track(ids, [(2.6, 6.75), (mcu[0] - 1.7, mcu[1] + 0.6)], 0.2, 1, "USB_DP"))
+    s.append(track(ids, [(mcu[0] + 1.6, mcu[1] - 0.4), (rf[0] - 2.1, rf[1] - 1.2)], 0.15, 1, "CE"))
+    s.append(track(ids, [(mcu[0] + 1.6, mcu[1]), (rf[0] - 2.1, rf[1] - 0.6)], 0.15, 1, "CSN"))
+    s.append(track(ids, [(mcu[0] + 1.6, mcu[1] + 0.4), (rf[0] - 2.1, rf[1])], 0.15, 1, "SCK"))
+    s.append(track(ids, [(mcu[0] + 1.5, mcu[1] + 0.8), (rf[0] - 2.0, rf[1] + 0.5)], 0.15, 1, "MOSI"))
+    s.append(track(ids, [(mcu[0] + 1.4, mcu[1] + 1.2), (rf[0] - 1.9, rf[1] + 1.0)], 0.15, 1, "MISO"))
+    s.append(via(ids, mcu[0], mcu[1], 0.4, 0.12, "GND"))
+    s.append(via(ids, rf[0], rf[1], 0.4, 0.12, "GND"))
+    s.append(text(ids, 5.5, 0.18, "GP2040-WF RX  16.30x11.20  CH32+Si24R1  1kHz", 0.38, 3))
     return w, h, s
 
 
@@ -773,7 +818,7 @@ def build_schematic() -> list[str]:
     ids = Ids()
     s: list[str] = []
     s.append(sch_text(ids, 40, 28, "GP2040-WF Pico19  原理框图  (嘉立创EDA标准版)", "16pt"))
-    s.append(sch_text(ids, 40, 48, "投板前：换成嘉立创库 USB-C / USB-A / RP2040 / nRF52820-QDAA / XN297L 封装，铺铜，跑 DRC。", "9pt"))
+    s.append(sch_text(ids, 40, 48, "投板前：换成嘉立创库 USB-C / USB-A / RP2040 / CH32X035F8U6 / Si24R1 / XN297L 封装，铺铜，跑 DRC。", "9pt"))
 
     s.append(sch_rect(ids, 300, 80, 320, 520))
     s.append(sch_text(ids, 318, 100, "U1 RP2040 QFN-56", "12pt"))
@@ -811,7 +856,7 @@ def build_schematic() -> list[str]:
         "GP28 WS2812  灯序只跟线",
         "GP29 VBAT ADC 100k/100k",
         "USB_DP/DM 芯片脚 47/46 设备口",
-        "接收器 22x12 USB-A  一颗 nRF52820 QFN40 5x5",
+        "接收器 16.30x11.20 USB-A  CH32X035 3x3 + Si24R1 4x4  USB FS 1kHz",
     ]
     for i, line in enumerate(lines):
         s.append(sch_text(ids, 318, 140 + i * 13, line, "8pt"))
@@ -836,7 +881,7 @@ def build_schematic() -> list[str]:
         (660, 280, 240, 70, "U3 AMS1117-3.3", "VIN←VBUS  3V3→MCU/Flash/射频"),
         (660, 370, 240, 70, "U2 W25Q16JV SOIC-8", "QSPI Flash"),
         (660, 460, 240, 70, "Y1 12MHz 3225", "XIN/XOUT + 15pF"),
-        (660, 550, 240, 70, "接收器 USB-A 22x12", "nRF52820-QDAA QFN40 5x5  USB+2.4G 一只芯片"),
+        (660, 550, 240, 70, "接收器 USB-A 16.30x11.20", "U1 CH32X035F8U6 3x3 USB 1kHz  U2 Si24R1 4x4"),
     ]
     for x, y, bw, bh, title, sub in right:
         s.append(sch_rect(ids, x, y, bw, bh))
@@ -872,17 +917,18 @@ def write_bom(path: Path) -> None:
         "D1–D16,WS2812B,5050,16,手柄,GP28 走线顺序；第 16 颗电量灯",
         "SWxx,6x6 轻触,插件,21,手柄,18 键+TURBO+BOOT+RESET  无 FN",
         "OLED,SSD1306 1.3 128x64,I2C 模块,1,手柄,右上角 电量%+L/B/G",
-        "U1,nRF52820-QDAA,QFN-40 5x5 P0.4,1,接收器,USB+RADIO 一颗芯片 立创 C3015612  D-=脚12 D+=脚13 VBUS=脚10 ANT=脚24",
-        "Y1,32MHz 8pF,3225,1,接收器,XC1/XC2 脚 28/29",
-        "JUSB,USB-A 公头,金手指,1,接收器,键盘接收器外形 22×12 mm  枚举 Switch Pro",
-        "C1,4.7uF,0603,1,接收器,VBUS",
-        "C2,4.7uF,0603,1,接收器,DECUSB 脚11  典型 4.7µF",
-        "C3,4.7uF,0603,1,接收器,VDD",
-        "C4,1uF,0603,1,接收器,DEC1",
-        "C5/C6,100nF,0603,2,接收器,DEC3 / DEC4=DEC6",
-        "Cx1/Cx2,8pF,0603,2,接收器,32MHz 负载",
-        "L1,4.7nH,0603,1,接收器,天线匹配 投板前按参考电路换值",
-        "SWD,2.54 焊盘,SWD,1,接收器,SWDIO 脚19 SWDCLK 脚20  J-Link 或 WCH-Link",
+        "U1,CH32X035F8U6,QFN-20 3x3 P0.4,1,接收器,USB FS HID 1kHz 立创 C42442062  D-=PC16 D+=PC17  SPI PA0-PA4",
+        "U2,Si24R1,QFN-20 4x4 P0.5,1,接收器,2.4G RX 对齐摇杆 XN297L  立创 C14436",
+        "U3,ME6206A33M3G,SOT-23,1,接收器,VBUS 5V→3.3V  Si24R1 要 1.9–3.6V",
+        "Y1,16MHz 9pF,3225,1,接收器,Si24R1 XI/XO  立创 C9008",
+        "JUSB,USB-A 公头,金手指,1,接收器,板框 16.30×11.20 mm  枚举 Switch Pro",
+        "C1,10uF,0603,1,接收器,VBUS",
+        "C2,10uF,0603,1,接收器,3V3",
+        "C3/C4,100nF,0603,2,接收器,CH32 / Si24R1 去耦",
+        "Cx1/Cx2,12pF,0603,2,接收器,16MHz 负载 投板前按晶振规格换",
+        "Riref,12k,0603,1,接收器,Si24R1 IREF→GND",
+        "Risp,4.7k,0603,1,接收器,上电短接 ISP 焊盘：D+ 经 4.7k 到 3V3 进 WCHISP",
+        "L1,4.7nH,0603,1,接收器,天线匹配 投板前按 Si24R1 参考电路换值",
     ]
     path.write_text("\n".join(rows) + "\n", encoding="utf-8")
     print(f"wrote {path.name}")
@@ -893,7 +939,7 @@ def main() -> None:
     w, h, shapes = build_stick_pcb()
     dump_pcb(OUT / "GP2040-WF-stick.json", "GP2040-WF Pico19 stick", w, h, shapes)
     w, h, shapes = build_receiver_pcb()
-    dump_pcb(OUT / "GP2040-WF-receiver.json", "GP2040-WF receiver 22x12 nRF52820", w, h, shapes)
+    dump_pcb(OUT / "GP2040-WF-receiver.json", "GP2040-WF receiver 16.30x11.20 CH32+Si24R1", w, h, shapes)
     dump_sch(OUT / "GP2040-WF-schematic.json", "GP2040-WF Pico19 schematic", build_schematic())
     write_bom(OUT / "BOM.csv")
 

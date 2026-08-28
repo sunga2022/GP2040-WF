@@ -7,6 +7,6 @@
 | 目录 | 芯片 | 干什么 |
 |------|------|--------|
 | [`jieli_ac632n/`](jieli_ac632n/) | 杰里 **AC632N** | Switch Pro 经典蓝牙（无加密） |
-| [`receiver_nrf52820/`](receiver_nrf52820/) | **nRF52820** QFN40 5×5 | 2.4G USB-A 接收器，USB+射频一只芯片 |
+| [`receiver_ch32/`](receiver_ch32/) | **CH32X035F8U6** + SPI **Si24R1** | 2.4G USB-A 接收器，USB FS **1 kHz** |
 
-`receiver_ch32/`、`receiver_pico/` 是旧接收器，不要当产品。`nuvoton_*` / `ch585` / `esp32*` / `teensy41` 也是旧实验。
+`receiver_nrf52820/`、`receiver_pico/` 是旧接收器，不要当产品。`nuvoton_*` / `ch585` / `esp32*` / `teensy41` 也是旧实验。

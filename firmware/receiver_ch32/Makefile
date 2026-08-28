@@ -12,3 +12,7 @@ include $(CH32FUN)/ch32fun.mk
 
 flash: cv_flash
 clean: cv_clean
+
+.PHONY: ship
+ship: all
+	cp $(TARGET).hex ../../firmware-bin/GP2040-WF_receiver.hex
