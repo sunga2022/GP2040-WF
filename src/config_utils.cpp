@@ -1213,6 +1213,30 @@ void ConfigUtils::initUnsetPropertiesWithDefaults(Config& config)
         }
     }
 #endif
+
+#ifdef FORCE_DISPLAY_I2C
+    /* Pico16 leftover NVS kept I2C1 on GP26/27. Pico19 OLED is I2C0 GP0/GP1. */
+    config.has_displayOptions = true;
+    config.displayOptions.enabled = true;
+    config.displayOptions.has_enabled = true;
+    config.displayOptions.deprecatedI2cBlock = 0;
+    config.displayOptions.has_deprecatedI2cBlock = true;
+    config.displayOptions.deprecatedI2cAddress = DISPLAY_I2C_ADDR;
+    config.displayOptions.has_deprecatedI2cAddress = true;
+    config.has_peripheralOptions = true;
+    config.peripheralOptions.has_blockI2C0 = true;
+    config.peripheralOptions.blockI2C0.enabled = true;
+    config.peripheralOptions.blockI2C0.has_enabled = true;
+    config.peripheralOptions.blockI2C0.sda = I2C0_PIN_SDA;
+    config.peripheralOptions.blockI2C0.has_sda = true;
+    config.peripheralOptions.blockI2C0.scl = I2C0_PIN_SCL;
+    config.peripheralOptions.blockI2C0.has_scl = true;
+    config.peripheralOptions.blockI2C0.speed = I2C0_SPEED;
+    config.peripheralOptions.blockI2C0.has_speed = true;
+    config.peripheralOptions.has_blockI2C1 = true;
+    config.peripheralOptions.blockI2C1.enabled = false;
+    config.peripheralOptions.blockI2C1.has_enabled = true;
+#endif
 }
 
 

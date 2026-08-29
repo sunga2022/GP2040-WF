@@ -46,8 +46,9 @@ void PeripheralI2C::setup() {
 
 int16_t PeripheralI2C::read(uint8_t address, uint8_t *data, uint16_t len, bool isBlock) {
     if ((_exclusiveAddress > -1) && (_exclusiveAddress != address)) return -1;
+    if (!configured || _I2C == nullptr) return -1;
 
-    int16_t result = i2c_read_blocking(_I2C, address, data, len, isBlock);
+    int16_t result = i2c_read_timeout_us(_I2C, address, data, len, isBlock, 10000);
 #ifdef DEBUG_PERIPHERALI2C
     printf("PeripheralI2C::write %d:%d (blocking? %d)\n", address, len, isBlock);
     for (int i = 0; i < len; i++) {
@@ -61,17 +62,19 @@ int16_t PeripheralI2C::read(uint8_t address, uint8_t *data, uint16_t len, bool i
 
 int16_t PeripheralI2C::readRegister(uint8_t address, uint8_t reg, uint8_t *data, uint16_t len) {
     if ((_exclusiveAddress > -1) && (_exclusiveAddress != address)) return -1;
+    if (!configured || _I2C == nullptr) return -1;
 
     int16_t registerCheck;
-    registerCheck = i2c_write_blocking(_I2C, address, &reg, 1, true);
+    registerCheck = i2c_write_timeout_us(_I2C, address, &reg, 1, true, 10000);
     if (registerCheck >= 0) {
-        registerCheck = i2c_read_blocking(_I2C, address, data, len, false);
+        registerCheck = i2c_read_timeout_us(_I2C, address, data, len, false, 10000);
     }
     return (registerCheck >= 0);
 }
 
 int16_t PeripheralI2C::write(uint8_t address, uint8_t *data, uint16_t len, bool isBlock) {
     if ((_exclusiveAddress > -1) && (_exclusiveAddress != address)) return -1;
+    if (!configured || _I2C == nullptr) return -1;
 
 #ifdef DEBUG_PERIPHERALI2C
     printf("PeripheralI2C::write %d:%d (blocking? %d)\n", address, len, isBlock);
@@ -79,7 +82,7 @@ int16_t PeripheralI2C::write(uint8_t address, uint8_t *data, uint16_t len, bool 
         printf("%02x ", data[i]);
     }
 #endif
-    int16_t result = i2c_write_blocking(_I2C, address, data, len, isBlock);
+    int16_t result = i2c_write_timeout_us(_I2C, address, data, len, isBlock, 10000);
 #ifdef DEBUG_PERIPHERALI2C
     printf("\nResult: %d\n", result);
     printf("-----\n");
@@ -104,14 +107,11 @@ void PeripheralI2C::clear() {
 
 std::map<uint8_t,bool> PeripheralI2C::scan() {
     std::map<uint8_t,bool> result;
+    if (!configured || _I2C == nullptr) return result;
 
     for (uint8_t addr = 0; addr < (1 << 7); ++addr) {
-        int8_t ret;
-        uint8_t rxdata;
-        ret = i2c_read_blocking(_I2C, addr, &rxdata, 1, false);
-
-        if (ret >= 0) {
-            result.insert({addr,(ret >= 0)});
+        if (test(addr)) {
+            result.insert({addr, true});
         }
     }
 

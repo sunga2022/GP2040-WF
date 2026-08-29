@@ -30,7 +30,7 @@
 
 | GPIO | 功能 |
 |------|------|
-| 0 / 1 | OLED SDA / SCL |
+| 0 / 1 | OLED SDA / SCL（**不是** 旧 Pico16 的 GP26/GP27） |
 | 2 / 3 | USB 认证口 D− / D+（`USB_PERIPHERAL_PIN_DPLUS 3`，`ORDER 1`） |
 | 28 | WS2812，灯序只跟线，不跟键值 |
 | 24 | 杰里 UART1 TX |
